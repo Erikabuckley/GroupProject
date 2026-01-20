@@ -11,18 +11,19 @@ body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
-.total {
-    float : right;
+#total {
+    float: right;
 }
 
-.ranks {
-    float : left
+#ranks {
+    float: left
 }
 
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: green;
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: green;
+    color: white;
 }
