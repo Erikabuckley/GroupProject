@@ -9,6 +9,12 @@ h2 {
 body {
     background-color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 40;
+    margin-right: 40;
+}
+
+#buttons {
+    float:right;
 }
 
 #total {
@@ -26,4 +32,17 @@ body {
     width: 100%;
     background-color: rgb(51, 154, 104);
     color: white;
+}
+
+#header {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background-color: rgb(51, 154, 104);
+    color: white;
+}
+a {
+  color: inherit;
+  text-decoration: inherit;
 }
