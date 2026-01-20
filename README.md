@@ -11,6 +11,3 @@ Nehir Yurtsever: QA lead
 Keira Manglani: DevOps
 Darcy Luke: UI & UX & requirements 
 Thalia Champ: Documentation and comms
-
-## Scrumboard
-https://exeter-team-project.atlassian.net/jira/software/projects/SCRUM/summary?atlOrigin=eyJpIjoiYjhiYjYwYTcyOGY3NGM4Yjg5YmEyN2E4N2Q1MTNkMzEiLCJwIjoiaiJ9
