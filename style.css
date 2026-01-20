@@ -1,7 +1,12 @@
 h1 {
-    color : "Green"
+    color : green;
 }
 
 h2 {
-    color : "Green"
+    color : green;
+}
+
+body {
+    background-color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
