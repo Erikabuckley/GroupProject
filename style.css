@@ -9,8 +9,8 @@ h2 {
 body {
     background-color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    margin-left: 100;
-    margin-right: 100;
+    padding-left: 100;
+    padding-right: 100;
 }
 
 #buttons {
@@ -32,6 +32,7 @@ body {
     width: 100%;
     background-color: rgb(51, 154, 104);
     color: white;
+    font-size: 20;
 }
 
 #header {
@@ -41,10 +42,9 @@ body {
     width: 100%;
     background-color: rgb(51, 154, 104);
     color: white;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 14;
-
+    font-size: 20;
 }
+
 a {
   color: inherit;
   text-decoration: inherit;
