@@ -1,52 +1,122 @@
 h1 {
-    padding: 100;
     color: rgb(51, 154, 104);
 }
 
 h2 {
-    color: black;
+    color: rgb(140, 240, 165);
 }
 
 body {
     background-color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    padding-left: 100;
-    padding-right: 100;
 }
 
-#buttons {
-    float:right;
-}
-
-#total {
-    float: right;
-}
-
-#ranks {
-    float: left
-}
-
-#footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
+.header {
     width: 100%;
-    background-color: rgb(51, 154, 104);
-    color: white;
-    font-size: 20;
-}
-
-#header {
     position: fixed;
     left: 0;
     top: 0;
-    width: 100%;
     background-color: rgb(51, 154, 104);
     color: white;
-    font-size: 20;
+    display : flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
-a {
-  color: inherit;
-  text-decoration: inherit;
+.header-heading {
+    display : flex;
+    margin-right : 1rem;
+    margin-left: 1rem;
+    margin-top : 1rem;
+}
+
+.header-heading a {
+    color: white;
+    text-decoration: none;
+    padding-left: 1rem;
+}
+
+.header-heading h1 {
+    color: white;
+}
+
+.total-screen {
+    display : flex;
+    padding-top :4rem;
+    padding-right: 2rem;
+}
+
+.total-text{
+    padding-right : 8rem;
+    text-align : justify;
+}
+
+.total {
+    outline: 2px groove rgb(140, 240, 165);
+    outline-width: thick;
+    outline-offset: 1rem;
+}
+
+.rank-screen{
+    display:flex;
+    padding-top :4rem;
+}
+
+
+.rank-text {
+    padding-left :8rem;
+    text-align : justify;
+}
+
+.rank{
+    padding-left :4rem
+}
+
+.award-screen {
+    display : flex;
+    padding-top :4rem;
+}
+
+.award-text{
+    padding-right : 8rem;
+    text-align : justify;
+}
+
+.award {
+    padding-top : 6rem;
+    padding-right : 4rem;
+}
+
+
+.body-container{
+    margin-right : 2rem;
+    margin-left: 2rem;
+    margin-top : 5rem;
+    margin-bottom : 8rem;
+}
+
+.footer {
+    width: 100%;
+    position: relative;
+    background-color: rgb(51, 154, 104);
+    color: white;
+    display : flex;
+    justify-content: left;
+    flex-wrap:  wrap;
+}
+
+.footer-heading {
+    display : flex;
+    flex-direction: column;
+    margin-left : 1rem;
+    margin-bottom : 1rem;
+}
+
+.footer-heading a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-heading h2{
+    color:white;
 }

@@ -2,30 +2,41 @@
 <html>
     <head>   
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="loginStyle.css">
+
         <Title> Log in</Title>
     </head>
 
     <body>
-        <div id ="header">
-            <input type="image" id="exeterImage" alt="Home" src = image.png width = 50 height = 50 align = left>
-            <script type="text/javascript">
-                document.getElementById("exeterImage").onclick = function () {
-                location.href = "https://erikabuckley.github.io/GroupProject/index.html";
-                };
-            </script>
+        <div class="header-container">
+            <div class="header">
+                <input type="Image" id="logo" alt="Home" src = image.png width = 50 height = 50 >
+                <script type="text/javascript">
+                    document.getElementById("logo").onclick = function () {
+                    location.href = "https://erikabuckley.github.io/GroupProject/index.html";
+                    };
+                </script>
+                
+                <div class="header-heading header-1">
+                    Carbon Challenge
+                </div>
+            </div>
         </div>
 
-        <h1> <center> Carbon Challenge </center></h1>
-        <br>
-        <h3> <center> Login:</center></h3>
+        <div class="login-container">
+            <div class="login-form">
+                Login:
+                <form class="login">
+                    <label> Email </label>
+                    <input type="text"><br>
+                    <label> Password </label>
+                    <input type="text" ><br>
+                    <input type="submit" value="Sign in">
+                </form>
+            </div>
+        </div>
 
-        <form align="center">
-            <label> Email </label>
-            <input type="text"><br>
-            <label> Password </label>
-            <input type="text" ><br>
-            <input type="submit" value="Sign in">
-        </form>
+
 
     </body>
 </html>
