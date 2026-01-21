@@ -18,16 +18,16 @@ body {
     top: 0;
     background-color: rgb(51, 154, 104);
     color: white;
-    display : flex;
+    display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
 .header-heading {
-    display : flex;
-    margin-right : 1rem;
+    display: flex;
+    margin-right: 1rem;
     margin-left: 1rem;
-    margin-top : 1rem;
+    margin-top: 1rem;
 }
 
 .header-heading a {
@@ -41,14 +41,14 @@ body {
 }
 
 .total-screen {
-    display : flex;
-    padding-top :4rem;
+    display: flex;
+    padding-top: 4rem;
     padding-right: 2rem;
 }
 
-.total-text{
-    padding-right : 8rem;
-    text-align : justify;
+.total-text {
+    padding-right: 8rem;
+    text-align: justify;
 }
 
 .total {
@@ -57,42 +57,42 @@ body {
     outline-offset: 1rem;
 }
 
-.rank-screen{
-    display:flex;
-    padding-top :4rem;
+.rank-screen {
+    display: flex;
+    padding-top: 4rem;
 }
 
 
 .rank-text {
-    padding-left :8rem;
-    text-align : justify;
+    padding-left: 8rem;
+    text-align: justify;
 }
 
-.rank{
-    padding-left :4rem
+.rank {
+    padding-left: 4rem
 }
 
 .award-screen {
-    display : flex;
-    padding-top :4rem;
+    display: flex;
+    padding-top: 4rem;
 }
 
-.award-text{
-    padding-right : 8rem;
-    text-align : justify;
+.award-text {
+    padding-right: 8rem;
+    text-align: justify;
 }
 
 .award {
-    padding-top : 6rem;
-    padding-right : 4rem;
+    padding-top: 6rem;
+    padding-right: 4rem;
 }
 
 
-.body-container{
-    margin-right : 2rem;
+.body-container {
+    margin-right: 2rem;
     margin-left: 2rem;
-    margin-top : 5rem;
-    margin-bottom : 8rem;
+    margin-top: 5rem;
+    margin-bottom: 8rem;
 }
 
 .footer {
@@ -100,23 +100,23 @@ body {
     position: relative;
     background-color: rgb(51, 154, 104);
     color: white;
-    display : flex;
+    display: flex;
     justify-content: left;
-    flex-wrap:  wrap;
+    flex-wrap: wrap;
 }
 
 .footer-heading {
-    display : flex;
+    display: flex;
     flex-direction: column;
-    margin-left : 1rem;
-    margin-bottom : 1rem;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
 }
 
 .footer-heading a {
-  color: white;
-  text-decoration: none;
+    color: white;
+    text-decoration: none;
 }
 
-.footer-heading h2{
-    color:white;
+.footer-heading h2 {
+    color: white;
 }
