@@ -2,8 +2,8 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="loginStyle.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/loginStyle.css">
 
     <Title> Log in</Title>
 </head>
@@ -11,7 +11,7 @@
 <body>
     <div class="header-container">
         <div class="header">
-            <input type="Image" id="logo" alt="Home" src=image.png width=50 height=50>
+            <input type="Image" id="logo" alt="Home" src="images/logo.png" width=50 height=50>
             <script type="text/javascript">
                 document.getElementById("logo").onclick = function () {
                     location.href = "https://erikabuckley.github.io/GroupProject/index.html";
@@ -20,6 +20,9 @@
 
             <div class="header-heading header-1">
                 Carbon Challenge
+            </div>
+            <div class="header-heading header-2">
+                <a href="https://erikabuckley.github.io/GroupProject/index.html"> Exit</a>
             </div>
         </div>
     </div>
@@ -32,9 +35,14 @@
                 <input type="text"><br>
                 <label> Password </label>
                 <input type="text"><br>
-                <input type="submit" value="Sign in">
+                <input type="submit" value="Sign in" id="signin">
             </form>
         </div>
+        <script type="text/javascript">
+            document.getElementById("signin").onclick = function () {
+                location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
+            };
+        </script>
     </div>
 
 

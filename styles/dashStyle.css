@@ -1,0 +1,22 @@
+.ribon {
+    width: 100%;
+    position: fixed;
+    top: 3rem;
+    background-color: rgb(168, 202, 186);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.ribon-heading {
+    display: flex;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ribon-heading a {
+    color: white;
+    text-decoration: none;
+}
