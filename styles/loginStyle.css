@@ -1,20 +1,48 @@
 body {
     background-color: rgb(140, 240, 165);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;   
 }
 
-.login-container {
+.ls-container {
     margin-top: 10rem;
+    margin-left:30rem;
+    padding-bottom : 5.8rem;
 }
 
-.login-form {
+.ls-form {
     width: max-content;
     height: max-content;
     background-color: white;
     border-radius: 8px;
     color: black;
     text-align: center;
+    padding:2rem;
+}
+
+.login {
+        gap:5px;
+        display: flex;
+        flex-direction: column;
+
+}
+
+#signin {
+    padding:1rem;
+    background-color: rgb(140, 240, 165);
+    color: white;
+    font-size: medium;
+    font-weight: bold;
+    border: 0;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+#signin:hover{
+    background-color: rgb(166, 208, 166);
+}
+
+p a{
+    text-decoration: none;
+    color:rgb(140, 240, 165);
 }

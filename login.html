@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/loginStyle.css">
+    <script type="text/javascript" src="validation.js" defer></script> <!--defer is improtnat idk why-->
 
     <Title> Log in</Title>
 </head>
@@ -27,22 +28,16 @@
         </div>
     </div>
 
-    <div class="login-container">
-        <div class="login-form">
-            Login:
-            <form class="login">
-                <label> Email </label>
-                <input type="text"><br>
-                <label> Password </label>
-                <input type="text"><br>
+    <div class="ls-container">
+        <div class="ls-form">
+            <h2>Login</h2>
+            <form class="login" id="form">
+                <input required type="text" name="email" id="email-input" placeholder="Email"><br>
+                <input required type="text" name="password" id="password-input" placeholder="Password"><br>
                 <input type="submit" value="Sign in" id="signin">
             </form>
+            <p>Don't have an account? <a href="https://erikabuckley.github.io/GroupProject/signUp.html">Sign up</a></p>
         </div>
-        <script type="text/javascript">
-            document.getElementById("signin").onclick = function () {
-                location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
-            };
-        </script>
     </div>
     
     <div class="footer-container">
