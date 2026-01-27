@@ -48,6 +48,35 @@
     <img src="images/image.png" style="padding-top:8rem">
     <img src="images/line.png">
 
+    <input type="button" id="upload" value="Submit action"> 
+
+    <div id="upload-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Upload submission: </h2>
+            <form class="form" id="evidanceform" method="post">
+                <label>What catagory is your sumission?</label>
+                <select required name="Catagory" id="catagory">
+                    <option value="food">Food</option>
+                    <option value="travel">Travel</option>
+                    <option value="waste">Waste</option>
+                </select><br>
+                <label>Does your submision meet a challenge?</label>
+                <select name="Challenge" id="challenge">
+                    <option value="food">Food</option>
+                    <option value="travel">Travel</option>
+                    <option value="waste">Waste</option>
+                </select><br>
+                <label>Please upload evidence for the sumission if required</label><br>
+                <input type="file" name="upload" id="uplaod-input" placeholder="Evidance"><br>
+                <input type="submit" value="Confirm" name="confirm" id="confirm">
+            </form>
+        </div>
+    </div>
+
+    </div>
+
+
    <div class="footer-container">
         <div class="footer">
             <div class="footer-heading footer-1">
