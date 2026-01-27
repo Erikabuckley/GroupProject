@@ -2,15 +2,16 @@ const form = document.getElementById('form')
 
 form.addEventListener('signin', (e) => {
     e.preventDefault(); // stop page reload
-    window.location.href="https://erikabuckley.github.io/GroupProject/dashboard.html";
+    if (action === 'signin') {
+        window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
+     } else if (action === 'signup') {
+        window.location.href = "https://erikabuckley.github.io/GroupProject/login.html";
+    }
 });
 
-form.addEventListener('signup', (e) => {
+form.addEventListener('submit', (e) => {
     e.preventDefault(); // stop page reload
-    window.location.href="https://erikabuckley.github.io/GroupProject/login.html";
-});
-
-form.addEventListener('confirm', (e) => {
-    e.preventDefault(); // stop page reload
-    window.location.href="https://erikabuckley.github.io/GroupProject/dashboard.html";
+    if (action === 'confirm') {
+        window.location.href="https://erikabuckley.github.io/GroupProject/dashboard.html";
+    }
 });
