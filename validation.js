@@ -1,6 +1,6 @@
 const form = document.getElementById('form')
 
-form.addEventListener('signin', (e) => {
+form.addEventListener('submit', (e) => {
     e.preventDefault(); // stop page reload
     if (action === 'signin') {
         window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
