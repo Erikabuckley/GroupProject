@@ -150,7 +150,6 @@ body {
     text-align: center;
     padding:2rem;
     transform: translate(-50%, -50%);
-
 }
 
 .close {
@@ -160,8 +159,23 @@ body {
   font-weight: bold;
 }
 
-.modal-content {
+#evidanceform {
     gap:5px;
     display: flex;
     flex-direction: column;
+}
+
+#upload {
+    padding:1rem;
+    background-color: rgb(140, 240, 165);
+    color: white;
+    font-size: medium;
+    font-weight: bold;
+    border: 0;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+#upload:hover{
+    background-color: rgb(166, 208, 166);
 }
