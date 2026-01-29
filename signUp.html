@@ -4,20 +4,16 @@
 <head>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/loginStyle.css">
-    <script type="text/javascript" src="validation.js" defer></script> <!--defer is improtnat idk why-->
+    <script type="text/javascript" src="validation.js" defer></script>
+    <script type="text/javascript" src="util.js" defer></script>
 
-    <Title> Log in</Title>
+    <Title> Sign up</Title>
 </head>
 
 <body>
     <div class="header-container">
         <div class="header">
-            <input type="Image" id="logo" alt="Home" src="images/logo.png" width=75 height=75>
-            <script type="text/javascript">
-                document.getElementById("logo").onclick = function () {
-                    location.href = "https://erikabuckley.github.io/GroupProject/index.html";
-                };
-            </script>
+            <input type="Image" id="logo" alt="Home" src="images/logo.png">
 
             <div class="header-heading header-1">
                 Carbon Challenge
@@ -34,8 +30,16 @@
             <form class="login" id="form">
                 <input required type="text" name="firstname" id="firstname-input" placeholder="First name"><br>
                 <input required type="text" name="email" id="email-input" placeholder="Email"><br>
-                <input required type="text" name="password" id="password-input" placeholder="Password"><br>
-                <input type="submit" value="Sign in" id="signin">
+                <input required type="password" name="password" id="password-input" placeholder="Password"><br>
+                <div class="policy-tick TandC">
+                    <input required type="checkbox" id="tandc" name="tandc">
+                    <label for="tandc"> I have read the <a href="https://erikabuckley.github.io/GroupProject/terms.html">terms and conditions</a></label>
+                </div>
+                <div class="policy-tick priv">
+                    <input required type="checkbox" id="priv" name="priv">
+                    <label for="tandc"> I have read the <a href="https://erikabuckley.github.io/GroupProject/privacyPolicy.html">privacy policy</a></label>
+                </div>
+                <input type="submit" value="Sign up" name="signIn" id="signup" class="signinbutton">
             </form>
             <p>Already have an account? <a href="https://erikabuckley.github.io/GroupProject/login.html">Log in</a></p>
         </div>
@@ -45,18 +49,22 @@
         <div class="footer">
             <div class="footer-heading footer-1">
                 <h2>About Us</h2>
-                <a href="https://erikabuckley.github.io/GroupProject/privacyPolicy.html">Privacy Policy</a>
-                <a href="https://erikabuckley.github.io/GroupProject/terms.html">Terms and Conditions</a>
+                <a href="https://erikabuckley.github.io/GroupProject/policies/privacyPolicy.html"> Privacy Policy</a>
+                <a href="https://erikabuckley.github.io/GroupProject/policies/terms.html">Terms and Conditions</a>
+                <a href="https://erikabuckley.github.io/GroupProject/policies/accessability.html">Accessability Statement</a>
+                <a href="https://erikabuckley.github.io/GroupProject/policies/cookies.html">Cookie Statement</a>
+
             </div>
             <div class="footer-heading footer-2">
                 <h2>Contact Us</h2>
-                <a href="#">Email</a>
-                <a href="#">Phone</a>
+                <a href="mailto:pressoffice@exeter.ac.uk" target="_blank" rel="noopener">Email</a>
+                <a href="tel: 01326 370400">Phone</a>
             </div>
             <div class="footer-heading footer-3">
                 <h2>Social media</h2>
-                <a href="#">Facebook</a>
-                <a href="#">LinkedIn</a>
+                <a href="https://www.facebook.com/exeteruni/">Facebook</a>
+                <a href="https://www.linkedin.com/school/university-of-exeter/posts/">LinkedIn</a>
+                <a href="https://www.instagram.com/uniofexeter/">Instagram</a>
             </div>
         </div>
     </div>

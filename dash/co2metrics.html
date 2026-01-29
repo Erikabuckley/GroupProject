@@ -2,11 +2,9 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="styles/dashStyle.css">
-    <script type="text/javascript" src="util.js" defer></script>
-        <script type="text/javascript" src="validation.js" defer></script>
-
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/dashStyle.css">
+    <script type="text/javascript" src="util.js" defer></script> <!--defer is improtnat idk why-->
 
     <title>Dashboard</title>
 </head>
@@ -14,7 +12,7 @@
 <body>
     <div class="header-container">
         <div class="header">
-            <input type="Image" id="logo" alt="Home" src="images/logo.png">
+            <input type="Image" id="logo" alt="Home" src="../images/logo.png">
 
             <div class="header-heading header-1">
                 Carbon Challenge
@@ -47,37 +45,7 @@
         </div>
     </div>
 
-    <div style="padding:10rem">
-        <h1>Submit an action here:</h1>
-        
-        <input type="button" id="upload" value="Submit action"> 
-
-        <div id="upload-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Upload submission: </h2>
-                <form class="form" id="evidanceform">
-                    <label>What catagory is your submission?</label>
-                    <select required name="Catagory" id="catagory">
-                        <option value="food">Food</option>
-                        <option value="travel">Travel</option>
-                        <option value="waste">Waste</option>
-                    </select><br>
-                    <label>Is your submission for a challenge?</label>
-                    <select name="Challenge" id="challenge">
-                        <option value="food">Food</option>
-                        <option value="travel">Travel</option>
-                        <option value="waste">Waste</option>
-                    </select><br>
-                    <label>Please upload evidence for the sumission if required:</label><br>
-                    <input type="file" name="upload" id="uplaod-input" placeholder="Evidance"><br>
-                    <input type="submit" value="Confirm" name="confirm" id="confirm">
-                </form>
-            </div>
-        </div>
-        <h1>Join a group here:</h1>
-    </div>
-
+    <!--overall co2 saved by catagory-->
    <div class="footer-container">
         <div class="footer">
             <div class="footer-heading footer-1">
