@@ -1,22 +1,22 @@
 const form = document.getElementById('form')
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', async (e) => { //wait till form has been submitted
     e.preventDefault(); // stop page reload
     const action = e.submitter.value;
-    if (action === 'Sign in') {
-        const email = document.getElementById("email-input").value;
+    if (action === 'Sign in') { // check if login
+        const email = document.getElementById("email-input").value; //get info and store in constants
         const password = document.getElementById("password-input").value;
-        await fetch("https://groupproject-e980.onrender.com/login",
+        await fetch("https://groupproject-e980.onrender.com/login", // send data to backend
             {
-                method: "POST",
+                method: "POST", //sending data to the server
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type" : "application/json" //tells server how data is formatted
                 },
-                body : JSON.stringify({email, password}   
+                body : JSON.stringify({email, password} //turn to json
                 )
             }
         );
-        window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
+        window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";//redirect
         } 
     else if (action === 'Sign up') {
         const email = document.getElementById("email-input").value;
