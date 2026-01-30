@@ -1,8 +1,11 @@
 {
-  "name": "groupProject",
+  "name": "team-project",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }
