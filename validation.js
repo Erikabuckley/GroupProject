@@ -10,7 +10,7 @@ form.addEventListener('submit', async (e) => {
             {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/x-www-form-urlencoded"
+                    "Content-Type" : "application/json"
                 },
                 body : JSON.stringify({email, password}   
                 )
@@ -22,13 +22,15 @@ form.addEventListener('submit', async (e) => {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             const name = document.getElementById("name").value;
+            const priv = document.getElementById("priv").value;
+            const tandc = document.getElementById("tandc").value;
                 await fetch("https://groupproject-e980.onrender.com/signUp",
             {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/x-www-form-urlencoded"
+                    "Content-Type" : "application/json"
                 },
-                body : JSON.stringify({email, password,name}   
+                body : JSON.stringify({email, password,name,priv,tandc}   
                 )
             }
         );
