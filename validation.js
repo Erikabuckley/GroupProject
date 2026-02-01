@@ -21,7 +21,7 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     else if (action === 'Sign up') {
         const email = document.getElementById("email-input").value;
         const password = document.getElementById("password-input").value;
-        const name = document.getElementById("name-input").value;
+        const name = document.getElementById("firstname-input").value;
         const priv = document.getElementById("priv").value;
         const tandc = document.getElementById("tandc").value;
         await fetch("https://groupproject-e980.onrender.com/signUp",
@@ -36,6 +36,20 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
         );
         window.location.href = "https://erikabuckley.github.io/GroupProject/login.html";
     }  else if (action === 'Confirm') {
+
+        const catagory = document.getElementById("catagory-input").value;
+        const challenge = document.getElementById("challenge-input").value;
+        const upload = document.getElementById("upload-input").value;
+        await fetch("https://groupproject-e980.onrender.com/dashboard.html",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({catagory, challenge,upload}   
+                )
+            }
+        );
         window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
     }
 });

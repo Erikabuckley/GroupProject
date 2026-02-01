@@ -23,9 +23,15 @@ app.post('/signUp', function (req, res) {
     res.end();//says that its stopping sending data
 });
 
+//TODO
+//verify p and u in db
+// add to db check if already exists
+//POST FROM EvIDENCE UPLOAD
+
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
-  res.send('Hello World from Express!');
+  res.send('Hello World');
 });
 
 // Start the server

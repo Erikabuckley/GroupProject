@@ -7,7 +7,6 @@
     <script type="text/javascript" src="util.js" defer></script>
         <script type="text/javascript" src="validation.js" defer></script>
 
-
     <title>Dashboard</title>
 </head>
 
@@ -20,7 +19,7 @@
                 Carbon Challenge
             </div>
             <div class="header-heading header-1">
-                <a href="https://erikabuckley.github.io/GroupProject/index.html">Sign out</a>
+                <a href="index.html">Sign out</a>
             </div>
 
         </div>
@@ -50,7 +49,7 @@
     <div style="padding:10rem">
         <h1>Submit an action here:</h1>
         
-        <input type="button" id="upload" value="Submit action"> 
+        <input type="button" id="upload" value="Submit action" class="in-button"> 
 
         <div id="upload-modal" class="modal">
             <div class="modal-content">
@@ -58,20 +57,21 @@
                 <h2>Upload submission: </h2>
                 <form class="form" id="evidanceform">
                     <label>What catagory is your submission?</label>
-                    <select required name="Catagory" id="catagory">
+                    <select required name="Catagory" id="catagory-input">
                         <option value="food">Food</option>
                         <option value="travel">Travel</option>
                         <option value="waste">Waste</option>
                     </select><br>
                     <label>Is your submission for a challenge?</label>
-                    <select name="Challenge" id="challenge">
+                    <select required name="Challenge" id="challenge-input">
                         <option value="food">Food</option>
                         <option value="travel">Travel</option>
                         <option value="waste">Waste</option>
+                        <option value="none">None</option>
                     </select><br>
                     <label>Please upload evidence for the sumission if required:</label><br>
-                    <input type="file" name="upload" id="uplaod-input" placeholder="Evidance"><br>
-                    <input type="submit" value="Confirm" name="confirm" id="confirm">
+                    <input type="file" name="upload" id="upload-input" placeholder="Evidance"><br>
+                    <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
                 </form>
             </div>
         </div>
