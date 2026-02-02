@@ -3,15 +3,19 @@
   --second: rgb(140, 240, 165);
 }
 h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
     color: var(--main);
 }
 
 h2 {
+    font-size: 1.6rem;
+    font-weight: 500;
     color: var(--second);
 }
 
 body {
-    margin :0;
+    margin: 0;
     background-color: white;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
@@ -34,12 +38,26 @@ body {
     margin-right: 1rem;
     margin-left: 1rem;
     padding-top: 2rem;
+    padding: 30px 40px;
 }
 
 .header-heading a {
     color: white;
     text-decoration: none;
     padding-left: 1rem;
+    display: inline-block;
+    padding: 10px 22px;
+    margin-left: 12px;
+
+    background: #4CAF50;
+    color: white;
+
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
 }
 
 .header-heading h1 {
@@ -61,6 +79,7 @@ body {
     outline: 2px groove var(--second);
     outline-width: thick;
     outline-offset: 1rem;
+    min-width: 250px;
 }
 
 .rank-screen {
@@ -107,13 +126,16 @@ body {
     background-color: var(--main);
     color: white;
     display: flex;
-    justify-content: left;
+    justify-content: space-evenly;
     flex-wrap: wrap;
+    text-align: center;
+    align-items: center;
 }
 
 .footer-heading {
     display: flex;
     flex-direction: column;
+    align-items: center;
     margin-left: 1rem;
     margin-bottom: 1rem;
 }
@@ -182,4 +204,20 @@ body {
 
 .in-button:hover{
     background-color: var(--main);
+}
+
+.page-section:first-child {
+    background-image: url('../images/logo.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.page-section:nth-child(even) {
+    background-color: #F4F9F4;
+    padding: 3rem 2rem;
+}
+
+.page-section:nth-child(odd) {
+    background-color: white;
+    padding: 3rem 2rem;
 }
