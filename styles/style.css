@@ -207,7 +207,7 @@ body {
 }
 
 .page-section:first-child {
-    background-image: url('../images/logo.png');
+    background-image: url('../images/forest.png');
     background-size: cover;
     background-position: center;
 }
@@ -220,4 +220,43 @@ body {
 .page-section:nth-child(odd) {
     background-color: white;
     padding: 3rem 2rem;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    grid-template-columns: repeat(autofit, minmax(220px, 1fr));
+}
+
+.info-block {
+    padding-top: 20px;
+    padding-right: 20px;
+}
+
+.icon-part {
+    width: 80px;
+    height: 80px;
+    padding: 20px;
+    border-bottom: 2px solid rgb(51, 154, 104);
+}
+
+#climate {
+    width: 80px;
+    height: 80px;
+}
+
+#impact {
+    width: 80px;
+    height: 80px;
+}
+
+#group {
+    width: 80px;
+    height: 80px;
+}
+
+#step {
+    width: 80px;
+    height: 80px;
 }
