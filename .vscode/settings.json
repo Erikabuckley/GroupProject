@@ -5,7 +5,7 @@
             "previewLimit": 50,
             "driver": "SQLite",
             "name": "TeamProject",
-            "database": "carbonGame.db"
+            "database": "CarbonChallenge.db"
         }
     ],
     "sqltools.useNodeRuntime": true

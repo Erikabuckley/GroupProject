@@ -8,22 +8,6 @@ const port = 8080; //specifys the port number
 app.use(express.json());
 app.use(cors());
 
-//   origin: function (origin, callback) {
-//     const allowedOrigins = [
-//       "*"];
-
-//     // allow requests with no origin (like curl, Postman)
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       console.log("Blocked by CORS:", origin);
-//       callback(null,true);
-//     }
-//   },
-//   methods: ["GET", "POST", "PUT", "OPTIONS"],
-//   allowedHeaders: ["Content-Type"],
-// }));
-
 // get data from the login
 app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
@@ -56,7 +40,7 @@ app.post('/signUp', function (req, res) {
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
-  res.send('Hello World');
+  res.send('This is the bckend, if you can see this then it is running');
 });
 
 // Start the server
