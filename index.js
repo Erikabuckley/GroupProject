@@ -1,18 +1,45 @@
 const express = require('express'); //imports express ie frmaework we are using
 const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
+const { OPEN_READWRITE } = require('sqlite3');
 const app = express();
+const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
 
 app.use(express.json());
-app.use(cors({ 
-  origin: "https://erikabuckley.github.io",//allows our website
-  methods: ["GET", "POST","PUT"], // allows specific methods
- }));
+app.use(cors());
+
+//   origin: function (origin, callback) {
+//     const allowedOrigins = [
+//       "*"];
+
+//     // allow requests with no origin (like curl, Postman)
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.log("Blocked by CORS:", origin);
+//       callback(null,true);
+//     }
+//   },
+//   methods: ["GET", "POST", "PUT", "OPTIONS"],
+//   allowedHeaders: ["Content-Type"],
+// }));
 
 // get data from the login
 app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
-    console.log(req.body.name);
+    console.log(req.body.email);
+    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
+    if (e) {
+      console.log(e.message);
+    }
+  });
+
+    db.run("INSERT INTO Users (email, password, group_id, display_name, role) VALUES (?,?,1,'hello','fdhfdh')", [req.body.email,req.body.password],e =>{
+      if (e){
+        console.log(e.message);
+      }
+    });
+
     res.end();//says that its stopping sending data
 });
 
