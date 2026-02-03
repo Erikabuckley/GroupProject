@@ -1,6 +1,8 @@
 const express = require('express'); //imports express ie frmaework we are using
 const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
+const { OPEN_READWRITE } = require('sqlite3');
 const app = express();
+const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
 
 app.use(express.json());
@@ -13,6 +15,18 @@ app.use(cors({
 app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
     console.log(req.body.name);
+    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
+    if (e) {
+      console.log(e.message);
+    }
+  });
+
+    db.run("INSERT INTO Users (username,password) VALUES (erika,hi)",e =>{
+      if (e){
+        console.log(e.message);
+      }
+    });
+
     res.end();//says that its stopping sending data
 });
 
