@@ -6,10 +6,23 @@ const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specifys the port number
 
 app.use(express.json());
-app.use(cors({ 
-  origin: "https://erikabuckley.github.io",//allows our website
-  methods: ["GET", "POST","PUT"], // allows specific methods
- }));
+app.use(cors());
+
+//   origin: function (origin, callback) {
+//     const allowedOrigins = [
+//       "*"];
+
+//     // allow requests with no origin (like curl, Postman)
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.log("Blocked by CORS:", origin);
+//       callback(null,true);
+//     }
+//   },
+//   methods: ["GET", "POST", "PUT", "OPTIONS"],
+//   allowedHeaders: ["Content-Type"],
+// }));
 
 // get data from the login
 app.post('/login', function (req, res) {
@@ -21,7 +34,7 @@ app.post('/login', function (req, res) {
     }
   });
 
-    db.run("INSERT INTO Users (username,password) VALUES (erika,hi)",e =>{
+    db.run("INSERT INTO Users (username,password) VALUES ('erika','hi')",e =>{
       if (e){
         console.log(e.message);
       }
