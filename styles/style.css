@@ -64,6 +64,12 @@ body {
     color: white;
 }
 
+.header-heading.header-1 {
+    font-size: 2rem;
+    text-align: center;
+    color: white;
+}
+
 .total-screen {
     display: flex;
     padding-top: 4rem;
