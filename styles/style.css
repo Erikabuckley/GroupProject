@@ -82,9 +82,9 @@ body {
 }
 
 .total {
-    outline: 2px groove var(--second);
-    outline-width: thick;
-    outline-offset: 1rem;
+    border: 2px groove var(--second);
+    border-width: thick;
+    padding: 1rem;
     min-width: 250px;
 }
 
