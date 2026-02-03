@@ -6,31 +6,34 @@ CREATE TABLE IF NOT EXISTS Groups (
 
 CREATE TABLE IF NOT EXISTS Users (    
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    group_id INTEGER NOT NULL,
+    group_id INTEGER,
     display_name TEXT NOT NULL,
     role TEXT NOT NULL,
-    username TEXT NOT NULL,
-    password TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Participant (
+    user_id INTEGER PRIMARY KEY,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS ParticipantGroup (
+    user_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, group_id),
+    FOREIGN KEY (user_id) REFERENCES Participant(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
 );
 
-CREATE TABLE IF NOT EXISTS ActionType (
-    action_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category TEXT NOT NULL,
-    name TEXT NOT NULL,
-    unit TEXT NOT NULL,
-    default_factor_id INTEGER NOT NULL
+CREATE TABLE IF NOT EXISTS Moderator (
+    user_id INTEGER PRIMARY KEY,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS ActionLog (
-    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    action_type_id INTEGER NOT NULL,
-    quantity INTEGER NOT NULL,
-    date TEXT NOT NULL,
-    evidence_required TEXT NOT NULL,
-    calculated_co2e INTEGER NOT NULL,
-    confidence TEXT NOT NULL,
-    FOREIGN KEY (action_type_id) REFERENCES ActionType(action_type_id)
+CREATE TABLE IF NOT EXISTS Maintainer (
+    user_id INTEGER PRIMARY KEY,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS ConversionFactor (
@@ -41,6 +44,28 @@ CREATE TABLE IF NOT EXISTS ConversionFactor (
     value INTEGER NOT NULL,
     notes TEXT NOT NULL,
     uncertainty INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS ActionType (
+    action_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category TEXT NOT NULL,
+    name TEXT NOT NULL,
+    unit TEXT NOT NULL,
+    default_factor_id INTEGER NOT NULL,
+    FOREIGN KEY (default_factor_id) REFERENCES ConversionFactor(factor_id)
+);
+
+CREATE TABLE IF NOT EXISTS ActionLog (
+    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    action_type_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+    date TEXT NOT NULL,
+    evidence_required TEXT NOT NULL,
+    calculated_co2e INTEGER NOT NULL,
+    confidence TEXT NOT NULL,
+    FOREIGN KEY (action_type_id) REFERENCES ActionType(action_type_id),
+    FOREIGN KEY (user_id) REFERENCES Participant(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS Challenge (
