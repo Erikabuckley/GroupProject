@@ -27,14 +27,14 @@ app.use(cors());
 // get data from the login
 app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
-    console.log(req.body.name);
+    console.log(req.body.email);
     const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
     if (e) {
       console.log(e.message);
     }
   });
 
-    db.run("INSERT INTO Users (username,password) VALUES ('erika','hi')",e =>{
+    db.run("INSERT INTO Users (email, password, group_id, display_name, role) VALUES (?,?,1,'hello','fdhfdh')", [req.body.email,req.body.password],e =>{
       if (e){
         console.log(e.message);
       }
