@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS Groups (
 
 CREATE TABLE IF NOT EXISTS Users (    
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    group_id INTEGER,
     display_name TEXT NOT NULL,
     role TEXT NOT NULL,
     email TEXT NOT NULL,

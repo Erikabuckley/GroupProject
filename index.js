@@ -28,33 +28,31 @@ app.use(cors());
 app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
     console.log(req.body.email);
-    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
-    if (e) {
-      console.log(e.message);
-    }
-  });
-
-    db.run("INSERT INTO Users (email, password, group_id, display_name, role) VALUES (?,?,1,'hello','fdhfdh')", [req.body.email,req.body.password],e =>{
-      if (e){
-        console.log(e.message);
-      }
-    });
-
+    //check if user exists
+      // return doesnt
+    // chekc password matches
+      //return doesnt
+    //return authorised
     res.end();//says that its stopping sending data
 });
 
 // get data from the sign up
 app.post('/signUp', function (req, res) {
     console.log("Sign up request received"); //log that it has been done sucessfully
-    console.log(req.body.name);
+    console.log(req.body.email);
+    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
+      if (e) {
+        console.log(e.message);
+      }
+    });
+    //check if username already in db
+    db.run("INSERT INTO Users (display_name, role, email, password) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,req.body.password],e =>{
+      if (e){
+        console.log(e.message);
+      }
+    });
     res.end();//says that its stopping sending data
 });
-
-//TODO
-//verify p and u in db
-// add to db check if already exists
-//POST FROM EvIDENCE UPLOAD
-
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {

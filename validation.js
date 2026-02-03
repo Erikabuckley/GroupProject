@@ -25,17 +25,22 @@ if (form){
             const name = document.getElementById("firstname-input").value;
             const priv = document.getElementById("priv").value;
             const tandc = document.getElementById("tandc").value;
-            await fetch("http://127.0.0.1:8080/signUp",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type" : "application/json"
-                    },
-                    body : JSON.stringify({email, password,name,priv,tandc}   
-                    )
-                }
-            );
+
+            if (priv & tandc){
+                await fetch("http://127.0.0.1:8080/signUp",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type" : "application/json"
+                        },
+                        body : JSON.stringify({email, password,name,priv,tandc}   
+                        )
+                    }
+                
+                );
+            }
             window.location.href = "/login.html";
+
         }  else if (action === 'Confirm') {
 
             const catagory = document.getElementById("catagory-input").value;
