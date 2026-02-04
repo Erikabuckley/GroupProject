@@ -47,3 +47,17 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+
+
+//TODO
+//login chekc db - hash
+//signup check if exists
+//update user account
+// log when user logs out
+
+//needed for hasinng
+//const crypto = require('crypto');
+//const hash = crypto.createHash('sha256');
+//            hash.update(plain_password);
+ //           const password = hash.digest('hex');

@@ -4,7 +4,7 @@ if (form){
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const action = e.submitter.value;
-        if (action === 'Sign in') { // check if login
+        if (action === 'Log in') { // check if login
             const email = document.getElementById("email-input").value; //get info and store in constants
             const password = document.getElementById("password-input").value;
             const res = await fetch("http://127.0.0.1:8080/login", // send data to backend
@@ -18,39 +18,41 @@ if (form){
                 }
             );
 
-            if(res.status == 401) {
+            if(res.status === 401) {
                 document.getElementById('error').style.zIndex = 1;   
             }
             else{
                 localStorage.setItem('auth','1');
-                window.location.href = "/dashboard.html";//redirect
+                localStorage.setItem('name',email);
+                window.location.href = "dash/dashboard.html";//redirect
             }
         } 
         else if (action === 'Sign up') {
             const email = document.getElementById("email-input").value;
             const password = document.getElementById("password-input").value;
             const name = document.getElementById("firstname-input").value;
-            const priv = document.getElementById("priv").value;
-            const tandc = document.getElementById("tandc").value;
+            const priv = document.getElementById("priv").checked;
+            const tandc = document.getElementById("tandc").checked;
 
-            if (priv & tandc){
-                await fetch("http://127.0.0.1:8080/signUp",
+            if (priv && tandc){
+                const res = await fetch("http://127.0.0.1:8080/signUp",
                     {
                         method: "POST",
                         headers: {
                             "Content-Type" : "application/json"
                         },
-                        body : JSON.stringify({email, password,name,priv,tandc}   
+                        body : JSON.stringify({email, password,name}   
                         )
                     }
                 
                 );
-            }
-            if(res.status == 401) {
-                document.getElementById('error').style.zIndex = 1;   
-            }
-            else{
-                window.location.href = "/login.html";//redirect
+            
+                if(res.status === 401) {
+                    document.getElementById('error').style.zIndex = 1;   
+                }
+                else{
+                    window.location.href = "/login.html";//redirect
+                }
             }
         };
     });
