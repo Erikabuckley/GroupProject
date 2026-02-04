@@ -13,9 +13,9 @@ app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
     console.log(req.body.email);
     //check if user exists
-      // return doesnt
+      // return doesnt  res.status(200);
     // chekc password matches
-      //return doesnt
+      //return doesnt     res.status(401);
     //return authorised
     res.end();//says that its stopping sending data
 });
@@ -40,7 +40,7 @@ app.post('/signUp', function (req, res) {
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
-  res.send('This is the bckend, if you can see this then it is running');
+  res.send('If you can see this, then the back end is running :)');
 });
 
 // Start the server

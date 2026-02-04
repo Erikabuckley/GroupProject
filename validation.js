@@ -7,7 +7,7 @@ if (form){
         if (action === 'Sign in') { // check if login
             const email = document.getElementById("email-input").value; //get info and store in constants
             const password = document.getElementById("password-input").value;
-            await fetch("http://127.0.0.1:8080/login", // send data to backend
+            const res = await fetch("http://127.0.0.1:8080/login", // send data to backend
                 {
                     method: "POST", //sending data to the server
                     headers: {
@@ -17,8 +17,15 @@ if (form){
                     )
                 }
             );
-            window.location.href = "/dashboard.html";//redirect
-            } 
+
+            if(res.status == 401) {
+                document.getElementById('error').style.zIndex = 1;   
+            }
+            else{
+                localStorage.setItem('auth','1');
+                window.location.href = "/dashboard.html";//redirect
+            }
+        } 
         else if (action === 'Sign up') {
             const email = document.getElementById("email-input").value;
             const password = document.getElementById("password-input").value;
@@ -39,24 +46,12 @@ if (form){
                 
                 );
             }
-            window.location.href = "/login.html";
-
-        }  else if (action === 'Confirm') {
-
-            const catagory = document.getElementById("catagory-input").value;
-            const challenge = document.getElementById("challenge-input").value;
-            const upload = document.getElementById("upload-input").value;
-            await fetch("http://127.0.0.1:8080/dashboard",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type" : "application/json"
-                    },
-                    body : JSON.stringify({catagory, challenge,upload}   
-                    )
-                }
-            );
-            window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
-        }
+            if(res.status == 401) {
+                document.getElementById('error').style.zIndex = 1;   
+            }
+            else{
+                window.location.href = "/login.html";//redirect
+            }
+        };
     });
 };

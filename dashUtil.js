@@ -3,6 +3,16 @@ document.getElementById("logo").onclick = function () {
 
 const form = document.getElementById('form')
 
+const auth = localStorage.getItem('auth'); //prevents unauthorised acces to dash
+if (auth != '1'){
+    window.location.href = "/index.html";
+};
+
+out = document.getElementById('signOut') //logs them out
+out.addEventListener('click',  (e) => {
+    localStorage.removeItem('auth');
+});
+
 form.addEventListener('submit', async (e) => { //wait till form has been submitted
     e.preventDefault(); // stop page reload
     const action = e.submitter.value;
@@ -23,4 +33,8 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
         window.location.href = "https://erikabuckley.github.io/GroupProject/dashboard.html";
     }
 });
-
+//needed for hasinng
+//const crypto = require('crypto');
+//const hash = crypto.createHash('sha256');
+//            hash.update(plain_password);
+ //           const password = hash.digest('hex');
