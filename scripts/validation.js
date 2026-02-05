@@ -49,7 +49,7 @@ if (form){
                 );
             
                 if(res.status === 401) {
-                    document.getElementById('error').style.visibility='visible';   
+                    document.getElementById('error-message').style.visibility='visible';   
                 }
                 else{
                     window.location.href = "/login.html";//redirect

@@ -46,8 +46,3 @@ p a{
     display:flex;
     flex-direction: row;
 }
-
-#error{
-    color:red;
-    z-index: -1;
-}

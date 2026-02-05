@@ -46,6 +46,14 @@ app.post('/addAction', function (req, res) {
   res.end();
 });
 
+// upgrade user
+app.post('/upgrade', function (req, res) {
+  console.log("Upgrade request received"); //log that it has been done sucessfully
+  //return 401 if not allowed
+  res.status(200);
+  res.end();
+});
+
 // update total
 app.get('/updateTotal', function (req, res) {
   console.log("Total update"); //log that it has been done sucessfully

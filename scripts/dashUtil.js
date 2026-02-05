@@ -1,13 +1,10 @@
 if (performance.getEntriesByType('navigation')[0]?.type === 'reload'){
-    updateTotal();
     updateChallengeList();
     updateMissionList();
-    updateGroupList();
-
 }
     
 document.getElementById("logo").onclick = function () {
-    location.href = "dashboard.html";
+    location.href = "../dashboard.html";
     location.reload();
 };
 
@@ -81,19 +78,7 @@ if (joinForm){
         location.reload();
     });
 };
-async function updateTotal(){
-    total = document.getElementById("total-carbon");
-    const res = await fetch ("http://127.0.0.1:8080/updateTotal",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type" : "application/json"
-            }
-        }
-    );
-    const data = await res.json();
-    document.getElementById("total-carbon").textContent = data.total;
-}
+
 
 async function updateMissionList(){
     const res = await fetch ("http://127.0.0.1:8080/updateMissionList",
