@@ -106,3 +106,5 @@ app.listen(port, () => {
 //const hash = crypto.createHash('sha256');
 //            hash.update(plain_password);
  //           const password = hash.digest('hex');
+
+ //still need to figure out how to pass name or session cookie for update and join group so do these last :)
