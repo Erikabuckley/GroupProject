@@ -25,72 +25,69 @@
         </div>
 
         <div class="ribon participant">
-                <div class="ribon-heading header-1">
-                    <a href="https://erikabuckley.github.io/GroupProject/dash/dashboard.html"> Dashboard</a>
-                </div>
-            <div class="ribon-heading header-2">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/user/leaderboard.html"> Group leaderboard</a>
+            <div class="ribon-heading">
+                <a href="dash/dashboard.html">Dashboard</a>
             </div>
-            <div class="ribon-heading header-1">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/user/co2metrics.html"> CO2 catagories</a>
+            <div class="ribon-heading">
+                <a href="user/challenges.html">Challenges</a>
             </div>
-            <div class="ribon-heading header-2">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/user/individualmetrics.html"> Individual metrics</a>
+            <div class="ribon-heading">
+                <a href="user/leaderboard.html">Group leaderboard</a>
             </div>
-            <div class="ribon-heading header-1">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/user/groupmetrics.html"> Group metrics</a>
+            <div class="ribon-heading">
+                <a href="user/individualmetrics.html">Individual metrics</a>
             </div>
-            <div class="ribon-heading header-2">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/settings.html"> Settings</a>
+            <div class="ribon-heading">
+                <a href="user/groupmetrics.html">Group metrics</a>
+            </div>
+            <div class="ribon-heading">
+                <a href="dash/settings.html">Settings</a>
             </div>
         </div>
 
         <div class="ribon moderator">
-            <div class="ribon-heading header-1">
-                <a href="https://erikabuckley.github.io/GroupProject/dashboard.html"> Dashboard</a>
+            <div class="ribon-heading">
+                <a href="dash/dashboard.html">Dashboard</a>
             </div>
-            <div class="ribon-heading header-2">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/moderator/analytics.html"> Analytics</a>
+            <div class="ribon-heading">
+                <a href="moderator/analytics.html">Analytics</a>
             </div>
-            <div class="ribon-heading header-1">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/moderator/challenges.html"> Challenges</a>
+            <div class="ribon-heading">
+                <a href="moderator/challenges.html">Challenges</a>
             </div>
-            <div class="ribon-heading header-2">
-                <a href="https://erikabuckley.github.io/GroupProject/dash/moderator/submissions.html"> Submissions</a>
+            <div class="ribon-heading">
+                <a href="moderator/submissions.html">Submissions</a>
             </div>
         </div>
     </div>
 
     <div style="padding:12rem">
-        <h1 style="display:inline; margin-top: 10rem;">Reduce your emissions today!   </h1>
-        
-        <input type="button" id="upload" value="Submit action" class="in-button"> 
+        <h1 style="display:inline; margin-top: 10rem;">Reduce your emissions today! </h1>
+
+        <input type="button" id="upload" value="Submit action" class="in-button">
 
         <div id="upload-modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>Upload submission: </h2>
                 <form class="form" id="evidanceForm">
-                    <label>What catagory is your submission?</label>
-                    <select required name="Catagory" id="catagory-input">
-                        <option value="food">Food</option>
-                        <option value="travel">Travel</option>
-                        <option value="waste">Waste</option>
+                    <label>What mission is your action for?</label>
+                    <select required name="Mission" id="mission-input" value="Select the mission">
+                        <option value="none" selected disabled hidden>Select an Option</option>
                     </select><br>
                     <label>Is your submission for a challenge?</label>
                     <select required name="Challenge" id="challenge-input">
-                        <option value="food">Food</option>
-                        <option value="travel">Travel</option>
-                        <option value="waste">Waste</option>
-                        <option value="none">None</option>
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                        <option value="no">No</option>
                     </select><br>
                     <label>Please upload evidence for the sumission if required:</label><br>
-                    <input type="file" name="upload" id="upload-input" placeholder="Evidance"><br>
+                    <input type="file" name="upload" id="upload-input" placeholder="Evidance"
+                        accept=".jpg, .jpeg, .png"><br>
                     <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
                 </form>
             </div>
         </div>
-        
+
         <script>
             var modal = document.getElementById("upload-modal");
             var btn = document.getElementById("upload");
@@ -99,8 +96,8 @@
             btn.onclick = function () {
                 modal.style.display = "block";
             };
-            span.onclick = function() {
-            modal.style.display = "none";
+            span.onclick = function () {
+                modal.style.display = "none";
             }
         </script>
         <h1>Join a group here:</h1>
@@ -113,10 +110,10 @@
         <div class="footer">
             <div class="footer-heading footer-1">
                 <h2>About Us</h2>
-                <a href="https://erikabuckley.github.io/GroupProject/policies/privacyPolicy.html"> Privacy Policy</a>
-                <a href="https://erikabuckley.github.io/GroupProject/policies/terms.html">Terms and Conditions</a>
-                <a href="https://erikabuckley.github.io/GroupProject/policies/accessability.html">Accessability Statement</a>
-                <a href="https://erikabuckley.github.io/GroupProject/policies/cookies.html">Cookie Statement</a>
+                <a href="../policies/privacyPolicy.html"> Privacy Policy</a>
+                <a href="../policies/terms.html">Terms and Conditions</a>
+                <a href="../policies/accessability.html">AccessabilityStatement</a>
+                <a href="../policies/cookies.html">Cookie Statement</a>
 
             </div>
             <div class="footer-heading footer-2">
@@ -133,4 +130,5 @@
         </div>
     </div>
 </body>
+
 </html>

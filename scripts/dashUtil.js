@@ -1,9 +1,13 @@
 if (performance.getEntriesByType('navigation')[0]?.type === 'reload'){
     updateTotal();
+    updateChallengeList();
+    updateMissionList();
 }
     
 document.getElementById("logo").onclick = function () {
-    location.href = "dashboard.html";};
+    location.href = "dashboard.html";
+    location.reload();
+};
 
 
 const auth = localStorage.getItem('auth'); //prevents unauthorised acces to dash
@@ -51,7 +55,7 @@ if (form){
                 )
             }            
         );
-        document.getElementById("upload-modal").style.display = "none";
+        location.href = "dashboard.html";;
         location.reload();
     });
 };
@@ -70,4 +74,37 @@ async function updateTotal(){
     document.getElementById("total-carbon").textContent = data.total;
 }
 
-
+async function updateMissionList(){
+    const res = await fetch ("http://127.0.0.1:8080/updateMissionList",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        }
+    );
+    const data = await res.json();
+    var vals = data.missions;
+    var selectElement = document.getElementById('mission-input');
+    for (let v of vals) {
+        selectElement.appendChild(new Option(v,v));
+        
+    };
+}
+async function updateChallengeList(){
+    const res = await fetch ("http://127.0.0.1:8080/updateChallengeList",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        }
+    );
+    const data = await res.json();
+    var vals = data.challenges;
+    var selectElement = document.getElementById('challenge-input');
+    for (let v of vals) {
+        selectElement.appendChild(new Option(v,v));
+        
+    };
+};

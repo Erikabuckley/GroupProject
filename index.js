@@ -52,6 +52,18 @@ app.get('/updateTotal', function (req, res) {
   res.json({total: '200'})// replace with a db query
 });
 
+// get challenges
+app.get('/updateChallengeList', function (req, res) {
+  console.log("Challenge list update"); //log that it has been done sucessfully
+  res.json({challenges: ['one','two','three']})// replace with a db query
+});
+
+//get missions
+app.get('/updateMissionList', function (req, res) {
+  console.log("Mission list update"); //log that it has been done sucessfully
+  res.json({missions: ['one','two','three']})// replace with a db query
+});
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
   res.send('If you can see this, then the back end is running :)');
@@ -71,6 +83,8 @@ app.listen(port, () => {
 // log when user logs out
 // store dat when person submits - dashutil
 // return new total when page refreshed
+//get challenges
+//get missions
 
 //needed for hasinng
 //const crypto = require('crypto');
