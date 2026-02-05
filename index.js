@@ -17,6 +17,7 @@ app.post('/login', function (req, res) {
     // chekc password matches
       //return doesnt     res.status(401);
     //return authorised
+    // return type in type json
     res.end();//says that its stopping sending data
 });
 

@@ -22,9 +22,10 @@ if (form){
                 document.getElementById('error').style.zIndex = 1;   
             }
             else{
+                localStorage.setItem('type',res.body.type);
                 localStorage.setItem('auth','1');
                 localStorage.setItem('name',email);
-                window.location.href = "dash/dashboard.html";//redirect
+                window.location.href = "dash/dashboard.html";//redirect   
             }
         } 
         else if (action === 'Sign up') {
