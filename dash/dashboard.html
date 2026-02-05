@@ -62,13 +62,13 @@
     </div>
 
     <div style="padding:12rem">
-        <h1 style="display:inline; margin-top: 10rem;">Reduce your emissions today! </h1>
 
+        <h1 style="display:inline; margin-top: 10rem;">Reduce your emissions today! </h1><br>
         <input type="button" id="upload" value="Submit action" class="in-button">
 
         <div id="upload-modal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
+                <span class="close" id="close-submission">&times;</span>
                 <h2>Upload submission: </h2>
                 <form class="form" id="evidanceForm">
                     <label>What mission is your action for?</label>
@@ -89,18 +89,47 @@
         </div>
 
         <script>
-            var modal = document.getElementById("upload-modal");
-            var btn = document.getElementById("upload");
-            var span = document.getElementsByClassName("close")[0];
+            var s_modal = document.getElementById("upload-modal");
+            var s_btn = document.getElementById("upload");
+            var s_span = document.getElementById("close-submission");
 
-            btn.onclick = function () {
-                modal.style.display = "block";
+            s_btn.onclick = function () {
+               s_modal.style.display = "block";
             };
-            span.onclick = function () {
-                modal.style.display = "none";
+            s_span.onclick = function () {
+               s_modal.style.display = "none";
             }
         </script>
-        <h1>Join a group here:</h1>
+
+        <h1>Join a group here:</h1><br>
+        <input type="button" id="join" value="Join a group here" class="in-button">
+
+        <div id="join-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close-join">&times;</span>
+                <h2>Join a group:</h2>
+                <form class="form" id="joinForm">
+                    <label>What mission is your action for?</label>
+                    <select required name="Group" id="group-input" value="Select the group you would like ot join:">
+                        <option value="none" selected disabled hidden>Select an Option</option>
+                    </select><br>
+                    <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
+                </form>
+            </div>
+        </div>
+
+        <script>
+            var j_modal = document.getElementById("join-modal");
+            var j_btn = document.getElementById("join");
+            var j_span = document.getElementById("close-join");
+
+            j_btn.onclick = function () {
+                j_modal.style.display = "block";
+            };
+            j_span.onclick = function () {
+                j_modal.style.display = "none";
+            }
+        </script>
     </div>
     <div class="total">
         <h2>Total carbon saved</h2>

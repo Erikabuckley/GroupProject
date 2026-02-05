@@ -64,6 +64,12 @@ app.get('/updateMissionList', function (req, res) {
   res.json({missions: ['one','two','three']})// replace with a db query
 });
 
+//get groups
+app.get('/updateGroupList', function (req, res) {
+  console.log("Group list update"); //log that it has been done sucessfully
+  res.json({groups: ['one','two','three']})// replace with a db query
+});
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
   res.send('If you can see this, then the back end is running :)');
@@ -85,6 +91,7 @@ app.listen(port, () => {
 // return new total when page refreshed
 //get challenges
 //get missions
+//join group
 
 //needed for hasinng
 //const crypto = require('crypto');

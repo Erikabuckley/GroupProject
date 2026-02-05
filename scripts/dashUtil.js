@@ -2,6 +2,8 @@ if (performance.getEntriesByType('navigation')[0]?.type === 'reload'){
     updateTotal();
     updateChallengeList();
     updateMissionList();
+    updateGroupList();
+
 }
     
 document.getElementById("logo").onclick = function () {
@@ -60,6 +62,25 @@ if (form){
     });
 };
 
+const joinForm = document.getElementById('joinForm')
+if (joinForm){
+    joinForm.addEventListener('submit', async (e) => { //wait till form has been submitted
+        e.preventDefault(); // stop page reload
+        const group = document.getElementById("group-input").value;
+        await fetch("http://127.0.0.1:8080/addGroup",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({group}   
+                )
+            }            
+        );
+        location.href = "dashboard.html";;
+        location.reload();
+    });
+};
 async function updateTotal(){
     total = document.getElementById("total-carbon");
     const res = await fetch ("http://127.0.0.1:8080/updateTotal",
@@ -108,3 +129,22 @@ async function updateChallengeList(){
         
     };
 };
+
+async function updateGroupList(){
+    const res = await fetch ("http://127.0.0.1:8080/updateGroupList",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        }
+    );
+    const data = await res.json();
+    var vals = data.groups;
+    var selectElement = document.getElementById('group-input');
+    for (let v of vals) {
+        selectElement.appendChild(new Option(v,v));
+        
+    };
+};
+
