@@ -1,3 +1,7 @@
+if (performance.getEntriesByType('navigation')[0]?.type === 'reload'){
+    updateTotal();
+}
+    
 document.getElementById("logo").onclick = function () {
     location.href = "dashboard.html";};
 
@@ -30,27 +34,40 @@ if (out){
     });
 };
 
-const form = document.getElementById('form')
-
+const form = document.getElementById('evidanceForm')
 if (form){
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
-        const action = e.submitter.value;
-        if (action === 'Confirm') {
-            const catagory = document.getElementById("catagory-input").value;
-            const challenge = document.getElementById("challenge-input").value;
-            const upload = document.getElementById("upload-input").value;
-            await fetch("http://127.0.0.1:8080/addAction",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type" : "application/json"
-                    },
-                    body : JSON.stringify({catagory, challenge,upload}   
-                    )
-                }
-            );
-            window.location.href = "dashboard.html";
-        };
+        const catagory = document.getElementById("catagory-input").value;
+        const challenge = document.getElementById("challenge-input").value;
+        const upload = document.getElementById("upload-input").value;
+        await fetch("http://127.0.0.1:8080/addAction",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({catagory, challenge, upload}   
+                )
+            }            
+        );
+        document.getElementById("upload-modal").style.display = "none";
+        location.reload();
     });
+};
+
+async function updateTotal(){
+    total = document.getElementById("total-carbon");
+    const res = await fetch ("http://127.0.0.1:8080/updateTotal",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json"
+            }
+        }
+    );
+    const data = await res.json();
+    document.getElementById("total-carbon").textContent = data.total;
 }
+
+

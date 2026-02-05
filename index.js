@@ -39,6 +39,19 @@ app.post('/signUp', function (req, res) {
     res.end();//says that its stopping sending data
 });
 
+// get data from the  action
+app.post('/addAction', function (req, res) {
+  console.log("Action request received"); //log that it has been done sucessfully
+  console.log(req.body.challenge);
+  res.end();
+});
+
+// update total
+app.get('/updateTotal', function (req, res) {
+  console.log("Total update"); //log that it has been done sucessfully
+  res.json({total: '200'})// replace with a db query
+});
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
   res.send('If you can see this, then the back end is running :)');
@@ -56,6 +69,8 @@ app.listen(port, () => {
 //signup check if exists
 //update user account
 // log when user logs out
+// store dat when person submits - dashutil
+// return new total when page refreshed
 
 //needed for hasinng
 //const crypto = require('crypto');

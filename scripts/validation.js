@@ -19,7 +19,7 @@ if (form){
             );
 
             if(res.status === 401) {
-                document.getElementById('error').style.zIndex = 1;   
+                document.getElementById('error').style.visibility='visible';   
             }
             else{
                 localStorage.setItem('type',res.body.type);
@@ -49,7 +49,7 @@ if (form){
                 );
             
                 if(res.status === 401) {
-                    document.getElementById('error').style.zIndex = 1;   
+                    document.getElementById('error').style.visibility='visible';   
                 }
                 else{
                     window.location.href = "/login.html";//redirect
