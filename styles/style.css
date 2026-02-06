@@ -14,21 +14,29 @@ h2 {
     color: var(--second);
 }
 
+h3 {
+    font-size: 1.6rem;
+    font-weight: 500;
+}
+
 body {
     margin: 0;
     background-color: white;
     font-family: 'Trebuchet MS';
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
-    width: 100%;
     position: fixed;
+    width: 100%;
+    min-height: auto;
     left: 0;
     top: 0;
     background-color: var(--main);
     color: white;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-between;
     font-weight: bold;
 }
@@ -90,6 +98,9 @@ body {
     border-width: thick;
     padding: 1rem;
     min-width: 250px;
+    margin: 10rem;
+    align-items: center;
+    background-color: #DFF2DF;
 }
 
 .rank-screen {
@@ -167,8 +178,8 @@ body {
 }
 
 #logo{
-    width:15%;
-    height:15%;
+    max-width: auto;
+    max-height: 50px;
 }
 
 
