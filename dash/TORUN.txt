@@ -4,5 +4,9 @@ click go live
 
 For backend:
 npm install
-npm install --save-dev nodemon
 npm run dev
+
+if it givs errors:
+npm install --save-dev nodemon
+
+then run again
