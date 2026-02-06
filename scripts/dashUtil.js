@@ -1,14 +1,6 @@
-if (performance.getEntriesByType('navigation')[0]?.type === 'reload'){
-    updateChallengeList();
-    updateMissionList();
-}
+updateChallengeList();
+updateMissionList();
     
-document.getElementById("logo").onclick = function () {
-    location.href = "../dashboard.html";
-    location.reload();
-};
-
-
 const auth = localStorage.getItem('auth'); //prevents unauthorised acces to dash
 if (auth != '1'){
     window.location.href = "../index.html";
@@ -18,23 +10,6 @@ const type = localStorage.getItem('type'); //prevents unauthorised acces to dash
 if (type === 'moderator'){
     document.getElementsByClassName('participant')[0].style.display = "none";
     document.getElementsByClassName('moderator')[0].style.display = "flex";
-};
-
-out = document.getElementById('signOut') //logs them out
-if (out){
-    out.addEventListener('click', async (e) => {
-        localStorage.removeItem('auth');
-        await fetch("http://127.0.0.1:8080/signOut",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type" : "application/json"
-                },
-                body : JSON.stringify({name : localStorage.getItem('name')}) //turn to json
-            }
-        )
-        localStorage.removeItem('name');
-    });
 };
 
 const form = document.getElementById('evidanceForm')
@@ -54,8 +29,7 @@ if (form){
                 )
             }            
         );
-        location.href = "dashboard.html";;
-        location.reload();
+        window.location.href = "dashboard.html";
     });
 };
 
@@ -74,8 +48,7 @@ if (joinForm){
                 )
             }            
         );
-        location.href = "dashboard.html";;
-        location.reload();
+        window.location.href = "dashboard.html";;
     });
 };
 
@@ -92,6 +65,7 @@ async function updateMissionList(){
     const data = await res.json();
     var vals = data.missions;
     var selectElement = document.getElementById('mission-input');
+    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
@@ -109,6 +83,7 @@ async function updateChallengeList(){
     const data = await res.json();
     var vals = data.challenges;
     var selectElement = document.getElementById('challenge-input');
+    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
@@ -127,6 +102,7 @@ async function updateGroupList(){
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
+    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         

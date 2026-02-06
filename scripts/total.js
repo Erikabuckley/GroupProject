@@ -1,10 +1,4 @@
-if (performance.getEntriesByType('navigation')[0]?.type === 'reload'){
-    updateTotal();
-}
-
-document.getElementById("logo").onclick = function () {
-    location.href = "index.html";
-};
+updateTotal();
 
 async function updateTotal(){
     total = document.getElementById("total-carbon");

@@ -46,6 +46,12 @@ app.post('/addAction', function (req, res) {
   res.end();
 });
 
+// signout user
+app.post('/signOut', function (req, res) {
+  console.log("Sign request received"); //log that it has been done sucessfully
+  res.end();
+});
+
 // upgrade user
 app.post('/upgrade', function (req, res) {
   console.log("Upgrade request received"); //log that it has been done sucessfully

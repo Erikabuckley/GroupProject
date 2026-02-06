@@ -1,7 +1,3 @@
-document.getElementById("logo").onclick = function () {
-    location.href = "dashboard.html";
-};
-
 const button = document.getElementById('upgrade-status');
 if (button){
     button.addEventListener('click', async (e) => {
@@ -19,7 +15,7 @@ if (button){
         }
         else{
             localStorage.setItem('auth','1');
-            location.href = "../login.html";//redirect
+            window.location.href = "../login.html";//redirect
         }
     });
 };
