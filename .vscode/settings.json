@@ -8,5 +8,6 @@
             "database": "CarbonChallenge.db"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "livePreview.defaultPreviewPath": "/dash/user/groupmetrics.html"
 }

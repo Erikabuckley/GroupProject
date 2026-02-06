@@ -70,6 +70,10 @@ body {
     color: white;
 }
 
+.header-heading.header-2 {
+    font-size: 1rem;
+}
+
 .total-screen {
     display: flex;
     padding-top: 4rem;
