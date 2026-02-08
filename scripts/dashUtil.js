@@ -63,7 +63,7 @@ async function updateMissionList(){
         }
     );
     const data = await res.json();
-    var vals = data.missions;
+    var vals = data.title;
     var selectElement = document.getElementById('mission-input');
     selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
@@ -81,7 +81,7 @@ async function updateChallengeList(){
         }
     );
     const data = await res.json();
-    var vals = data.challenges;
+    var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
     selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {

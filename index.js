@@ -69,13 +69,13 @@ app.get('/updateTotal', function (req, res) {
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
   console.log("Challenge list update"); //log that it has been done sucessfully
-  res.json({challenges: ['one','two','three']})// replace with a db query
+  res.json({title: ['one','two','three'],text: ['oncdsjvdsiovjsvsjoivse','twocdsivjfviojsfivfi9s9vifsv9f','threevfofdj0ivjfi0vjdf0bdjfdijbid9']})// replace with a db query return title, text as values and matching array in db
 });
 
 //get missions
 app.get('/updateMissionList', function (req, res) {
   console.log("Mission list update"); //log that it has been done sucessfully
-  res.json({missions: ['one','two','three']})// replace with a db query
+  res.json({title: ['one','two','three'],text: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, title and coresponding array from db
 });
 
 //get groups
@@ -83,6 +83,7 @@ app.get('/updateGroupList', function (req, res) {
   console.log("Group list update"); //log that it has been done sucessfully
   res.json({groups: ['one','two','three']})// replace with a db query
 });
+
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {

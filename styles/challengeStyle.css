@@ -1,0 +1,25 @@
+.card{
+    background-color: green;
+    margin:1rem;
+}
+
+.title{
+    font-weight: bold;
+}
+
+.text{
+    font-style: italic;
+
+}
+
+.info{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.titles{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
