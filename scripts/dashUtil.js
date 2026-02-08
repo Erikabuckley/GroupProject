@@ -16,7 +16,7 @@ const form = document.getElementById('evidanceForm')
 if (form){
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
-        const catagory = document.getElementById("catagory-input").value;
+        const mission = document.getElementById("mission-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
         await fetch("http://127.0.0.1:8080/addAction",
@@ -25,7 +25,7 @@ if (form){
                 headers: {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify({catagory, challenge, upload}   
+                body : JSON.stringify({mission, challenge, upload}   
                 )
             }            
         );
