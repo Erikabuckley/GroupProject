@@ -84,6 +84,12 @@ app.get('/updateGroupList', function (req, res) {
   res.json({groups: ['one','two','three']})// replace with a db query
 });
 
+//get missions
+app.get('/updateSubmissionsList', function (req, res) {
+  console.log("Submissions list update"); //log that it has been done sucessfully
+  res.json({title: ['one','two','three'], name: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
+});
+
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {

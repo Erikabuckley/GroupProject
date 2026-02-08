@@ -8,9 +8,12 @@ if (auth != '1'){
 
 const type = localStorage.getItem('type'); //prevents unauthorised acces to dash
 if (type === 'moderator'){
-    document.getElementsByClassName('participant')[0].style.display = "none";
-    document.getElementsByClassName('moderator')[0].style.display = "flex";
-};
+    document.getElementById('participant').style.display = "none";
+    document.getElementById('moderator').style.display = "flex";
+}else{
+    document.getElementById('participant').style.display = "flex";
+    document.getElementById('moderator').style.display = "none";
+}
 
 const form = document.getElementById('evidanceForm')
 if (form){
