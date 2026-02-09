@@ -12,30 +12,30 @@ CREATE TABLE IF NOT EXISTS Users (
     password TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Participant (
+CREATE TABLE IF NOT EXISTS Participants (
     user_id INTEGER PRIMARY KEY,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS ParticipantGroup (
+CREATE TABLE IF NOT EXISTS ParticipantGroups (
     user_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, group_id),
-    FOREIGN KEY (user_id) REFERENCES Participant(user_id),
+    FOREIGN KEY (user_id) REFERENCES Participants(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
 );
 
-CREATE TABLE IF NOT EXISTS Moderator (
+CREATE TABLE IF NOT EXISTS Moderators (
     user_id INTEGER PRIMARY KEY,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS Maintainer (
+CREATE TABLE IF NOT EXISTS Maintainers (
     user_id INTEGER PRIMARY KEY,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS ConversionFactor (
+CREATE TABLE IF NOT EXISTS ConversionFactors (
     factor_id INTEGER PRIMARY KEY AUTOINCREMENT,
     source TEXT NOT NULL, 
     unit_in TEXT NOT NULL, 
@@ -45,16 +45,16 @@ CREATE TABLE IF NOT EXISTS ConversionFactor (
     uncertainty INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS ActionType (
+CREATE TABLE IF NOT EXISTS ActionTypes (
     action_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
     category TEXT NOT NULL,
     name TEXT NOT NULL,
     unit TEXT NOT NULL,
     default_factor_id INTEGER NOT NULL,
-    FOREIGN KEY (default_factor_id) REFERENCES ConversionFactor(factor_id)
+    FOREIGN KEY (default_factor_id) REFERENCES ConversionFactors(factor_id)
 );
 
-CREATE TABLE IF NOT EXISTS ActionLog (
+CREATE TABLE IF NOT EXISTS ActionLogs (
     log_id INTEGER PRIMARY KEY AUTOINCREMENT,
     action_type_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
@@ -62,12 +62,11 @@ CREATE TABLE IF NOT EXISTS ActionLog (
     date TEXT NOT NULL,
     evidence_required TEXT NOT NULL,
     calculated_co2e INTEGER NOT NULL,
-    confidence TEXT NOT NULL,
-    FOREIGN KEY (action_type_id) REFERENCES ActionType(action_type_id),
-    FOREIGN KEY (user_id) REFERENCES Participant(user_id)
+    FOREIGN KEY (action_type_id) REFERENCES ActionTypes(action_type_id),
+    FOREIGN KEY (user_id) REFERENCES Participants(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS Challenge (
+CREATE TABLE IF NOT EXISTS Challenges (
     challenge_id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL, 
     scope TEXT NOT NULL, 
@@ -77,33 +76,36 @@ CREATE TABLE IF NOT EXISTS Challenge (
     end_date TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Submission (
+CREATE TABLE IF NOT EXISTS Submissions (
     submission_id INTEGER PRIMARY KEY AUTOINCREMENT, 
     challenge_id INTEGER NOT NULL, 
     user_id INTEGER NOT NULL, 
+    group_id INTEGER NOT NULL,
     linked_action_logs TEXT NOT NULL,
     points INTEGER NOT NULL,
     status TEXT NOT NULL,
-    FOREIGN KEY (challenge_id) REFERENCES Challenge(challenge_id)
+    FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
+    FOREIGN KEY (user_id) REFERENCES Participants(user_id),
+    FOREIGN KEY (group_id) REFERENCES Groups(group_id)
 );
 
-CREATE TABLE IF NOT EXISTS ModerationDecision (
+CREATE TABLE IF NOT EXISTS ModerationDecisions (
     decision_id INTEGER PRIMARY KEY AUTOINCREMENT,
     submission_id INTEGER NOT NULL,
     moderator_id INTEGER NOT NULL, 
     decision TEXT NOT NULL, 
     reason TEXT NOT NULL,
     timestamp TEXT NOT NULL,
-    FOREIGN KEY (submission_id) REFERENCES Submission(submission_id),
-    FOREIGN KEY (moderator_id) REFERENCES User(user_id)
+    FOREIGN KEY (submission_id) REFERENCES Submissions(submission_id),
+    FOREIGN KEY (moderator_id) REFERENCES Users(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS AntiGamingFlag (
+CREATE TABLE IF NOT EXISTS AntiGamingFlags (
     flag_id INTEGER PRIMARY KEY AUTOINCREMENT,
     submission_id INTEGER NOT NULL, 
     flag_type TEXT NOT NULL,
     rule_triggered TEXT NOT NULL,
     status TEXT NOT NULL,
-    FOREIGN KEY (submission_id) REFERENCES Submission(submission_id)
+    FOREIGN KEY (submission_id) REFERENCES Submissions(submission_id)
 );
 
