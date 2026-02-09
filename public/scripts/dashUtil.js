@@ -6,15 +6,6 @@ if (auth != '1'){
     window.location.href = "../index.html";
 };
 
-const type = localStorage.getItem('type'); //prevents unauthorised acces to dash
-if (type === 'moderator'){
-    document.getElementById('participant').style.display = "none";
-    document.getElementById('moderator').style.display = "flex";
-}else{
-    document.getElementById('participant').style.display = "flex";
-    document.getElementById('moderator').style.display = "none";
-}
-
 const form = document.getElementById('evidanceForm')
 if (form){
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
@@ -22,7 +13,7 @@ if (form){
         const mission = document.getElementById("mission-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
-        await fetch("http://127.0.0.1:8080/addAction",
+        await fetch("/addAction",
             {
                 method: "POST",
                 headers: {
@@ -41,7 +32,7 @@ if (joinForm){
     joinForm.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const group = document.getElementById("group-input").value;
-        await fetch("http://127.0.0.1:8080/addGroup",
+        await fetch("/addGroup",
             {
                 method: "POST",
                 headers: {
@@ -57,7 +48,7 @@ if (joinForm){
 
 
 async function updateMissionList(){
-    const res = await fetch ("http://127.0.0.1:8080/updateMissionList",
+    const res = await fetch ("/updateMissionList",
         {
             method: "GET",
             headers: {
@@ -75,7 +66,7 @@ async function updateMissionList(){
     };
 }
 async function updateChallengeList(){
-    const res = await fetch ("http://127.0.0.1:8080/updateChallengeList",
+    const res = await fetch ("/updateChallengeList",
         {
             method: "GET",
             headers: {
@@ -94,7 +85,7 @@ async function updateChallengeList(){
 };
 
 async function updateGroupList(){
-    const res = await fetch ("http://127.0.0.1:8080/updateGroupList",
+    const res = await fetch ("/updateGroupList",
         {
             method: "GET",
             headers: {

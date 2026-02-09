@@ -1,7 +1,7 @@
 getSubmissions();
 
 async function getSubmissions(){
-    const res = await fetch ("http://127.0.0.1:8080/updateSubmissionsList",
+    const res = await fetch ("/updateSubmissionsList",
         {
             method: "GET",
             headers: {

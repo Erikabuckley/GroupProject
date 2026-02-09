@@ -1,17 +1,20 @@
 const express = require('express'); //imports express ie frmaework we are using
 const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
+const path = require('path');
 const { OPEN_READWRITE } = require('sqlite3');
 const app = express();
 const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
+
 
 // get data from the login
 app.post('/login', function (req, res) {
     console.log("Login request received"); //log that it has been done sucessfully
     console.log(req.body.email);
+    res.json({type: 'user'})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
     //check if user exists
       // return doesnt  res.status(200);
     // chekc password matches
@@ -93,7 +96,7 @@ app.get('/updateSubmissionsList', function (req, res) {
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
-  res.send('If you can see this, then the back end is running :)');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Start the server

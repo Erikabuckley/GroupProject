@@ -2,7 +2,7 @@ getChallenges();
 getMissions();
 
 async function getChallenges(){
-    const res = await fetch ("http://127.0.0.1:8080/updateChallengeList",
+    const res = await fetch ("/updateChallengeList",
         {
             method: "GET",
             headers: {
@@ -35,7 +35,7 @@ async function getChallenges(){
 }
 
 async function getMissions(){
-    const res = await fetch ("http://127.0.0.1:8080/updateMissionList",
+    const res = await fetch ("/updateMissionList",
         {
             method: "GET",
             headers: {
