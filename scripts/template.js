@@ -1,5 +1,10 @@
 async function loadFooter(){
-    const res = await fetch("../templates/footer.html");
+    let res;
+    if (document.URL.includes("dash")){
+        res = await fetch("../templates/footer.html");
+    } else{
+        res = await fetch("templates/footer.html");
+    }
     const html = await res.text();
     document.getElementsByClassName("footer-container")[0].innerHTML = html;
 };
@@ -9,7 +14,7 @@ async function loadHeader() {
         await loadHomeHeader();
     } else if (document.URL.includes("dash")){
         await loadDashHeader();
-        out = document.getElementById('signOut') //logs them out
+        const out = document.getElementById('signOut') //logs them out
         if (out){
             out.addEventListener('click', async (e) => {
                 e.preventDefault();
@@ -43,23 +48,30 @@ async function loadHeader() {
         }
     }
 
+    document.getElementById("logo").onclick = function () {
     if (document.URL.includes('dash')){
-        document.getElementById("logo").onclick = function () {
-        window.location.href = "../dash/dashboard.html"};
-    }else {
-        document.getElementById("logo").onclick = function () {
-        window.location.href = "../index.html";}
-    };
+        window.location.href = "dashboard.html"
+    }else if (document.URL.includes('policies')){
+        window.location.href = "../index.html"
+    } else {
+        window.location.href = "index.html";
+    }
+    }
 }
 
 async function loadBasicHeader(){
-    const res = await fetch("../templates/basicHeader.html")
+    let res;
+    if (document.URL.includes("policies")){
+        res = await fetch("../templates/basicHeader.html");
+    } else{
+        res = await fetch("templates/basicHeader.html");
+    }
     const html = await res.text();
     document.getElementsByClassName("header-container")[0].innerHTML = html;
 }
 
 async function loadHomeHeader(){
-    const res = await fetch("../templates/homeHeader.html")
+    const res = await fetch("templates/homeHeader.html")
     const html = await res.text();
     document.getElementsByClassName("header-container")[0].innerHTML = html;
 }
