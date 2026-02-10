@@ -1,10 +1,6 @@
 updateChallengeList();
 updateMissionList();
-    
-const auth = localStorage.getItem('auth'); //prevents unauthorised acces to dash
-if (auth != '1'){
-    window.location.href = "../index.html";
-};
+updateGroupList();
 
 const form = document.getElementById('evidanceForm')
 if (form){
@@ -23,7 +19,18 @@ if (form){
                 )
             }            
         );
-        window.location.href = "dashboard.html";
+
+        const res = await fetch("/getCarbon",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type" : "application/json"
+                }
+            }            
+        );
+        document.getElementById("upload-modal").style.display = "none";
+        const data = await res.json();
+        showData(String(data.val));
     });
 };
 
@@ -46,7 +53,6 @@ if (joinForm){
     });
 };
 
-
 async function updateMissionList(){
     const res = await fetch ("/updateMissionList",
         {
@@ -59,7 +65,6 @@ async function updateMissionList(){
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('mission-input');
-    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
@@ -77,7 +82,6 @@ async function updateChallengeList(){
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
-    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
@@ -96,10 +100,13 @@ async function updateGroupList(){
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
-    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
     };
 };
 
+async function showData(num){
+    document.getElementById("data-modal").style.display = "block";
+    document.getElementById("ammount").innerText = (num + "gt");
+}

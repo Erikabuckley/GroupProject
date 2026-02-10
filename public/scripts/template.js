@@ -5,9 +5,7 @@ async function loadFooter(){
 };
 
 async function loadHeader() {
-    if (document.URL.includes("index.html")){
-        await loadHomeHeader();
-    } else if (document.URL.includes("dash")){
+    if (document.URL.includes("dash")){
         await loadDashHeader();
         const type = localStorage.getItem('type'); //prevents unauthorised acces to dash
         if (type === 'moderator'){
@@ -35,7 +33,7 @@ async function loadHeader() {
                 window.location.href = "../index.html"
             });
         };
-    } else {
+    } else if (document.URL.includes("policies") || document.URL.includes("validation")){
         await loadBasicHeader();
         const exit = document.getElementById("out");
         if (exit){
@@ -50,8 +48,10 @@ async function loadHeader() {
                 };
             }
         }
+    } else {
+        await loadHomeHeader();
     }
-
+    
     document.getElementById("logo").onclick = function () {
     if (document.URL.includes('dash')){
         window.location.href = "dashboard.html"

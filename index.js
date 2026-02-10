@@ -93,6 +93,16 @@ app.get('/updateSubmissionsList', function (req, res) {
   res.json({title: ['one','two','three'], name: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
 });
 
+//get carbon
+app.get('/getCarbon', function (req, res) {
+  console.log("Retreived carbon stored"); //log that it has been done sucessfully
+  res.json({val : 10})// replace with a db query, 
+});
+
+app.get('/checkAuth', function (req, res) {
+  console.log("Check user type"); //log that it has been done sucessfully
+  res.json({auth: false})// replace with a db query, 
+});
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
@@ -116,6 +126,8 @@ app.listen(port, () => {
 //get challenges
 //get missions
 //join group
+//getcarbon
+//get permissions
 
 //needed for hasinng
 //const crypto = require('crypto');
