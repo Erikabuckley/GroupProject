@@ -11,7 +11,7 @@ async function getSubmissions(){
     );
     const data = await res.json();
     var title = data.title;
-    var name = data.name;
+    var email = data.name;
     var evidence = data.evidence;
 
     var submissions = document.getElementById("submissions");
@@ -22,23 +22,59 @@ async function getSubmissions(){
 		let titleDiv = document.createElement("div");
 		let nameDiv = document.createElement("div");
         let evidenceDiv = document.createElement("div");
-        let buttonDiv = document.createElement("div");
 
         cardDiv.className = "card";
+        cardDiv.id = "submission" + String(i);
 		titleDiv.className = "title";
 		nameDiv.className = "text";
 		evidenceDiv.className = "evidance";
-		buttonDiv.className = "evidance";
 
 		titleDiv.innerHTML = title[i];
-        nameDiv.innerHTML = name[i];
+        nameDiv.innerHTML = email[i];
         evidenceDiv.innerHTML = evidence[i];
-        buttonDiv.innerHTML = '<input type="button" value="Aprove" name="aprove" id="aprove" class="in-button"> <input type="button" value="Deny" name="deny" id="deny" class="in-button"> </div>'
 		cardDiv.appendChild(titleDiv);
 		cardDiv.appendChild(nameDiv);
 		cardDiv.appendChild(evidenceDiv);
-		cardDiv.appendChild(buttonDiv);
 
 		submissions.appendChild(cardDiv);
 	}
 }
+
+async function approveDeny(email, date, name, outcome, reason){
+    document.getElementById("approveDeny-modal").style.display.block;
+
+    await fetch("/approveDeny",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify({email, date,name, outcome, reason}   
+            )
+        }
+    
+    );
+    document.getElementById("approveDeny-modal").style.display.none;
+}
+
+var elements = document.getElementsByClassName("card");
+
+for (var i = 0; i < elements.length; i++) {
+    elements[i].addEventListener('click', 
+        async (e) => { //wait till form has been submitted
+        e.preventDefault(); // stop page reload
+        document.getElementById('approveDeny-modal').style.display.block;
+        const form = document.getElementById('approveDenyForm');
+        form.addEventListener('submit', async (e) => { //wait till form has been submitted
+            e.preventDefault(); // stop page reload
+            const approve = document.getElementById("approve").value;
+            const deny = document.getElementById("deny").value;
+            const reason = document.getElementById("reason-input").value;
+            if (approve){
+                await approveDeny(reason, approve);         
+            }else{
+                await approveDeny(reason, deny);         
+            }
+        });
+    });
+};
