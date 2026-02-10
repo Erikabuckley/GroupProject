@@ -101,7 +101,7 @@ app.get('/getCarbon', function (req, res) {
 
 app.get('/checkAuth', function (req, res) {
   console.log("Check user type"); //log that it has been done sucessfully
-  res.json({auth: false})// replace with a db query, 
+  res.json({auth: true})// replace with a db query, 
 });
 
 // Define a route for GET requests to the root URL
