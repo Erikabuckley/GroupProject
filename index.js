@@ -5,59 +5,95 @@ const { OPEN_READWRITE } = require('sqlite3');
 const app = express();
 const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
+const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
 
 
 // get data from the login
-app.post('/login', function (req, res) {
-    console.log("Login request received"); //log that it has been done sucessfully
+app.post('/login', async (req, res) => {
+    console.log("Login request received"); // log that it has been done sucessfully
     console.log(req.body.email);
-    res.json({type: 'user'})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
-    //check if user exists
-      // return doesnt  res.status(200);
-    // chekc password matches
-      //return doesnt     res.status(401);
-    //return authorised
-    // return type in type json
-    res.end();//says that its stopping sending data
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(401).json({error:"database failure"});
+      }
+      // check if user exists
+      db.get("SELECT password, role FROM Users WHERE email = ?",  [req.body.email], async (e, row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        if (row) {
+          const passwordMatches = await bcrypt.compare(req.body.password, row.password);
+          console.log("user exists"); // log that user exists
+          if (passwordMatches) {
+            res.json({type: row.role}); // if valid return role
+            console.log("sign in user sucessful"); // log that user has been signed in
+          } else { 
+            console.log("incorrect password");
+            return res.status(401).json({error:"incorrect password"}); // return error
+          } 
+        } else {
+          console.log("user does not exist"); // log that user doesnt exist
+          return res.status(401).json({error:"user does not exist"});
+        }
+      })
+    });
 });
 
 // get data from the sign up
-app.post('/signUp', function (req, res) {
-    console.log("Sign up request received"); //log that it has been done sucessfully
+app.post('/signUp', async (req, res) => {
+    console.log("Sign up request received"); // log that it has been done sucessfully
     console.log(req.body.email);
-    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
+    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE, async (e) => {
       if (e) {
         console.log(e.message);
+        return res.status(401).json({error:"database failure"});
       }
+      // check if username already in db
+      db.get("SELECT email FROM Users WHERE email = ?", [req.body.email], async (e, row) =>{
+        if (e) {
+          console.log(e.message);
+        }
+        if (row) {
+          console.log("User with this email already exists");
+          return res.status(401).json({error:"account already assosciated with this email"});
+        } else {
+          // create hash password
+          const hashedPassword = await bcrypt.hash(req.body.password, 10);
+          // create new user in db
+          db.run("INSERT INTO Users (display_name, role, email, password) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,hashedPassword],e =>{
+            if (e) {
+              console.log(e.message);
+              return res.status(500).json({ error: "Failed to create user" });
+            } else {
+              return res.sendStatus(201);
+            }
+          });
+        }
+      });
     });
-    //check if username already in db
-    db.run("INSERT INTO Users (display_name, role, email, password) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,req.body.password],e =>{
-      if (e){
-        console.log(e.message);
-      }
-    });
-    res.end();//says that its stopping sending data
+    // res.end(); // says that its stopping sending data
 });
 
 // get data from the  action
 app.post('/addAction', function (req, res) {
-  console.log("Action request received"); //log that it has been done sucessfully
+  console.log("Action request received"); // log that it has been done sucessfully
   console.log(req.body.challenge);
   res.end();
 });
 
 // signout user
 app.post('/signOut', function (req, res) {
-  console.log("Sign request received"); //log that it has been done sucessfully
+  console.log("Sign request received"); // log that it has been done sucessfully
   res.end();
 });
 
 // upgrade user
 app.post('/upgrade', function (req, res) {
-  console.log("Upgrade request received"); //log that it has been done sucessfully
+  console.log("Upgrade request received"); // log that it has been done sucessfully
   //return 401 if not allowed
   res.status(200);
   res.end();
@@ -123,23 +159,14 @@ app.listen(port, () => {
 
 
 
-//TODO
-//login chekc db - hash
-//signup check if exists
-//update user account
+// TODO
+// signup check if exists sign up 404
+// update user account
 // log when user logs out
-// store dat when person submits - dashutil
+// store data when person submits - dashutil
 // return new total when page refreshed
-//get challenges
-//get missions
-//join group
-//getcarbon
-//get permissions
-
-//needed for hasinng
-//const crypto = require('crypto');
-//const hash = crypto.createHash('sha256');
-//            hash.update(plain_password);
- //           const password = hash.digest('hex');
-
- //still need to figure out how to pass name or session cookie for update and join group so do these last :)
+// get challenges
+// get missions
+// join group
+// getcarbon
+// get permissions
