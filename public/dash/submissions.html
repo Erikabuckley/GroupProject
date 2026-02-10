@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <link rel="stylesheet" href="../styles/submissionsStyle.css">
     <script type="text/javascript" src="../scripts/moderatorUtil.js" defer></script>
-    <script type="text/javascript" src="../scripts/template.js"> defer</script>
-    <script type="text/javascript" src="../scripts/submissionsUtil.js"> defer</script>
+    <script type="text/javascript" src="../scripts/template.js" defer> </script>
+    <script type="text/javascript" src="../scripts/submissionsUtil.js" defer> </script>
 
     <title>Submissions</title>
 </head>
@@ -25,11 +25,11 @@
                 <h2>Is this submission acceptable:</h2>
                 <form class="form" id="approveDenyForm">
                     <label for="approve">Approve</label>
-                    <input type="radio" value="approve" id="approve">
+                    <input type="radio" name="val" value="approve" id="approve" required>
                     <label for="approve">Deny</label>
-                    <input type="radio" value="deny" id="deny">
-                    <label for="reason-input">Please provide a reason</label>
-                    <textarea required id="reason-input"></textarea>
+                    <input type="radio" name="val" value="deny" id="deny" required><br>
+                    <label for="reason-input">Please provide a reason</label><br>
+                    <textarea required id="reason-input"></textarea><br>
                     <input type="submit" value="Submit" name="confirm" id="approveDeny-submit" class="in-button">
                 </form>
             </div>
@@ -41,7 +41,7 @@
 
             a_span.onclick = function () {
                a_modal.style.display = "none";
-            };
+            };            
         </script>
     </div>
 

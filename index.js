@@ -63,6 +63,13 @@ app.post('/upgrade', function (req, res) {
   res.end();
 });
 
+// approve or deny a submission
+app.post('/approveDeny', function (req, res) {
+  console.log("submission request received"); //log that it has been done sucessfully
+  res.end();
+});
+
+
 // update total
 app.get('/updateTotal', function (req, res) {
   console.log("Total update"); //log that it has been done sucessfully

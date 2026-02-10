@@ -1,4 +1,4 @@
-getSubmissions();
+let selectedCard = null;
 
 async function getSubmissions(){
     const res = await fetch ("/updateSubmissionsList",
@@ -29,52 +29,55 @@ async function getSubmissions(){
 		nameDiv.className = "text";
 		evidenceDiv.className = "evidance";
 
-		titleDiv.innerHTML = title[i];
-        nameDiv.innerHTML = email[i];
-        evidenceDiv.innerHTML = evidence[i];
+        cardDiv.dataset.index = i;
+        cardDiv.dataset.title = title[i];
+        cardDiv.dataset.email = email[i];
+        cardDiv.dataset.evidence = evidence[i];
+
+		titleDiv.textContent = title[i];
+        nameDiv.textContent = email[i];
+        evidenceDiv.textContent = evidence[i];
+
 		cardDiv.appendChild(titleDiv);
 		cardDiv.appendChild(nameDiv);
 		cardDiv.appendChild(evidenceDiv);
 
 		submissions.appendChild(cardDiv);
-	}
-}
 
-async function approveDeny(email, date, name, outcome, reason){
-    document.getElementById("approveDeny-modal").style.display.block;
+        cardDiv.addEventListener('click', () => { //wait till form has been submitted
+            selectedCard = {
+            index: i,
+            title: title[i],
+            email: email[i],
+            evidence: evidence[i]
+            };                   
+            document.getElementById('approveDeny-modal').style.display = 'block';
+        });
+    }
+};
 
+getSubmissions();
+
+async function approveDeny(name, outcome, reason){
     await fetch("/approveDeny",
         {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
             },
-            body : JSON.stringify({email, date,name, outcome, reason}   
+            body : JSON.stringify({name, outcome, reason}   
             )
         }
     
     );
-    document.getElementById("approveDeny-modal").style.display.none;
 }
 
-var elements = document.getElementsByClassName("card");
-
-for (var i = 0; i < elements.length; i++) {
-    elements[i].addEventListener('click', 
-        async (e) => { //wait till form has been submitted
-        e.preventDefault(); // stop page reload
-        document.getElementById('approveDeny-modal').style.display.block;
-        const form = document.getElementById('approveDenyForm');
-        form.addEventListener('submit', async (e) => { //wait till form has been submitted
-            e.preventDefault(); // stop page reload
-            const approve = document.getElementById("approve").value;
-            const deny = document.getElementById("deny").value;
-            const reason = document.getElementById("reason-input").value;
-            if (approve){
-                await approveDeny(reason, approve);         
-            }else{
-                await approveDeny(reason, deny);         
-            }
-        });
-    });
-};
+const form = document.getElementById('approveDenyForm');
+form.addEventListener('submit', async (e) => { //wait till form has been submitted
+    e.preventDefault(); // stop page reload
+    const reason = document.getElementById("reason-input").value;
+    const decision = document.querySelector('input[name="val"]:checked')?.value;
+    await approveDeny(selectedCard.title, decision, reason);  
+    form.reset();
+    document.getElementById('approveDeny-modal').style.display = 'none';
+});
