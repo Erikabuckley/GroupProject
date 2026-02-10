@@ -1,4 +1,4 @@
-getSubmissions();
+let selectedCard = null;
 
 async function getSubmissions(){
     const res = await fetch ("/updateSubmissionsList",
@@ -11,7 +11,7 @@ async function getSubmissions(){
     );
     const data = await res.json();
     var title = data.title;
-    var name = data.name;
+    var email = data.name;
     var evidence = data.evidence;
 
     var submissions = document.getElementById("submissions");
@@ -22,23 +22,62 @@ async function getSubmissions(){
 		let titleDiv = document.createElement("div");
 		let nameDiv = document.createElement("div");
         let evidenceDiv = document.createElement("div");
-        let buttonDiv = document.createElement("div");
 
         cardDiv.className = "card";
+        cardDiv.id = "submission" + String(i);
 		titleDiv.className = "title";
 		nameDiv.className = "text";
 		evidenceDiv.className = "evidance";
-		buttonDiv.className = "evidance";
 
-		titleDiv.innerHTML = title[i];
-        nameDiv.innerHTML = name[i];
-        evidenceDiv.innerHTML = evidence[i];
-        buttonDiv.innerHTML = '<input type="button" value="Aprove" name="aprove" id="aprove" class="in-button"> <input type="button" value="Deny" name="deny" id="deny" class="in-button"> </div>'
+        cardDiv.dataset.index = i;
+        cardDiv.dataset.title = title[i];
+        cardDiv.dataset.email = email[i];
+        cardDiv.dataset.evidence = evidence[i];
+
+		titleDiv.textContent = title[i];
+        nameDiv.textContent = email[i];
+        evidenceDiv.textContent = evidence[i];
+
 		cardDiv.appendChild(titleDiv);
 		cardDiv.appendChild(nameDiv);
 		cardDiv.appendChild(evidenceDiv);
-		cardDiv.appendChild(buttonDiv);
 
 		submissions.appendChild(cardDiv);
-	}
+
+        cardDiv.addEventListener('click', () => { //wait till form has been submitted
+            selectedCard = {
+            index: i,
+            title: title[i],
+            email: email[i],
+            evidence: evidence[i]
+            };                   
+            document.getElementById('approveDeny-modal').style.display = 'block';
+        });
+    }
+};
+
+getSubmissions();
+
+async function approveDeny(name, outcome, reason){
+    await fetch("/approveDeny",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify({name, outcome, reason}   
+            )
+        }
+    
+    );
 }
+
+const form = document.getElementById('approveDenyForm');
+form.addEventListener('submit', async (e) => { //wait till form has been submitted
+    e.preventDefault(); // stop page reload
+    const reason = document.getElementById("reason-input").value;
+    const decision = document.querySelector('input[name="val"]:checked')?.value;
+    await approveDeny(selectedCard.title, decision, reason);  
+    form.reset();
+    document.getElementById('approveDeny-modal').style.display = 'none';
+});

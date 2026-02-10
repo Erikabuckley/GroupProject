@@ -1,12 +1,12 @@
 .card{
-    background-color: green;
+    background-color: var(--main);
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;
 }
 
 .card:hover{
-    background-color: blue;
+    background-color: var(--second);
 }
 .title{
     font-weight: bold;
