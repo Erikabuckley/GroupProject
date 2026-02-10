@@ -18,26 +18,28 @@ app.post('/login', async (req, res) => {
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e)=> {
       if (e) {
         console.log(e.message);
-        return;
       }
       // check if user exists
-      db.get("SELECT password, role FROM Users WHERE email = ?",  [req.body.email],async (e, row) => {
-        if (e){ // if it does not, return error 200
+      db.get("SELECT password, role FROM Users WHERE email = ?",  [req.body.email], async (e, row) => {
+        if (e){
           console.log(e.message);
-          return res.status(200);
         }
-        if (row) { // if user stored password is returned
-          const passwordMatches = await bcrypt.compare(req.body.password);
-          if (passwordMatches) { // if password matches return row
-            return res.json({type: row.role});
-          } else { // if it does not, return error 401
-            return res.status(401);
-          }
+        if (row) {
+          const passwordMatches = bcrypt.compare(req.body.password);
+          console.log("user exists"); // log that user exists
+          if (passwordMatches) {
+            res.json({type: row.role});// if valid return role
+            console.log("sign in user sucessful"); // log that user has been signed in
+          } else { 
+            console.log("incorrect password");
+            return res.status(401).json({error:"does not exist"});//return error
+          } 
+        }else {
+          console.log("user does not exist"); // log that user doesnt exist
+          return res.status(401).json({error:"does not exist"});
         }
       })
-      // return authorised
     });
-    res.end();//says that its stopping sending data
 });
 
 // get data from the sign up

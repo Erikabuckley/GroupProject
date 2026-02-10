@@ -19,7 +19,7 @@ if (form){
             );
             const data = await res.json();
             if(res.status === 401) {
-                document.getElementById('error').style.visibility='visible';   
+                document.getElementById('error-message').style.visibility='visible';   
             }
             else{
                 localStorage.setItem('type',data.type);
