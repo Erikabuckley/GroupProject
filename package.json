@@ -6,9 +6,9 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "node --test"
-
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "sqlite3": "^5.1.7"
