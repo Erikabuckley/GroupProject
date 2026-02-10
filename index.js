@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 // get data from the login
-app.post('/login', async (req, res) {
+app.post('/login', async (req, res) => {
     console.log("Login request received"); // log that it has been done sucessfully
     console.log(req.body.email);
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e)=> {
@@ -19,7 +19,7 @@ app.post('/login', async (req, res) {
         return;
       }
       // check if user exists
-      db.get("SELECT password, role FROM Users WHERE email = ?", [req.body.email], (e, row) => {
+      db.get("SELECT password, role FROM Users WHERE email = ?",  [req.body.email],async (e, row) => {
         if (e){ // if it does not, return error 200
           console.log(e.message);
           return res.status(200);
@@ -39,10 +39,10 @@ app.post('/login', async (req, res) {
 });
 
 // get data from the sign up
-app.post('/signUp', async (req, res) {
+app.post('/signUp', async (req, res) => {
     console.log("Sign up request received"); // log that it has been done sucessfully
     console.log(req.body.email);
-    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE,(e)=>{
+    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE, async (e)=>{
       if (e) {
         console.log(e.message);
         return; // added
@@ -61,7 +61,7 @@ app.post('/signUp', async (req, res) {
       // create hash password
       const hashedPassword = await bcrypt.hash(password);
       // create new user in db
-      db.run("INSERT INTO Users (display_name, role, email, hashedPassword) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,req.body.password],e =>{
+      db.run("INSERT INTO Users (display_name, role, email, hashedPassword) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,hashedPassword],e =>{
         if (e){
           console.log(e.message);
           return;
