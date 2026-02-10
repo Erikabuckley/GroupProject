@@ -15,28 +15,29 @@ app.use(cors());
 app.post('/login', async (req, res) => {
     console.log("Login request received"); // log that it has been done sucessfully
     console.log(req.body.email);
-    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e)=> {
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
       if (e) {
         console.log(e.message);
+        return res.status(401).json({error:"database failure"});
       }
       // check if user exists
       db.get("SELECT password, role FROM Users WHERE email = ?",  [req.body.email], async (e, row) => {
-        if (e){
+        if (e) {
           console.log(e.message);
         }
         if (row) {
-          const passwordMatches = bcrypt.compare(req.body.password);
+          const passwordMatches = await bcrypt.compare(req.body.password, row.password);
           console.log("user exists"); // log that user exists
           if (passwordMatches) {
-            res.json({type: row.role});// if valid return role
+            res.json({type: row.role}); // if valid return role
             console.log("sign in user sucessful"); // log that user has been signed in
           } else { 
             console.log("incorrect password");
-            return res.status(401).json({error:"does not exist"});//return error
+            return res.status(401).json({error:"incorrect password"}); // return error
           } 
-        }else {
+        } else {
           console.log("user does not exist"); // log that user doesnt exist
-          return res.status(401).json({error:"does not exist"});
+          return res.status(401).json({error:"user does not exist"});
         }
       })
     });
@@ -46,33 +47,35 @@ app.post('/login', async (req, res) => {
 app.post('/signUp', async (req, res) => {
     console.log("Sign up request received"); // log that it has been done sucessfully
     console.log(req.body.email);
-    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE, async (e)=>{
+    const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE, async (e) => {
       if (e) {
         console.log(e.message);
-        return; // added
+        return res.status(401).json({error:"database failure"});
       }
       // check if username already in db
-      db.get("SELECT email FROM Users WHERE email = ?", [req.body.email], (e, row) =>{
-        if (e){
+      db.get("SELECT email FROM Users WHERE email = ?", [req.body.email], async (e, row) =>{
+        if (e) {
           console.log(e.message);
-          return;
         }
         if (row) {
           console.log("User with this email already exists");
-          return;
-        }
-      });
-      // create hash password
-      const hashedPassword = await bcrypt.hash(password);
-      // create new user in db
-      db.run("INSERT INTO Users (display_name, role, email, hashedPassword) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,hashedPassword],e =>{
-        if (e){
-          console.log(e.message);
-          return;
+          return res.status(401).json({error:"account already assosciated with this email"});
+        } else {
+          // create hash password
+          const hashedPassword = await bcrypt.hash(req.body.password, 10);
+          // create new user in db
+          db.run("INSERT INTO Users (display_name, role, email, password) VALUES (?,'participant',?,?)", [req.body.name,req.body.email,hashedPassword],e =>{
+            if (e) {
+              console.log(e.message);
+              return res.status(500).json({ error: "Failed to create user" });
+            } else {
+              return res.sendStatus(201);
+            }
+          });
         }
       });
     });
-    res.end();// says that its stopping sending data
+    // res.end(); // says that its stopping sending data
 });
 
 // get data from the  action
@@ -149,14 +152,14 @@ app.listen(port, () => {
 
 
 
-//TODO
-//signup check if exists sign up 404
-//update user account
+// TODO
+// signup check if exists sign up 404
+// update user account
 // log when user logs out
-// store dat when person submits - dashutil
+// store data when person submits - dashutil
 // return new total when page refreshed
-//get challenges
-//get missions
-//join group
-//getcarbon
-//get permissions
+// get challenges
+// get missions
+// join group
+// getcarbon
+// get permissions
