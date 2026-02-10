@@ -7,6 +7,7 @@
     <script type="text/javascript" src="../scripts/template.js"> defer</script>
     <script type="text/javascript" src="../scripts/total.js" defer></script>
     <script type="text/javascript" src="../scripts/dashUtil.js" defer></script>
+    <script type="text/javascript" src="../scripts/auth.js" defer></script>
 
     <title>Dashboard</title>
 </head>
@@ -21,19 +22,19 @@
 
         <div id="upload-modal" class="modal">
             <div class="modal-content">
-                <span class="close" id="close-submission">&times;</span>
+                <span class="close" id="close-upload">&times;</span>
                 <h2>Upload submission: </h2>
                 <form class="form" id="evidanceForm">
-                    <label>What mission is your action for?</label>
+                    <label for="mission-input">What mission is your action for?</label>
                     <select required name="Mission" id="mission-input" value="Select the mission">
                         <option value="none" selected disabled hidden>Select an Option</option>
                     </select><br>
-                    <label>Is your submission for a challenge?</label>
+                    <label for="challenge-input">Is your submission for a challenge?</label>
                     <select required name="Challenge" id="challenge-input">
                         <option value="none" selected disabled hidden>Select an Option</option>
                         <option value="no">No</option>
                     </select><br>
-                    <label>Please upload evidence for the sumission if required:</label><br>
+                    <label for="upload-input">Please upload evidence for the sumission if required:</label><br>
                     <input type="file" name="upload" id="upload-input" placeholder="Evidance"
                         accept=".jpg, .jpeg, .png"><br>
                     <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
@@ -44,25 +45,25 @@
         <script>
             var s_modal = document.getElementById("upload-modal");
             var s_btn = document.getElementById("upload");
-            var s_span = document.getElementById("close-submission");
+            var s_span = document.getElementById("close-upload");
 
             s_btn.onclick = function () {
                s_modal.style.display = "block";
             };
             s_span.onclick = function () {
                s_modal.style.display = "none";
-            }
+            };
         </script>
 
-        <h1>Join a group here:</h1><br>
-        <input type="button" id="join" value="Join a group here" class="in-button">
+        <h1>Play with friends</h1><br>
+        <input type="button" id="join" value="Join a group" class="in-button">
 
         <div id="join-modal" class="modal">
             <div class="modal-content">
                 <span class="close" id="close-join">&times;</span>
                 <h2>Join a group:</h2>
                 <form class="form" id="joinForm">
-                    <label>What mission is your action for?</label>
+                    <label for="group-input">What group would you like to join?</label>
                     <select required name="Group" id="group-input" value="Select the group you would like ot join:">
                         <option value="none" selected disabled hidden>Select an Option</option>
                     </select><br>
@@ -73,19 +74,38 @@
 
         <script>
             var j_modal = document.getElementById("join-modal");
-            var j_btn = document.getElementById("join");
             var j_span = document.getElementById("close-join");
+            var j_btn = document.getElementById("join");
 
             j_btn.onclick = function () {
-                j_modal.style.display = "block";
+               j_modal.style.display = "block";
             };
             j_span.onclick = function () {
-                j_modal.style.display = "none";
-            }
+               j_modal.style.display = "none";
+            };
         </script>
     </div>
+
+    <div id="data-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-data">&times;</span>
+            <h2>Your action saved carbon well done!</h2>
+            <p>You saved:</p>
+            <P id="ammount"></P>  
+        </div>
+    </div>
+
+    <script>
+        var d_modal = document.getElementById("data-modal");
+        var d_span = document.getElementById("close-data");
+
+        d_span.onclick = function () {
+            d_modal.style.display = "none";
+        };
+    </script>
+
     <div class="total">
-        <h2>Total carbon saved</h2>
+        <h1>Total Carbon Saved Todate</h1>
         <h3 id="total-carbon">Refresh to see carbon saved!</h3>
     </div>
     <div class="footer-container"></div>

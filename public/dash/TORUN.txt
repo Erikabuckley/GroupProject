@@ -1,0 +1,12 @@
+For front end:
+Install live server
+click go live
+
+For backend:
+npm install
+npm run dev
+
+if it givs errors:
+npm install --save-dev nodemon
+
+then run again

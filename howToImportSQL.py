@@ -15,16 +15,9 @@ cursor = con.execute(
     "SELECT name FROM sqlite_master WHERE type='table';"
 )
 print(cursor.fetchall())
-# con.commit()
+con.commit()
 
 print("SQL script executed successfully")
 
-cursor = con.executescript("""
-    SELECT name
-    FROM sqlite_master
-    WHERE type='table';
-    """)
-
 # Save & close
-print(cursor.fetchall())
 con.close()

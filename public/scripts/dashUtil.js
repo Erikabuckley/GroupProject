@@ -1,35 +1,36 @@
 updateChallengeList();
 updateMissionList();
-    
-const auth = localStorage.getItem('auth'); //prevents unauthorised acces to dash
-if (auth != '1'){
-    window.location.href = "../index.html";
-};
-
-const type = localStorage.getItem('type'); //prevents unauthorised acces to dash
-if (type === 'moderator'){
-    document.getElementsByClassName('participant')[0].style.display = "none";
-    document.getElementsByClassName('moderator')[0].style.display = "flex";
-};
+updateGroupList();
 
 const form = document.getElementById('evidanceForm')
 if (form){
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
-        const catagory = document.getElementById("catagory-input").value;
+        const mission = document.getElementById("mission-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
-        await fetch("http://127.0.0.1:8080/addAction",
+        await fetch("/addAction",
             {
                 method: "POST",
                 headers: {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify({catagory, challenge, upload}   
+                body : JSON.stringify({mission, challenge, upload}   
                 )
             }            
         );
-        window.location.href = "dashboard.html";
+
+        const res = await fetch("/getCarbon",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type" : "application/json"
+                }
+            }            
+        );
+        document.getElementById("upload-modal").style.display = "none";
+        const data = await res.json();
+        showData(String(data.val));
     });
 };
 
@@ -38,7 +39,7 @@ if (joinForm){
     joinForm.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const group = document.getElementById("group-input").value;
-        await fetch("http://127.0.0.1:8080/addGroup",
+        await fetch("/addGroup",
             {
                 method: "POST",
                 headers: {
@@ -52,9 +53,8 @@ if (joinForm){
     });
 };
 
-
 async function updateMissionList(){
-    const res = await fetch ("http://127.0.0.1:8080/updateMissionList",
+    const res = await fetch ("/updateMissionList",
         {
             method: "GET",
             headers: {
@@ -63,16 +63,15 @@ async function updateMissionList(){
         }
     );
     const data = await res.json();
-    var vals = data.missions;
+    var vals = data.title;
     var selectElement = document.getElementById('mission-input');
-    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
     };
 }
 async function updateChallengeList(){
-    const res = await fetch ("http://127.0.0.1:8080/updateChallengeList",
+    const res = await fetch ("/updateChallengeList",
         {
             method: "GET",
             headers: {
@@ -81,9 +80,8 @@ async function updateChallengeList(){
         }
     );
     const data = await res.json();
-    var vals = data.challenges;
+    var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
-    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
@@ -91,7 +89,7 @@ async function updateChallengeList(){
 };
 
 async function updateGroupList(){
-    const res = await fetch ("http://127.0.0.1:8080/updateGroupList",
+    const res = await fetch ("/updateGroupList",
         {
             method: "GET",
             headers: {
@@ -102,10 +100,13 @@ async function updateGroupList(){
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
-    selectElement.innerHTML = ""; // remove existing options
     for (let v of vals) {
         selectElement.appendChild(new Option(v,v));
         
     };
 };
 
+async function showData(num){
+    document.getElementById("data-modal").style.display = "block";
+    document.getElementById("ammount").innerText = (num + "gt");
+}

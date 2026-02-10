@@ -7,7 +7,7 @@ if (form){
         if (action === 'Log in') { // check if login
             const email = document.getElementById("email-input").value; //get info and store in constants
             const password = document.getElementById("password-input").value;
-            const res = await fetch("http://127.0.0.1:8080/login", // send data to backend
+            const res = await fetch("/login", // send data to backend
                 {
                     method: "POST", //sending data to the server
                     headers: {
@@ -17,15 +17,15 @@ if (form){
                     )
                 }
             );
-
+            const data = await res.json();
             if(res.status === 401) {
                 document.getElementById('error').style.visibility='visible';   
             }
             else{
-                localStorage.setItem('type',res.body.type);
+                localStorage.setItem('type',data.type);
                 localStorage.setItem('auth','1');
                 localStorage.setItem('name',email);
-                window.location.href = "dash/dashboard.html";//redirect   
+                window.location.href = "../dash/dashboard.html";//redirect   
             }
         } 
         else if (action === 'Sign up') {
@@ -36,7 +36,7 @@ if (form){
             const tandc = document.getElementById("tandc").checked;
 
             if (priv && tandc){
-                const res = await fetch("http://127.0.0.1:8080/signUp",
+                const res = await fetch("/signUp",
                     {
                         method: "POST",
                         headers: {
@@ -52,7 +52,7 @@ if (form){
                     document.getElementById('error-message').style.visibility='visible';   
                 }
                 else{
-                    window.location.href = "/login.html";//redirect
+                    window.location.href = "login.html";//redirect
                 }
             }
         };

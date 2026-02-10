@@ -1,13 +1,15 @@
 const express = require('express'); //imports express ie frmaework we are using
 const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
+const path = require('path');
 const { OPEN_READWRITE } = require('sqlite3');
 const app = express();
 const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
+
 
 // get data from the login
 app.post('/login', async (req, res) => {
@@ -101,13 +103,13 @@ app.get('/updateTotal', function (req, res) {
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
   console.log("Challenge list update"); //log that it has been done sucessfully
-  res.json({challenges: ['one','two','three']})// replace with a db query
+  res.json({title: ['one','two','three'],text: ['oncdsjvdsiovjsvsjoivse','twocdsivjfviojsfivfi9s9vifsv9f','threevfofdj0ivjfi0vjdf0bdjfdijbid9']})// replace with a db query return title, text as values and matching array in db
 });
 
 //get missions
 app.get('/updateMissionList', function (req, res) {
   console.log("Mission list update"); //log that it has been done sucessfully
-  res.json({missions: ['one','two','three']})// replace with a db query
+  res.json({title: ['one','two','three'],text: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, title and coresponding array from db
 });
 
 //get groups
@@ -116,9 +118,26 @@ app.get('/updateGroupList', function (req, res) {
   res.json({groups: ['one','two','three']})// replace with a db query
 });
 
+//get missions
+app.get('/updateSubmissionsList', function (req, res) {
+  console.log("Submissions list update"); //log that it has been done sucessfully
+  res.json({title: ['one','two','three'], name: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
+});
+
+//get carbon
+app.get('/getCarbon', function (req, res) {
+  console.log("Retreived carbon stored"); //log that it has been done sucessfully
+  res.json({val : 10})// replace with a db query, 
+});
+
+app.get('/checkAuth', function (req, res) {
+  console.log("Check user type"); //log that it has been done sucessfully
+  res.json({auth: true})// replace with a db query, 
+});
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
-  res.send('If you can see this, then the back end is running :)');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Start the server
@@ -138,6 +157,8 @@ app.listen(port, () => {
 //get challenges
 //get missions
 //join group
+//getcarbon
+//get permissions
 
 // needed for hasinng
 // const crypto = require('crypto');

@@ -1,0 +1,27 @@
+.card{
+    background-color: green;
+    margin:1rem;
+    padding:1rem;
+    border-radius: 2rem;
+}
+
+.card:hover{
+    background-color: blue;
+}
+.title{
+    font-weight: bold;
+}
+
+.name{
+    font-style: italic;
+
+}
+
+#submissions{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+}
+
+/*i think a grid might be better, coz this is ugly, so feel free to change but it works that was the main goal*/

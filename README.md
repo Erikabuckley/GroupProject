@@ -12,6 +12,5 @@ Keira Manglani: DevOps
 Darcy Luke: UI & UX & requirements 
 Thalia Champ: Documentation and comms
 
-
-## Run at
-https://erikabuckley.github.io/GroupProject/
+## view 
+https://groupproject-e980.onrender.com/
