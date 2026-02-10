@@ -1,6 +1,7 @@
 :root {
   --main: rgb(51, 154, 104);
   --second: rgb(140, 240, 165);
+  --button-main: #4CAF50;
 }
 h1 {
     font-size: 2.5rem;
@@ -57,7 +58,7 @@ body {
     padding: 10px 22px;
     margin-left: 12px;
 
-    background: #4CAF50;
+    background: var(--button-main);
     color: white;
 
     border-radius: 12px;
