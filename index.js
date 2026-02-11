@@ -82,15 +82,87 @@ app.post('/signUp', async (req, res) => {
 app.post('/addAction', function (req, res) {
   console.log("Action request received"); // log that it has been done sucessfully
   //add to db: action log
-  res.json({carbon : '10'})//return the ammount of carbon saved
+
+  // WE NEED TO CREATE SEEDED MISSION AND FACTOR BEFORE THIS 
+  // generate current date
+  // get relevant user id from email
+  // calculate co2 saved
+  // insert action log
+  res.json({carbon : '10'})//return the amount of carbon saved
   res.end();
 });
+// mission is covered by action type (in the name attribute)
+// hard code a quantity whilst developing
+// search users to get their user_id, using their email
+// also need date (https://dev.to/ayako_yk/javascript-date-objects-basics-and-time-zone-adjustments-4g14)
 
 // add user to a group
 app.post('/addGroup', function (req, res) {
-  console.log("Join request received"); // log that it has been done sucessfully
-  //add to db: user to group return 409
-  res.end();
+  console.log("Join request received");
+  console.log(req.body.group);
+  console.log(req.body.email);
+
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(401).json({error: "database failure"});
+    }
+
+    // add to db: user to group return 409
+    // get relevant group id
+    // add row to participantgroup
+    db.get("SELECT group_id FROM Groups WHERE name = ?", [req.body.group], async (e, row) => {
+      if (e) {
+        console.log(e.message);
+        return;
+      }
+
+      if (!row) {
+        console.log("group does not exist");
+        return res.status(404).json({error: "group does not exist"});
+      }
+
+      const group_id = row.group_id;
+
+      db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.email], async (e, userRow) => {
+        if (e) {
+          console.log(e.message);
+          return;
+        }
+
+        if (!userRow) {
+          console.log("user does not exist");
+          return res.status(401).json({ error: "user does not exist" });
+        }
+
+        const user_id = userRow.user_id;
+
+        db.get("SELECT 1 FROM ParticipantGroup WHERE group_id = ? AND user_id = ?", [group_id, user_id],
+          (e, participantRow) => {
+            if (e) {
+              console.log(e.message);
+              return;
+            }
+
+            if (participantRow) {
+              console.log("User already in group");
+              return res.status(409).json({error: "User already in group"});
+            }
+
+            db.run("INSERT INTO ParticipantGroup (group_id, user_id) VALUES (?, ?)", [group_id, user_id], function (e) {
+                if (e) {
+                  console.log(e.message);
+                  return;
+                }
+                console.log("User added to group");
+                return res.sendStatus(201);
+              }
+            );
+          }
+        );
+      });
+    });
+  });
 });
 
 // signout user
@@ -141,7 +213,7 @@ app.get('/updateMissionList', function (req, res) {
 //get groups
 app.get('/updateGroupList', function (req, res) {
   console.log("Group list update"); //log that it has been done sucessfully
-  res.json({groups: ['one','two','three']})// replace with a db query
+  res.json({groups: ['group_1','group_2','group_3']})// replace with a db query
 });
 
 //get submissions
@@ -182,7 +254,7 @@ app.listen(port, () => {
 // get challenges.
 // get missions.
 //getgroups.
-// join group.
+// join group. DONE
 // getcarbon, ie carbon saved from that action.
 // get permissions.
 //individual carbon saved.
