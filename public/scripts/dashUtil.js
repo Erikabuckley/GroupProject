@@ -25,7 +25,7 @@ if (form) {
         );
         const data = await res.json();
         document.getElementById("upload-modal").style.display = "none";
-        showData(String(data.carbon), 'link here'); //String(data.source)
+        showData(String(data.carbon)); //String(data.source)
     });
 };
 
@@ -35,7 +35,7 @@ if (joinForm) {
         e.preventDefault(); // stop page reload
         const group = document.getElementById("group-input").value;
         const email = localStorage.getItem('name');
-        await fetch("/addGroup",
+        const res = await fetch("/addGroup",
             {
                 method: "POST",
                 headers: {
@@ -46,8 +46,8 @@ if (joinForm) {
             }
         );
         if (res.status === 409) {
-            const data = await res.JSON();
-            document.getElementById('error-message').textContent = data;
+            const data = await res.json();
+            document.getElementById('error-message').textContent = data.error;
             document.getElementById('error-message').style.visibility = 'visible';  // if there is an error then the erro message will be displayed
         }
         else {
@@ -112,10 +112,10 @@ async function updateGroupList() {
     };
 };
 
-async function showData(num, source) {
+async function showData(num) {
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("ammount").innerText = (num + "gt");
-    document.getElementById("source").innerText = (source);
+    //document.getElementById("source").innerText = (source);
 }
 
 async function updateIndi() {
