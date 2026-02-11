@@ -19,6 +19,8 @@ if (form) {
             );
             const data = await res.json();
             if (res.status === 401) {
+                const data = await res.JSON();
+                document.getElementById('error-message').textContent = data;
                 document.getElementById('error-message').style.visibility = 'visible';
             }
             else {
@@ -49,6 +51,8 @@ if (form) {
                 );
 
                 if (res.status === 401) {
+                    const data = await res.JSON();
+                    document.getElementById('error-message').textContent = data;
                     document.getElementById('error-message').style.visibility = 'visible';  // if there is an error then the erro message will be displayed
                 }
                 else {

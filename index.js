@@ -35,11 +35,11 @@ app.post('/login', async (req, res) => {
             console.log("sign in user sucessful"); // log that user has been signed in
           } else { 
             console.log("incorrect password");
-            return res.status(401).json({error:"incorrect password"}); // return error
+            return res.status(401).json({error:"Incorrect password, please try again"}); // return error
           } 
         } else {
           console.log("user does not exist"); // log that user doesnt exist
-          return res.status(401).json({error:"user does not exist"});
+          return res.status(401).json({error:"No user with that email, please try again"});
         }
       })
     });
@@ -61,7 +61,7 @@ app.post('/signUp', async (req, res) => {
         }
         if (row) {
           console.log("User with this email already exists");
-          return res.status(401).json({error:"account already assosciated with this email"});
+          return res.status(401).json({error:"There is an account already with this email"});
         } else {
           // create hash password
           const hashedPassword = await bcrypt.hash(req.body.password, 10);

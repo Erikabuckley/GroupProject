@@ -46,6 +46,8 @@ if (joinForm) {
             }
         );
         if (res.status === 409) {
+            const data = await res.JSON();
+            document.getElementById('error-message').textContent = data;
             document.getElementById('error-message').style.visibility = 'visible';  // if there is an error then the erro message will be displayed
         }
         else {
