@@ -7,6 +7,7 @@ const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
 const { getgroups } = require('process');
+const { CLIENT_RENEG_WINDOW } = require('tls');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
@@ -19,7 +20,7 @@ app.post('/login', async (req, res) => {
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
       if (e) {
         console.log(e.message);
-        return res.status(401).json({error:"database failure"});
+        return res.status(500).json({error:"database failure"});
       }
       // check if user exists
       db.get("SELECT password, role FROM Users WHERE email = ?",  [req.body.email], async (e, row) => {
@@ -51,7 +52,7 @@ app.post('/signUp', async (req, res) => {
     const db = new sqlite3.Database('CarbonChallenge.db',OPEN_READWRITE, async (e) => {
       if (e) {
         console.log(e.message);
-        return res.status(401).json({error:"database failure"});
+        return res.status(500).json({error:"database failure"});
       }
       // check if username already in db
       db.get("SELECT email FROM Users WHERE email = ?", [req.body.email], async (e, row) =>{
@@ -190,14 +191,40 @@ app.post('/approveDeny', function (req, res) {
 // update total carbon saved
 app.get('/updateTotal', function (req, res) {
   console.log("Total update"); //log that it has been done sucessfully
-  res.json({total: '200'})// replace with a db query
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error:"database failure"});
+      }
+      // check if user exists
+      db.get("SELECT SUM(points) AS total FROM Submissions WHERE status = 'approved'", (e, row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        return res.json({total: row.total + 0})
+      });
+  });
 });
 
 // update total carbon saved by individual
 app.get('/updateTotalIndi', function (req, res) {
   console.log("Total indi update"); //log that it has been done sucessfully
-  res.json({total: '100'})// replace with a db query, for indivudual using email
+    console.log("Total update"); //log that it has been done sucessfully
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error:"database failure"});
+      }
+      // check if user exists
+      db.get("SELECT SUM(points) AS total FROM Submissions JOIN Users ON Submissions.user_id = Users.user_id WHERE Submissions.status = 'approved' AND Users.email =?",[req.get('Authorization')], (e, row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        return res.json({total: row.total + 0})
+      });
+  });
 });
+
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
   console.log("Challenge list update"); //log that it has been done sucessfully
@@ -246,15 +273,15 @@ app.listen(port, () => {
 
 
 // TODO
-// signup check if exists sign up 401.
+// signup check if exists sign up 401.DONE
 // update user account to moderator
-// log when user logs out. done
+// log when user logs out. DONE
 // store data when person submits - dashutil.
-// return new total when page refreshed.
+// return new total when page refreshed. DONE
 // get challenges.
 // get missions.
 //getgroups.
 // join group. DONE
 // getcarbon, ie carbon saved from that action.
 // get permissions.
-//individual carbon saved.
+//individual carbon saved. DONE

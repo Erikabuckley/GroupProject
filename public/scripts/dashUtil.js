@@ -9,6 +9,7 @@ if (form){
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const mission = document.getElementById("mission-input").value;
+        const quantity = document.getElementById("quantity-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
         const email = localStorage.getItem('name');
@@ -18,7 +19,7 @@ if (form){
                 headers: {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify({mission, challenge, upload, email}   
+                body : JSON.stringify({mission, challenge, upload, email, quantity}   
                 )
             }            
         );
