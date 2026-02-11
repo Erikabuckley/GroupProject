@@ -1,0 +1,102 @@
+.total-screen {
+    display: flex;
+}
+
+.total-text {
+    text-align: justify;
+}
+
+
+
+.rank-screen {
+    display: flex;
+    padding-top: 4rem;
+}
+
+
+.rank-text {
+    padding-left: 8rem;
+    text-align: justify;
+}
+
+.rank {
+    padding-left: 4rem
+}
+
+.award-screen {
+    display: flex;
+    padding-top: 4rem;
+}
+
+.award-text {
+    padding-right: 8rem;
+    text-align: justify;
+}
+
+.award {
+    padding-top: 6rem;
+    padding-right: 4rem;
+}
+
+
+.body-container {
+    margin-right: 2rem;
+    margin-left: 2rem;
+    margin-top: 5rem;
+    margin-bottom: 3rem;
+}
+
+.page-section:first-child {
+    background-image: url('../images/forest.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.page-section:nth-child(even) {
+    background-color: #F4F9F4;
+    padding: 3rem 2rem;
+}
+
+.page-section:nth-child(odd) {
+    background-color: white;
+    padding: 3rem 2rem;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    grid-template-columns: repeat(autofit, minmax(220px, 1fr));
+}
+
+.info-block {
+    padding-top: 20px;
+    padding-right: 20px;
+}
+
+.icon-part {
+    width: 80px;
+    height: 80px;
+    padding: 20px;
+    border-bottom: 2px solid rgb(51, 154, 104);
+}
+
+#climate {
+    width: 80px;
+    height: 80px;
+}
+
+#impact {
+    width: 80px;
+    height: 80px;
+}
+
+#group {
+    width: 80px;
+    height: 80px;
+}
+
+#step {
+    width: 80px;
+    height: 80px;
+}

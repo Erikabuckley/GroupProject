@@ -83,65 +83,6 @@ body {
     font-size: 1rem;
 }
 
-.total-screen {
-    display: flex;
-    padding-top: 4rem;
-    padding-right: 2rem;
-}
-
-.total-text {
-    padding-right: 8rem;
-    text-align: justify;
-}
-
-.total {
-    border: 2px groove var(--second);
-    border-width: thick;
-    padding: 1rem;
-    min-width: 250px;
-    margin: 10rem;
-    align-items: center;
-    background-color: #DFF2DF;
-}
-
-.rank-screen {
-    display: flex;
-    padding-top: 4rem;
-}
-
-
-.rank-text {
-    padding-left: 8rem;
-    text-align: justify;
-}
-
-.rank {
-    padding-left: 4rem
-}
-
-.award-screen {
-    display: flex;
-    padding-top: 4rem;
-}
-
-.award-text {
-    padding-right: 8rem;
-    text-align: justify;
-}
-
-.award {
-    padding-top: 6rem;
-    padding-right: 4rem;
-}
-
-
-.body-container {
-    margin-right: 2rem;
-    margin-left: 2rem;
-    margin-top: 5rem;
-    margin-bottom: 3rem;
-}
-
 .footer {
     width: 100%;
     position: static;
@@ -183,13 +124,6 @@ body {
     max-height: 50px;
 }
 
-
-#evidanceForm {
-    gap:5px;
-    display: flex;
-    flex-direction: column;
-}
-
 .in-button {
     padding:1rem;
     background-color: var(--second);
@@ -205,62 +139,15 @@ body {
     background-color: var(--main);
 }
 
-.page-section:first-child {
-    background-image: url('../images/forest.png');
-    background-size: cover;
-    background-position: center;
-}
-
-.page-section:nth-child(even) {
-    background-color: #F4F9F4;
-    padding: 3rem 2rem;
-}
-
-.page-section:nth-child(odd) {
-    background-color: white;
-    padding: 3rem 2rem;
-}
-
-.info-section {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    grid-template-columns: repeat(autofit, minmax(220px, 1fr));
-}
-
-.info-block {
-    padding-top: 20px;
-    padding-right: 20px;
-}
-
-.icon-part {
-    width: 80px;
-    height: 80px;
-    padding: 20px;
-    border-bottom: 2px solid rgb(51, 154, 104);
-}
-
-#climate {
-    width: 80px;
-    height: 80px;
-}
-
-#impact {
-    width: 80px;
-    height: 80px;
-}
-
-#group {
-    width: 80px;
-    height: 80px;
-}
-
-#step {
-    width: 80px;
-    height: 80px;
-}
-
 .error{
     color:red;
     visibility: hidden;
+}
+
+.total {
+    border: 2px groove var(--second);
+    border-width: thick;
+    min-width: 250px;
+    padding: 1rem;
+    margin: 1rem;
 }
