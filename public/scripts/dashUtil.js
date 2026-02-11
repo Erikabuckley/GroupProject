@@ -9,28 +9,31 @@ if (form){
         const mission = document.getElementById("mission-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
+        const email = localStorage.getItem('name');
         await fetch("/addAction",
             {
                 method: "POST",
                 headers: {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify({mission, challenge, upload}   
+                body : JSON.stringify({mission, challenge, upload, email}   
                 )
             }            
         );
 
-        const res = await fetch("/getCarbon",
+        const res = await fetch("/updateTotalIndi",
             {
-                method: "GET",
+                method: "POST",
                 headers: {
-                    "Content-Type" : "application/json"
-                }
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify({email}
+                )
             }            
         );
         document.getElementById("upload-modal").style.display = "none";
         const data = await res.json();
-        showData(String(data.val));
+        showData(String(data.total));
     });
 };
 
@@ -39,13 +42,14 @@ if (joinForm){
     joinForm.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const group = document.getElementById("group-input").value;
+        const email = localStorage.getItem('name');
         await fetch("/addGroup",
             {
                 method: "POST",
                 headers: {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify({group}   
+                body : JSON.stringify({group, email}   
                 )
             }            
         );
@@ -58,7 +62,8 @@ async function updateMissionList(){
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "Authorization" : localStorage.getItem('name')
             }
         }
     );
@@ -75,7 +80,8 @@ async function updateChallengeList(){
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "Authorization" : localStorage.getItem('name')
             }
         }
     );
@@ -93,7 +99,8 @@ async function updateGroupList(){
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "Authorization" : localStorage.getItem('name')
             }
         }
     );

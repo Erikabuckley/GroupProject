@@ -6,6 +6,7 @@ const app = express();
 const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
+const { getgroups } = require('process');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
@@ -81,7 +82,14 @@ app.post('/signUp', async (req, res) => {
 // get data from the  action
 app.post('/addAction', function (req, res) {
   console.log("Action request received"); // log that it has been done sucessfully
-  console.log(req.body.challenge);
+  //add to db: action log
+  res.end();
+});
+
+// add user to a group
+app.post('/addGroup', function (req, res) {
+  console.log("Join request received"); // log that it has been done sucessfully
+  //add to db: user to group return 409
   res.end();
 });
 
@@ -106,22 +114,27 @@ app.post('/approveDeny', function (req, res) {
 });
 
 
-// update total
+// update total carbon saved
 app.get('/updateTotal', function (req, res) {
   console.log("Total update"); //log that it has been done sucessfully
   res.json({total: '200'})// replace with a db query
 });
 
+// update total carbon saved by individual
+app.post('/updateTotalIndi', function (req, res) {
+  console.log("Total indi update"); //log that it has been done sucessfully
+  res.json({total: '100'})// replace with a db query, for indivudual using email
+});
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
   console.log("Challenge list update"); //log that it has been done sucessfully
-  res.json({title: ['one','two','three'],text: ['oncdsjvdsiovjsvsjoivse','twocdsivjfviojsfivfi9s9vifsv9f','threevfofdj0ivjfi0vjdf0bdjfdijbid9']})// replace with a db query return title, text as values and matching array in db
+  res.json({title: ['challenge 1','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct challenges only, email is in the authorisation header
 });
 
 //get missions
 app.get('/updateMissionList', function (req, res) {
   console.log("Mission list update"); //log that it has been done sucessfully
-  res.json({title: ['one','two','three'],text: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, title and coresponding array from db
+  res.json({title: ['challenge 1','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
 });
 
 //get groups
@@ -130,7 +143,7 @@ app.get('/updateGroupList', function (req, res) {
   res.json({groups: ['one','two','three']})// replace with a db query
 });
 
-//get missions
+//get submissions
 app.get('/updateSubmissionsList', function (req, res) {
   console.log("Submissions list update"); //log that it has been done sucessfully
   res.json({title: ['one','two','three'], name: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
@@ -139,17 +152,12 @@ app.get('/updateSubmissionsList', function (req, res) {
 //get carbon
 app.get('/getCarbon', function (req, res) {
   console.log("Retreived carbon stored"); //log that it has been done sucessfully
-  res.json({val : 10})// replace with a db query, 
-});
-
-app.get('/checkAuth', function (req, res) {
-  console.log("Check user type"); //log that it has been done sucessfully
-  res.json({auth: true})// replace with a db query, 
+  res.json({val : 10})// replace with a db query, for total carbon saved by that person, email is in req.body.email
 });
 
 app.get('/checkPerm', function (req, res) {
-  console.log("Check user type"); //log that it has been done sucessfully
-  res.json({perm: 'moderator'})// replace with a db query, 
+  console.log("Checked user permissions"); //log that it has been done sucessfully
+  res.json({perm: 'moderator'})// replace with a db query, return moderator or user
 });
 
 // Define a route for GET requests to the root URL
@@ -165,13 +173,15 @@ app.listen(port, () => {
 
 
 // TODO
-// signup check if exists sign up 404
-// update user account
-// log when user logs out
-// store data when person submits - dashutil
-// return new total when page refreshed
-// get challenges
-// get missions
-// join group
-// getcarbon
-// get permissions
+// signup check if exists sign up 401.
+// update user account to moderator
+// log when user logs out. done
+// store data when person submits - dashutil.
+// return new total when page refreshed.
+// get challenges.
+// get missions.
+//getgroups.
+// join group.
+// getcarbon, ie carbon saved from that action.
+// get permissions.
+//individual carbon saved.

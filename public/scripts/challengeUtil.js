@@ -6,13 +6,14 @@ async function getChallenges(){
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "Authorization" : localStorage.getItem('name')
             }
         }
     );
     const data = await res.json();
     var title = data.title;
-    var text = data.text;
+    var date = data.date;
 
     var challenges = document.getElementById("challenges");
     challenges.innerHTML = "";
@@ -20,15 +21,15 @@ async function getChallenges(){
     for (let i = 0; i < title.length; i++) {
         let cardDiv = document.createElement("div")
 		let titleDiv = document.createElement("div");
-		let textDiv = document.createElement("div");
+		let dateDiv = document.createElement("div");
         cardDiv.className = "card";
 		titleDiv.className = "title";
-		textDiv.className = "text";
+		dateDiv.className = "date";
 
 		titleDiv.innerHTML = title[i];
-        textDiv.innerHTML = text[i];
+        dateDiv.innerHTML = date[i];
 		cardDiv.appendChild(titleDiv);
-		cardDiv.appendChild(textDiv);
+		cardDiv.appendChild(dateDiv);
 
 		challenges.appendChild(cardDiv);
 	}
@@ -39,13 +40,14 @@ async function getMissions(){
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type" : "application/json",
+                "Authorization" : localStorage.getItem('name')
             }
         }
     );
     const data = await res.json();
     var title = data.title;
-    var text = data.text;
+    var date = data.date;
 
     var challenges = document.getElementById("missions");
     challenges.innerHTML = "";
@@ -53,15 +55,15 @@ async function getMissions(){
     for (let i = 0; i < title.length; i++) {
         let cardDiv = document.createElement("div")
 		let titleDiv = document.createElement("div");
-		let textDiv = document.createElement("div");
+		let dateDiv = document.createElement("div");
         cardDiv.className = "card";
 		titleDiv.className = "title";
-		textDiv.className = "text";
+		dateDiv.className = "date";
 
 		titleDiv.innerHTML = title[i];
-        textDiv.innerHTML = text[i];
+        dateDiv.innerHTML = date[i];
 		cardDiv.appendChild(titleDiv);
-		cardDiv.appendChild(textDiv);
+		cardDiv.appendChild(dateDiv);
 
 		missions.appendChild(cardDiv);
 	}

@@ -1,5 +1,6 @@
 const button = document.getElementById('upgrade-status');
 if (button){
+    const email = localStorage.getItem('name');
     button.addEventListener('click', async (e) => {
         e.preventDefault();
         const res = await fetch("/upgrade",
@@ -8,6 +9,7 @@ if (button){
                 headers: {
                     "Content-Type" : "application/json"
                 },
+                body: JSON.stringify({email})
             }
         );
         if(res.status === 401) {

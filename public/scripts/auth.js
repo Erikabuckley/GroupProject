@@ -1,17 +1,7 @@
 checkAuth()
 
 async function checkAuth(){
-    const res = await fetch ("/checkAuth",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type" : "application/json"
-            }
-        }
-    );
-    const data = await res.json();
-    var auth = data.auth;
-    if (!((auth === true) && (localStorage.getItem('auth') === '1'))){
+    if (!(localStorage.getItem('auth') === '1')){
         window.location.href = '../index.html'
     }
 }

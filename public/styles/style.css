@@ -148,6 +148,10 @@ body {
     border: 2px groove var(--second);
     border-width: thick;
     min-width: 250px;
-    padding: 1rem;
     margin: 1rem;
+    padding:1rem;
+    color: var(--main);
+    font-size: 50px;
+    font-weight: bold;
+
 }
