@@ -45,7 +45,12 @@ if (joinForm) {
                 )
             }
         );
-        window.location.href = "dashboard.html";;
+        if (res.status === 409) {
+            document.getElementById('error-message').style.visibility = 'visible';  // if there is an error then the erro message will be displayed
+        }
+        else {
+            window.location.href = "dashboard.html";//redirect
+        }
     });
 };
 
