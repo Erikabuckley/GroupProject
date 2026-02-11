@@ -76,13 +76,13 @@ app.post('/signUp', async (req, res) => {
         }
       });
     });
-    // res.end(); // says that its stopping sending data
 });
 
 // get data from the  action
 app.post('/addAction', function (req, res) {
   console.log("Action request received"); // log that it has been done sucessfully
   //add to db: action log
+  res.json({carbon : '10'})//return the ammount of carbon saved
   res.end();
 });
 
@@ -110,6 +110,7 @@ app.post('/upgrade', function (req, res) {
 // approve or deny a submission
 app.post('/approveDeny', function (req, res) {
   console.log("submission request received"); //log that it has been done sucessfully
+  //use the id that is in json body, this use match db id
   res.end();
 });
 
@@ -146,7 +147,7 @@ app.get('/updateGroupList', function (req, res) {
 //get submissions
 app.get('/updateSubmissionsList', function (req, res) {
   console.log("Submissions list update"); //log that it has been done sucessfully
-  res.json({title: ['one','two','three'], name: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return text, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
+  res.json({title: ['one','two','three'], id: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return title, id, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
 });
 
 //get carbon

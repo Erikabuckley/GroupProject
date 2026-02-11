@@ -12,7 +12,7 @@ if (form){
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
         const email = localStorage.getItem('name');
-        await fetch("/addAction",
+        const res = await fetch("/addAction",
             {
                 method: "POST",
                 headers: {
@@ -22,20 +22,9 @@ if (form){
                 )
             }            
         );
-
-        const res = await fetch("/getCarbon",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type" : "application/json",
-                    "Authorization" : localStorage.getItem('name')
-                }
-            }
-
-        );
-        document.getElementById("upload-modal").style.display = "none";
         const data = await res.json();
-        showData(String(data.val));
+        document.getElementById("upload-modal").style.display = "none";
+        showData(String(data.carbon));
     });
 };
 
