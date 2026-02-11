@@ -121,7 +121,7 @@ app.get('/updateTotal', function (req, res) {
 });
 
 // update total carbon saved by individual
-app.post('/updateTotalIndi', function (req, res) {
+app.get('/updateTotalIndi', function (req, res) {
   console.log("Total indi update"); //log that it has been done sucessfully
   res.json({total: '100'})// replace with a db query, for indivudual using email
 });

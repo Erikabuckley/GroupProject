@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <script type="text/javascript" src="../scripts/template.js"> defer</script>
-    <script type="text/javascript" src="../scripts/total.js" defer></script>
     <script type="text/javascript" src="../scripts/dashUtil.js" defer></script>
     <script type="text/javascript" src="../scripts/auth.js" defer></script>
 
@@ -27,11 +26,11 @@
                 <form class="form" id="evidanceForm">
                     <label for="mission-input">What mission is your action for?</label>
                     <select required name="Mission" id="mission-input" value="Select the mission">
-                        <option value="none" selected disabled hidden>Select an Option</option>
+                        <option value="" selected disabled hidden>Select an Option</option>
                     </select><br>
                     <label for="challenge-input">Is your submission for a challenge?</label>
                     <select required name="Challenge" id="challenge-input">
-                        <option value="none" selected disabled hidden>Select an Option</option>
+                        <option value="" selected disabled hidden>Select an Option</option>
                         <option value="no">No</option>
                     </select><br>
                     <label for="upload-input">Please upload evidence for the sumission if required:</label><br>
@@ -105,8 +104,8 @@
     </script>
 
     <div class="total">
-        <h1>Total Carbon Saved Todate</h1>
-        <p id="total-carbon">Refresh to see carbon saved!</p>
+        <h1>Total Carbon Saved To-date</h1>
+        <p id="indi-carbon"></p>
     </div>
     <div class="footer-container"></div>
 </body>

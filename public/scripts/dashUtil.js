@@ -1,6 +1,8 @@
 updateChallengeList();
 updateMissionList();
 updateGroupList();
+updateIndi();
+
 
 const form = document.getElementById('evidanceForm')
 if (form){
@@ -21,19 +23,19 @@ if (form){
             }            
         );
 
-        const res = await fetch("/updateTotalIndi",
+        const res = await fetch("/getCarbon",
             {
-                method: "POST",
+                method: "GET",
                 headers: {
                     "Content-Type" : "application/json",
-                },
-                body: JSON.stringify({email}
-                )
-            }            
+                    "Authorization" : localStorage.getItem('name')
+                }
+            }
+
         );
         document.getElementById("upload-modal").style.display = "none";
         const data = await res.json();
-        showData(String(data.total));
+        showData(String(data.val));
     });
 };
 
@@ -116,4 +118,18 @@ async function updateGroupList(){
 async function showData(num){
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("ammount").innerText = (num + "gt");
+}
+
+async function updateIndi(){
+    const res = await fetch("/updateTotalIndi",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization" : localStorage.getItem('name')
+            }
+        }            
+    );
+    const data = await res.json();
+    document.getElementById("indi-carbon").textContent = data.total;
 }
