@@ -1,5 +1,5 @@
 async function loadFooter() {
-    res = await fetch("/templates/footer.html");
+    const res = await fetch("/templates/footer.html");
     const html = await res.text();
     document.getElementsByClassName("footer-container")[0].innerHTML = html;
 };

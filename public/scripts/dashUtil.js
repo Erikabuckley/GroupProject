@@ -1,6 +1,7 @@
 updateChallengeList();
 updateMissionList();
 updateGroupList();
+updateUserGroupsList();
 updateIndi();
 
 
@@ -12,6 +13,7 @@ if (form) {
         const quantity = document.getElementById("quantity-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const upload = document.getElementById("upload-input").value;
+        const group = document.getElementById("group-challenge-input").value;
         const email = localStorage.getItem('name');
         const res = await fetch("/addAction",
             {
@@ -19,13 +21,13 @@ if (form) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ mission, challenge, upload, email, quantity }
+                body: JSON.stringify({ mission, challenge, upload, email, quantity, group}
                 )
             }
         );
         const data = await res.json();
         document.getElementById("upload-modal").style.display = "none";
-        showData(String(data.carbon)); //String(data.source)
+        showData(String(data.carbon), String(data.source));
     });
 };
 
@@ -112,10 +114,29 @@ async function updateGroupList() {
     };
 };
 
-async function showData(num) {
+async function updateUserGroupsList() {
+    const res = await fetch("/updateUserGroupsList",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('name')
+            }
+        }
+    );
+    const data = await res.json();
+    var vals = data.title;
+    var selectElement = document.getElementById('group-challenge-input');
+    for (let v of vals) {
+        selectElement.appendChild(new Option(v, v));
+
+    };
+}
+
+async function showData(num, source) {
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("ammount").innerText = (num + "gt");
-    //document.getElementById("source").innerText = (source);
+    document.getElementById("source").innerText = (source);
 }
 
 async function updateIndi() {
