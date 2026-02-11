@@ -35,11 +35,11 @@ app.post('/login', async (req, res) => {
             console.log("sign in user sucessful"); // log that user has been signed in
           } else { 
             console.log("incorrect password");
-            return res.status(401).json({error:"incorrect password"}); // return error
+            return res.status(401).json({error:"Incorrect password, please try again"}); // return error
           } 
         } else {
           console.log("user does not exist"); // log that user doesnt exist
-          return res.status(401).json({error:"user does not exist"});
+          return res.status(401).json({error:"No user with that email, please try again"});
         }
       })
     });
@@ -61,7 +61,7 @@ app.post('/signUp', async (req, res) => {
         }
         if (row) {
           console.log("User with this email already exists");
-          return res.status(401).json({error:"account already assosciated with this email"});
+          return res.status(401).json({error:"There is an account already with this email"});
         } else {
           // create hash password
           const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -172,14 +172,26 @@ app.post('/signOut', function (req, res) {
   res.end();
 });
 
-// upgrade user
+// upgrade user to moderator
 app.post('/upgrade', function (req, res) {
-  console.log("Upgrade request received"); // log that it has been done sucessfully
-  //return 401 if not allowed
-  res.status(200);
-  res.end();
+  console.log("Upgrade request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    db.get("UPDATE Users SET role = 'moderator' WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
+      if (e) {
+        console.log(e.message);
+        }
+      if (row){
+        console.log("Upgrade sucessfull")
+        return
+      }
+      return res.status(404).json({error:"user not found"})
+    });
+  });
 });
-
 // approve or deny a submission
 app.post('/approveDeny', function (req, res) {
   console.log("submission request received"); //log that it has been done sucessfully
@@ -190,8 +202,8 @@ app.post('/approveDeny', function (req, res) {
 
 // update total carbon saved
 app.get('/updateTotal', function (req, res) {
-  console.log("Total update"); //log that it has been done sucessfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      console.log("Total update request received");
       if (e) {
         console.log(e.message);
         return res.status(500).json({error:"database failure"});
@@ -201,6 +213,7 @@ app.get('/updateTotal', function (req, res) {
         if (e) {
           console.log(e.message);
         }
+        console.log("Total update sucessfull");
         return res.json({total: row.total + 0})
       });
   });
@@ -208,20 +221,20 @@ app.get('/updateTotal', function (req, res) {
 
 // update total carbon saved by individual
 app.get('/updateTotalIndi', function (req, res) {
-  console.log("Total indi update"); //log that it has been done sucessfully
-    console.log("Total update"); //log that it has been done sucessfully
-    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+  console.log("Total individual update request recieved");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    // check if user exists
+    db.get("SELECT SUM(points) AS total FROM Submissions JOIN Users ON Submissions.user_id = Users.user_id WHERE Submissions.status = 'approved' AND Users.email =?",[req.get('Authorization')], (e, row) => {
       if (e) {
         console.log(e.message);
-        return res.status(500).json({error:"database failure"});
       }
-      // check if user exists
-      db.get("SELECT SUM(points) AS total FROM Submissions JOIN Users ON Submissions.user_id = Users.user_id WHERE Submissions.status = 'approved' AND Users.email =?",[req.get('Authorization')], (e, row) => {
-        if (e) {
-          console.log(e.message);
-        }
-        return res.json({total: row.total + 0})
-      });
+      console.log("Individual total update sucessfull");
+      return res.json({total: row.total + 0})
+    });
   });
 });
 
@@ -257,7 +270,21 @@ app.get('/getCarbon', function (req, res) {
 
 app.get('/checkPerm', function (req, res) {
   console.log("Checked user permissions"); //log that it has been done sucessfully
-  res.json({perm: 'moderator'})// replace with a db query, return moderator or user
+      const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error:"database failure"});
+      }
+      if (row){
+        db.get("SELECT role FROM Users WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
+          if (e) {
+            console.log(e.message);
+          }
+          return res.json({perm : row.role})
+        });
+      }
+      return res.status(404).json({error:"user not found"})
+  });
 });
 
 // Define a route for GET requests to the root URL
@@ -273,15 +300,16 @@ app.listen(port, () => {
 
 
 // TODO
+// login DONE
 // signup check if exists sign up 401.DONE
-// update user account to moderator
+// update user account to moderator DONE
 // log when user logs out. DONE
-// store data when person submits - dashutil.
+// store data when person submits - dashutil. 
 // return new total when page refreshed. DONE
 // get challenges.
 // get missions.
-//getgroups.
+// getgroups.
 // join group. DONE
 // getcarbon, ie carbon saved from that action.
-// get permissions.
-//individual carbon saved. DONE
+// get permissions. DONE
+// individual carbon saved. DONE

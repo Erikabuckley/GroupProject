@@ -5,7 +5,7 @@ updateIndi();
 
 
 const form = document.getElementById('evidanceForm')
-if (form){
+if (form) {
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const mission = document.getElementById("mission-input").value;
@@ -17,45 +17,52 @@ if (form){
             {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type": "application/json"
                 },
-                body : JSON.stringify({mission, challenge, upload, email, quantity}   
+                body: JSON.stringify({ mission, challenge, upload, email, quantity }
                 )
-            }            
+            }
         );
         const data = await res.json();
         document.getElementById("upload-modal").style.display = "none";
-        showData(String(data.carbon));
+        showData(String(data.carbon)); //String(data.source)
     });
 };
 
 const joinForm = document.getElementById('joinForm')
-if (joinForm){
+if (joinForm) {
     joinForm.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const group = document.getElementById("group-input").value;
         const email = localStorage.getItem('name');
-        await fetch("/addGroup",
+        const res = await fetch("/addGroup",
             {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/json"
+                    "Content-Type": "application/json"
                 },
-                body : JSON.stringify({group, email}   
+                body: JSON.stringify({ group, email }
                 )
-            }            
+            }
         );
-        window.location.href = "dashboard.html";;
+        if (res.status === 409) {
+            const data = await res.json();
+            document.getElementById('error-message').textContent = data.error;
+            document.getElementById('error-message').style.visibility = 'visible';  // if there is an error then the erro message will be displayed
+        }
+        else {
+            window.location.href = "dashboard.html";//redirect
+        }
     });
 };
 
-async function updateMissionList(){
-    const res = await fetch ("/updateMissionList",
+async function updateMissionList() {
+    const res = await fetch("/updateMissionList",
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json",
-                "Authorization" : localStorage.getItem('name')
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -63,17 +70,17 @@ async function updateMissionList(){
     var vals = data.title;
     var selectElement = document.getElementById('mission-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v,v));
-        
+        selectElement.appendChild(new Option(v, v));
+
     };
 }
-async function updateChallengeList(){
-    const res = await fetch ("/updateChallengeList",
+async function updateChallengeList() {
+    const res = await fetch("/updateChallengeList",
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json",
-                "Authorization" : localStorage.getItem('name')
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -81,18 +88,18 @@ async function updateChallengeList(){
     var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v,v));
-        
+        selectElement.appendChild(new Option(v, v));
+
     };
 };
 
-async function updateGroupList(){
-    const res = await fetch ("/updateGroupList",
+async function updateGroupList() {
+    const res = await fetch("/updateGroupList",
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json",
-                "Authorization" : localStorage.getItem('name')
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -100,25 +107,26 @@ async function updateGroupList(){
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v,v));
-        
+        selectElement.appendChild(new Option(v, v));
+
     };
 };
 
-async function showData(num){
+async function showData(num) {
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("ammount").innerText = (num + "gt");
+    //document.getElementById("source").innerText = (source);
 }
 
-async function updateIndi(){
+async function updateIndi() {
     const res = await fetch("/updateTotalIndi",
         {
             method: "GET",
             headers: {
-                "Content-Type" : "application/json",
-                "Authorization" : localStorage.getItem('name')
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('name')
             }
-        }            
+        }
     );
     const data = await res.json();
     document.getElementById("indi-carbon").textContent = data.total;
