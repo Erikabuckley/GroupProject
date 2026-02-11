@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS Maintainers (
 
 CREATE TABLE IF NOT EXISTS ConversionFactors (
     factor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    -- 
     source TEXT NOT NULL, 
     unit_in TEXT NOT NULL, 
     unit_out TEXT NOT NULL, 

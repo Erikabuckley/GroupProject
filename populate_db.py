@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import date, timedelta
 
 # Connect to database
 con = sqlite3.connect("CarbonChallenge.db")
@@ -12,8 +13,10 @@ def populate_users(cursor):
     users = []
     for i in range(1, 61): 
         display_name = f"user_{i}"
+        # default role is participant
         role = "participant"
-        email = f"user{i}@ex.com"
+        email = f"user{i}@exeter.ac.uk"
+        # use hashing 
         password = "123"
 
         users.append((display_name, role, email, password))
@@ -42,17 +45,64 @@ def populate_groups(cursor):
         groups
     )
 
+today = date.today()
+end_date = today + timedelta(days = 365)
 def populate_challenges(cursor):
-    challenges = []
-    for i in range(1, 501):
-        title = f"challenge_{i}"
-        scope = ""
-        rules = ""
-        scoring = ""
-        start_date = ""
-        end_date = ""
+    challenges_info = [
+        {
+            "title": "Litter picking",
+            "scope": "Personal",
+            "rules": "Pick up ten pieces of litter in a day",
+            "scoring": "5 points" 
+        },
+        {
+            "title": "Make a journey by foot",
+            "scope": "Personal",
+            "rules": "Switch a journey made by a vehicle to one by foot",
+            "scoring": "5 points"
+        },
+        {
+            "title": "Take public transport",
+            "scope": "Personal",
+            "rules": "Make a singular journey by public transport",
+            "scoring": "5 points"
+        },
+        {
+            "title": "Vegeterian for 5 days",
+            "scope": "Personal",
+            "rules": "Eat 5 vegetarian meals in a week",
+            "scoring": "10 points"
+        },
+        {
+            "title": "Vegan for 3 days",
+            "scope": "Personal",
+            "rules": "Eat 3 vegan meals in a week",
+            "scoring": "10 points"
+        },
+        {
+            "title": "100km cycle",
+            "scope": "Group",
+            "rules": "Complete a 100km cycle between the group over 1 month",
+            "scoring": "30 points"
+        },
+        {
+            "title": "Saving CO2",
+            "scope": "Group",
+            "rules": "Save 500kg CO2 between the group in a month)",
+            "scoring": "40"
+        },
+        {
+            "title": "Recycle",
+            "scope": "Personal",
+            "rules": "Take 50kg of recycling to a recycling point",
+            "scoring": "30"
+        }
+    ]
 
-        challenges.append((title, scope, rules, scoring, start_date, end_date))
+    challenges = []
+
+    for c in challenges_info:
+        challenges.append((c["title"], c["scope"], c["rules"], c["scoring"], today, end_date))
 
     cursor.executemany(
         """
@@ -61,6 +111,8 @@ def populate_challenges(cursor):
         """,
         challenges
     )
+
+# def populate_action_logs(cursor):
 
 populate_users(cursor)
 populate_groups(cursor)
