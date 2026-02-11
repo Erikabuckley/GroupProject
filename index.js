@@ -236,7 +236,7 @@ app.get('/updateChallengeList', function (req, res) {
       return res.status(500).json({error: "database failure"});
     }
 
-    db.all("SELECT title FROM Challenges", [], (e, rows) => {
+    db.all("SELECT title, start_date FROM Challenges", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({error: "database failure"});
@@ -248,7 +248,7 @@ app.get('/updateChallengeList', function (req, res) {
       }
 
       const title = rows.map(r => r.title);
-      const date = rows.map(r => r.date);
+      const date = rows.map(r => r.start_date);
       return res.json({title, date});
 
     }); // closes db.all
