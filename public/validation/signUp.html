@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/loginStyle.css">
+    <script type="text/javascript" src="../scripts/validation.js" defer></script>
+    <script type="text/javascript" src="../scripts/template.js" defer></script> 
+
+    <Title> Sign up</Title>
+</head>
+
+<body>
+    <div class="header-container"></div>
+
+    <div class="ls-container">
+        <div class="ls-form">
+            <h2>Sign up:</h2>
+            <form class="login" id="form">
+                <input required type="text" name="firstname" id="firstname-input" placeholder="First name" autocomplete="given-name"><br>
+                <input required type="text" name="email" id="email-input" placeholder="Email" autocomplete="email"><br>
+                <input required type="password" name="password" id="password-input" placeholder="Password"><br>
+                <div class="policy-tick TandC">
+                    <input required type="checkbox" id="tandc" name="tandc">
+                    <label for="tandc"> I have read the <a href="policies/terms.html">terms and conditions</a></label>
+                </div>
+                <div class="policy-tick priv">
+                    <input required type="checkbox" id="priv" name="priv">
+                    <label for="priv"> I have read the <a href="policies/privacyPolicy.html">privacy policy</a></label>
+                </div>
+                <input type="submit" value="Sign up" name="signIn" id="signup" class="in-button">
+            </form>
+            <p>Already have an account? <a href="login.html">Log in</a></p>
+        </div>
+    </div>
+    <div class="footer-container"></div>
+</body>
+
+</html>

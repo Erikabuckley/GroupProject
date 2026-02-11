@@ -1,0 +1,70 @@
+.ribon {
+    position: flex;
+    top: 4.5rem;
+    left :0;
+    background-color: rgb(168, 202, 186);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    font-size: 1.5rem;
+}
+
+.moderator {
+    display: none;
+}
+
+.header {
+    padding: 0.5rem;
+}
+
+.header-heading {
+    font-size: 2rem;
+    text-align: center;
+    color: white;
+}
+
+.ribon-heading {
+    display: flex;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    left :0;
+}
+
+.ribon-heading a {
+    color: white;
+    text-decoration: none;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover{
+    cursor: pointer;
+}
+
+.modal{
+    display:none;
+    z-index: 1;
+    position: fixed;
+    left:50%;
+    top:50%;
+    padding: 2rem;
+    width: max-content;
+    height: max-content;
+    background-color: white;
+    border-radius: 8px;
+    color: black;
+    text-align: center;
+    padding:2rem;
+    transform: translate(-50%, -50%);
+}
+#evidanceForm {
+    gap:5px;
+    display: flex;
+    flex-direction: column;
+}

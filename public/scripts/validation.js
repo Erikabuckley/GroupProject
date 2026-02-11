@@ -1,0 +1,60 @@
+const form = document.getElementById('form')
+
+if (form){
+    form.addEventListener('submit', async (e) => { //wait till form has been submitted
+        e.preventDefault(); // stop page reload
+        const action = e.submitter.value;
+        if (action === 'Log in') { // check if login
+            const email = document.getElementById("email-input").value; //get info and store in constants
+            const password = document.getElementById("password-input").value;
+            const res = await fetch("/login", // send data to backend
+                {
+                    method: "POST", //sending data to the server
+                    headers: {
+                        "Content-Type" : "application/json" //tells server how data is formatted
+                    },
+                    body : JSON.stringify({email, password} //turn to json
+                    )
+                }
+            );
+            const data = await res.json();
+            if(res.status === 401) {
+                document.getElementById('error-message').style.visibility='visible';   
+            }
+            else{
+                localStorage.setItem('type',data.type);
+                localStorage.setItem('auth','1');
+                localStorage.setItem('name',email);
+                window.location.href = "../dash/dashboard.html";//redirect   
+            }
+        } 
+        else if (action === 'Sign up') {
+            const email = document.getElementById("email-input").value;
+            const password = document.getElementById("password-input").value;
+            const name = document.getElementById("firstname-input").value;
+            const priv = document.getElementById("priv").checked;
+            const tandc = document.getElementById("tandc").checked;
+
+            if (priv && tandc){
+                const res = await fetch("/signUp",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type" : "application/json"
+                        },
+                        body : JSON.stringify({email, password,name}   
+                        )
+                    }
+                
+                );
+            
+                if(res.status === 401) {
+                    document.getElementById('error-message').style.visibility='visible';   
+                }
+                else{
+                    window.location.href = "login.html";//redirect
+                }
+            }
+        };
+    });
+};
