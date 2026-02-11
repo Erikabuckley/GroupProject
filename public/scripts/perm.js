@@ -1,7 +1,7 @@
-checkAuth()
+checkPerm()
 
-async function checkAuth(){
-    const res = await fetch ("/checkAuth",
+async function checkPerm(){
+    const res = await fetch ("/checkPerm",
         {
             method: "GET",
             headers: {
@@ -10,8 +10,8 @@ async function checkAuth(){
         }
     );
     const data = await res.json();
-    var auth = data.auth;
-    if (!((auth === true) && (localStorage.getItem('auth') === '1'))){
+    var perm = data.perm;
+    if (!((perm === 'moderator') && (localStorage.getItem('type') === 'moderator'))){
         window.location.href = '../index.html'
     }
 }

@@ -147,6 +147,11 @@ app.get('/checkAuth', function (req, res) {
   res.json({auth: true})// replace with a db query, 
 });
 
+app.get('/checkPerm', function (req, res) {
+  console.log("Check user type"); //log that it has been done sucessfully
+  res.json({perm: 'moderator'})// replace with a db query, 
+});
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
