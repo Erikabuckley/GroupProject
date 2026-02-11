@@ -29,8 +29,7 @@ body {
 }
 
 .header {
-    position: fixed;
-    width: 100%;
+    position: flex;
     min-height: auto;
     left: 0;
     top: 0;
@@ -40,6 +39,11 @@ body {
     flex-wrap: nowrap;
     justify-content: space-between;
     font-weight: bold;
+}
+
+.header.index {
+    position: fixed;
+    width: 100%;
 }
 
 .header-heading {
