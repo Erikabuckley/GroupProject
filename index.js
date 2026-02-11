@@ -82,15 +82,74 @@ app.post('/signUp', async (req, res) => {
 // get data from the  action
 app.post('/addAction', function (req, res) {
   console.log("Action request received"); // log that it has been done sucessfully
-  //add to db: action log
-
-  // WE NEED TO CREATE SEEDED MISSION AND FACTOR BEFORE THIS 
-  // generate current date
-  // get relevant user id from email
-  // calculate co2 saved
-  // insert action log
-  res.json({carbon : '10'})//return the amount of carbon saved
-  res.end();
+  console.log(req.body.email);
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    // generate current date
+    const date = new Date().toISOString();
+    // calculate co2 saved
+    db.get("SELECT action_type_id, default_factor_id FROM ActionTypes WHERE name = ?", [req.body.mission], async (e, actionType) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(400).json({error:"database error"});
+      }
+      if (!actionType) {
+        return res.status(400).json({error:"no action type found"});
+      }
+      if (actionType) {
+        const type_id = actionType.action_type_id;
+        const factor_id = actionType.default_factor_id;
+        db.get("SELECT value FROM ConversionFactors WHERE factor_id = ?", [factor_id], async (e, factor) => {
+          if (e || !factor) {
+            console.log(e.message);
+            return res.status(400).json({error:"no conversion factor found"});
+          }
+          if (factor) {
+            const co2_saved = factor.value * req.body.quantity;
+            // get relevant user id from email
+            db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.email], async (e, user) => {
+              if (e || !user) {
+                console.log(e.message);
+                return res.status(400).json({error:"no user found"});
+              }
+              if (user) {
+                if (req.body.challenge === 'no') {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
+                    if (e) {
+                      console.log(e.message);
+                      return res.status(500).json({ error: "Failed to create action log" });
+                    } else {
+                      return res.json({carbon : co2_saved});//return the amount of carbon saved
+                    }
+                  })
+                } else {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
+                    if (e) {
+                      console.log(e.message);
+                      return res.status(500).json({ error: "Failed to create action log" });
+                    } else {
+                      return res.json({carbon : co2_saved});//return the amount of carbon saved
+                    }
+                  })
+                  // db.run("INSERT INTO Submissions (challenge_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
+                  // if (e) {
+                  //     console.log(e.message);
+                  //     return res.status(500).json({ error: "Failed to create action log" });
+                  //   } else {
+                  //     return res.json({carbon : co2_saved});//return the amount of carbon saved
+                  //   }
+                  // })
+                }
+              }
+            })
+          }
+        })
+      }
+    })
+  })
 });
 // mission is covered by action type (in the name attribute)
 // hard code a quantity whilst developing
@@ -247,7 +306,7 @@ app.get('/updateChallengeList', function (req, res) {
 //get missions
 app.get('/updateMissionList', function (req, res) {
   console.log("Mission list update"); //log that it has been done sucessfully
-  res.json({title: ['challenge 1','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
+  res.json({title: ['walk 1km','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
 });
 
 //get groups
