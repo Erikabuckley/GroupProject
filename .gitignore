@@ -2,3 +2,5 @@
 *.sqlite
 node_modules/
 .dbnpm
+npm/
+
