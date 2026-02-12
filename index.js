@@ -278,7 +278,7 @@ app.get('/updateTotal', function (req, res) {
         return res.status(500).json({error:"database failure"});
       }
       // check if user exists
-      db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.submission_id = Submissions.submission_id WHERE Submissions.status = 'approved'", (e, row) => {
+      db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'approved'", (e, row) => {
         if (e) {
           console.log(e.message);
         }
@@ -297,7 +297,7 @@ app.get('/updateTotalIndi', function (req, res) {
       return res.status(500).json({error:"database failure"});
     }
     // check if user exists
-    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.submission_id = Submissions.submission_id JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
       if (e) {
         console.log(e.message);
       }
