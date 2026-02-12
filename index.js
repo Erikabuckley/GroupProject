@@ -270,43 +270,43 @@ app.post('/approveDeny', function (req, res) {
 });
 
 
-// // update total carbon saved
-// app.get('/updateTotal', function (req, res) {
-//   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-//       console.log("Total update request received");
-//       if (e) {
-//         console.log(e.message);
-//         return res.status(500).json({error:"database failure"});
-//       }
-//       // check if user exists
-//       db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'approved'", (e, row) => {
-//         if (e) {
-//           console.log(e.message);
-//         }
-//         console.log("Total update sucessfull");
-//         return res.json({total: row.total + 0})
-//       });
-//   });
-// });
+// update total carbon saved
+app.get('/updateTotal', function (req, res) {
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      console.log("Total update request received");
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error:"database failure"});
+      }
+      // check if user exists
+      db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'approved'", (e, row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        console.log("Total update sucessfull");
+        return res.json({total: row.total + 0})
+      });
+  });
+});
 
-// // update total carbon saved by individual
-// app.get('/updateTotalIndi', function (req, res) {
-//   console.log("Total individual update request recieved");
-//   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-//     if (e) {
-//       console.log(e.message);
-//       return res.status(500).json({error:"database failure"});
-//     }
-//     // check if user exists
-//     db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.submission_id = Submissions.submission_id JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
-//       if (e) {
-//         console.log(e.message);
-//       }
-//       console.log("Individual total update sucessfull");
-//       return res.json({total: row.total + 0})
-//     });
-//   });
-// });
+// update total carbon saved by individual
+app.get('/updateTotalIndi', function (req, res) {
+  console.log("Total individual update request recieved");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    // check if user exists
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log("Individual total update sucessfull");
+      return res.json({total: row.total + 0})
+    });
+  });
+});
 
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
