@@ -1,7 +1,6 @@
 .env
 *.sqlite
 node_modules/
-.dbnpm
+.dbn
 npm/
 npm
-
