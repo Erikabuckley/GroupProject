@@ -1,6 +1,6 @@
 const form = document.getElementById('form')
 
-if (form){
+if (form) {
     form.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const action = e.submitter.value;
@@ -11,47 +11,51 @@ if (form){
                 {
                     method: "POST", //sending data to the server
                     headers: {
-                        "Content-Type" : "application/json" //tells server how data is formatted
+                        "Content-Type": "application/json" //tells server how data is formatted
                     },
-                    body : JSON.stringify({email, password} //turn to json
+                    body: JSON.stringify({ email, password } //turn to json
                     )
                 }
             );
             const data = await res.json();
-            if(res.status === 401) {
-                document.getElementById('error-message').style.visibility='visible';   
+            if (res.status === 401) {
+                const data = await res.json();
+                document.getElementById('error-message').textContent = data.error;
+                document.getElementById('error-message').style.visibility = 'visible';
             }
-            else{
-                localStorage.setItem('type',data.type);
-                localStorage.setItem('auth','1');
-                localStorage.setItem('name',email);
+            else {
+                localStorage.setItem('type', data.type);
+                localStorage.setItem('auth', '1');
+                localStorage.setItem('name', email);
                 window.location.href = "../dash/dashboard.html";//redirect   
             }
-        } 
-        else if (action === 'Sign up') {
+        }
+        else if (action === 'Sign up') {//check if sign up
             const email = document.getElementById("email-input").value;
             const password = document.getElementById("password-input").value;
             const name = document.getElementById("firstname-input").value;
             const priv = document.getElementById("priv").checked;
             const tandc = document.getElementById("tandc").checked;
 
-            if (priv && tandc){
+            if (priv && tandc) {
                 const res = await fetch("/signUp",
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type" : "application/json"
+                            "Content-Type": "application/json"
                         },
-                        body : JSON.stringify({email, password,name}   
+                        body: JSON.stringify({ email, password, name }
                         )
                     }
-                
+
                 );
-            
-                if(res.status === 401) {
-                    document.getElementById('error-message').style.visibility='visible';   
+
+                if (res.status === 401) {
+                    const data = await res.json();
+                    document.getElementById('error-message').textContent = data.error;
+                    document.getElementById('error-message').style.visibility = 'visible';  // if there is an error then the erro message will be displayed
                 }
-                else{
+                else {
                     window.location.href = "login.html";//redirect
                 }
             }

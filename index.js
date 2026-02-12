@@ -35,11 +35,11 @@ app.post('/login', async (req, res) => {
             console.log("sign in user sucessful"); // log that user has been signed in
           } else { 
             console.log("incorrect password");
-            return res.status(401).json({error:"incorrect password"}); // return error
+            return res.status(401).json({error:"Incorrect password, please try again"}); // return error
           } 
         } else {
           console.log("user does not exist"); // log that user doesnt exist
-          return res.status(401).json({error:"user does not exist"});
+          return res.status(401).json({error:"No user with that email, please try again"});
         }
       })
     });
@@ -61,7 +61,7 @@ app.post('/signUp', async (req, res) => {
         }
         if (row) {
           console.log("User with this email already exists");
-          return res.status(401).json({error:"account already assosciated with this email"});
+          return res.status(401).json({error:"There is an account already with this email"});
         } else {
           // create hash password
           const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -82,15 +82,84 @@ app.post('/signUp', async (req, res) => {
 // get data from the  action
 app.post('/addAction', function (req, res) {
   console.log("Action request received"); // log that it has been done sucessfully
-  //add to db: action log
-
-  // WE NEED TO CREATE SEEDED MISSION AND FACTOR BEFORE THIS 
-  // generate current date
-  // get relevant user id from email
-  // calculate co2 saved
-  // insert action log
-  res.json({carbon : '10'})//return the amount of carbon saved
-  res.end();
+  console.log(req.body.email);
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    // generate current date
+    const date = new Date().toISOString();
+    // calculate co2 saved
+    db.get("SELECT action_type_id, default_factor_id FROM ActionTypes WHERE name = ?", [req.body.mission], async (e, actionType) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(400).json({error:"database error"});
+      }
+      if (!actionType) {
+        return res.status(400).json({error:"no action type found"});
+      }
+      if (actionType) {
+        const type_id = actionType.action_type_id;
+        const factor_id = actionType.default_factor_id;
+        db.get("SELECT source, value FROM ConversionFactors WHERE factor_id = ?", [factor_id], async (e, factor) => {
+          if (e || !factor) {
+            console.log(e.message);
+            return res.status(400).json({error:"no conversion factor found"});
+          }
+          if (factor) {
+            const co2_saved = factor.value * req.body.quantity;
+            const source_url = factor.source;
+            // get relevant user id from email
+            db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.email], async (e, user) => {
+              if (e || !user) {
+                console.log(e.message);
+                return res.status(400).json({error:"no user found"});
+              }
+              if (user) {
+                if (req.body.challenge === 'no') {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
+                    if (e) {
+                      console.log(e.message);
+                      return res.status(500).json({ error: "Failed to create action log" });
+                    } else {
+                      return res.json({carbon : co2_saved, source : source_url}); // return the amount of carbon saved and conversion source
+                    }
+                  })
+                } else {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], function (e) {
+                    if (e) {
+                      console.log(e.message);
+                      return res.status(500).json({ error: "Failed to create action log" });
+                    } else {
+                      const log_id = this.lastID;
+                      
+                      db.get("SELECT challenge_id FROM Challenges WHERE title = ?", [req.body.challenge], async (e, challenge) => {
+                        if (e || !challenge) {
+                          console.log(e.message);
+                          return res.status(400).json({error:"no challenge found"});
+                        }
+                        if (challenge) {
+                          db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_logs, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, req.body.group_id, log_id], e => {
+                            if (e) {
+                              console.log(e.message);
+                              return res.status(500).json({ error: "Failed to create submission" });
+                            } else {
+                              return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+              }
+            })
+          }
+        })
+      }
+    })
+  })
 });
 // mission is covered by action type (in the name attribute)
 // hard code a quantity whilst developing
@@ -172,14 +241,26 @@ app.post('/signOut', function (req, res) {
   res.end();
 });
 
-// upgrade user
+// upgrade user to moderator
 app.post('/upgrade', function (req, res) {
-  console.log("Upgrade request received"); // log that it has been done sucessfully
-  //return 401 if not allowed
-  res.status(200);
-  res.end();
+  console.log("Upgrade request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    db.get("UPDATE Users SET role = 'moderator' WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
+      if (e) {
+        console.log(e.message);
+        }
+      if (row){
+        console.log("Upgrade sucessfull")
+        return
+      }
+      return res.status(404).json({error:"user not found"})
+    });
+  });
 });
-
 // approve or deny a submission
 app.post('/approveDeny', function (req, res) {
   console.log("submission request received"); //log that it has been done sucessfully
@@ -190,17 +271,18 @@ app.post('/approveDeny', function (req, res) {
 
 // update total carbon saved
 app.get('/updateTotal', function (req, res) {
-  console.log("Total update"); //log that it has been done sucessfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      console.log("Total update request received");
       if (e) {
         console.log(e.message);
         return res.status(500).json({error:"database failure"});
       }
       // check if user exists
-      db.get("SELECT SUM(points) AS total FROM Submissions WHERE status = 'approved'", (e, row) => {
+      db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.submission_id = Submissions.submission_id WHERE Submissions.status = 'approved'", (e, row) => {
         if (e) {
           console.log(e.message);
         }
+        console.log("Total update sucessfull");
         return res.json({total: row.total + 0})
       });
   });
@@ -208,20 +290,20 @@ app.get('/updateTotal', function (req, res) {
 
 // update total carbon saved by individual
 app.get('/updateTotalIndi', function (req, res) {
-  console.log("Total indi update"); //log that it has been done sucessfully
-    console.log("Total update"); //log that it has been done sucessfully
-    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+  console.log("Total individual update request recieved");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    // check if user exists
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.submission_id = Submissions.submission_id JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
       if (e) {
         console.log(e.message);
-        return res.status(500).json({error:"database failure"});
       }
-      // check if user exists
-      db.get("SELECT SUM(points) AS total FROM Submissions JOIN Users ON Submissions.user_id = Users.user_id WHERE Submissions.status = 'approved' AND Users.email =?",[req.get('Authorization')], (e, row) => {
-        if (e) {
-          console.log(e.message);
-        }
-        return res.json({total: row.total + 0})
-      });
+      console.log("Individual total update sucessfull");
+      return res.json({total: row.total + 0})
+    });
   });
 });
 
@@ -259,7 +341,7 @@ app.get('/updateChallengeList', function (req, res) {
 //get missions
 app.get('/updateMissionList', function (req, res) {
   console.log("Mission list update"); //log that it has been done sucessfully
-  res.json({title: ['challenge 1','challenge 2','challenge3'],date: ['monday','tuesday','wednesday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
+  res.json({title: ['walk 1km','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
 });
 
 //get groups
@@ -304,7 +386,21 @@ app.get('/getCarbon', function (req, res) {
 
 app.get('/checkPerm', function (req, res) {
   console.log("Checked user permissions"); //log that it has been done sucessfully
-  res.json({perm: 'moderator'})// replace with a db query, return moderator or user
+      const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error:"database failure"});
+      }
+      if (row){
+        db.get("SELECT role FROM Users WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
+          if (e) {
+            console.log(e.message);
+          }
+          return res.json({perm : row.role})
+        });
+      }
+      return res.status(404).json({error:"user not found"})
+  });
 });
 
 // Define a route for GET requests to the root URL
@@ -320,15 +416,16 @@ app.listen(port, () => {
 
 
 // TODO
+// login DONE
 // signup check if exists sign up 401.DONE
-// update user account to moderator
+// update user account to moderator DONE
 // log when user logs out. DONE
-// store data when person submits - dashutil.
+// store data when person submits - dashutil. 
 // return new total when page refreshed. DONE
 // get challenges.
 // get missions.
-//getgroups.
+// getgroups.
 // join group. DONE
 // getcarbon, ie carbon saved from that action.
-// get permissions.
-//individual carbon saved. DONE
+// get permissions. DONE
+// individual carbon saved. DONE
