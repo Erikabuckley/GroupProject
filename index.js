@@ -102,13 +102,14 @@ app.post('/addAction', function (req, res) {
       if (actionType) {
         const type_id = actionType.action_type_id;
         const factor_id = actionType.default_factor_id;
-        db.get("SELECT value FROM ConversionFactors WHERE factor_id = ?", [factor_id], async (e, factor) => {
+        db.get("SELECT source, value FROM ConversionFactors WHERE factor_id = ?", [factor_id], async (e, factor) => {
           if (e || !factor) {
             console.log(e.message);
             return res.status(400).json({error:"no conversion factor found"});
           }
           if (factor) {
             const co2_saved = factor.value * req.body.quantity;
+            const source_url = factor.source;
             // get relevant user id from email
             db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.email], async (e, user) => {
               if (e || !user) {
@@ -122,26 +123,35 @@ app.post('/addAction', function (req, res) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
                     } else {
-                      return res.json({carbon : co2_saved});//return the amount of carbon saved
+                      return res.json({carbon : co2_saved, source : source_url}); // return the amount of carbon saved and conversion source
                     }
                   })
                 } else {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], function (e) {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
                     } else {
-                      return res.json({carbon : co2_saved});//return the amount of carbon saved
+                      const log_id = this.lastID;
+                      
+                      db.get("SELECT challenge_id FROM Challenges WHERE title = ?", [req.body.challenge], async (e, challenge) => {
+                        if (e || !challenge) {
+                          console.log(e.message);
+                          return res.status(400).json({error:"no challenge found"});
+                        }
+                        if (challenge) {
+                          db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_logs, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, req.body.group_id, log_id], e => {
+                            if (e) {
+                              console.log(e.message);
+                              return res.status(500).json({ error: "Failed to create submission" });
+                            } else {
+                              return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                            }
+                          })
+                        }
+                      })
                     }
                   })
-                  // db.run("INSERT INTO Submissions (challenge_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
-                  // if (e) {
-                  //     console.log(e.message);
-                  //     return res.status(500).json({ error: "Failed to create action log" });
-                  //   } else {
-                  //     return res.json({carbon : co2_saved});//return the amount of carbon saved
-                  //   }
-                  // })
                 }
               }
             })
