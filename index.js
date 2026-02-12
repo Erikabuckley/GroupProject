@@ -362,6 +362,7 @@ app.get('/updateMissionList', function (req, res) {
       }
     });
   });
+  // FRONT END ISSUE? - this is working on the front in the submit action form, but not on the dashboard
   // res.json({title: ['walk 1km','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
 });
 
