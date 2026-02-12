@@ -125,7 +125,7 @@ async function updateUserGroupsList() {
         }
     );
     const data = await res.json();
-    var vals = data.title;
+    var vals = data.groups;
     var selectElement = document.getElementById('group-challenge-input');
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));

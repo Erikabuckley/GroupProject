@@ -394,6 +394,33 @@ app.get('/updateGroupList', function (req, res) {
   }); // closes const db
 }); // closes app.get
 
+app.get('/updateUserGroupsList', function (req, res) {
+  console.log("User roup list update"); //log that it has been done sucessfully
+
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error: "database failure"});
+    }
+
+    db.all("SELECT name FROM Groups", [], (e, rows) => {//need to update to ensure its user group only 
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error: "database failure"});
+      }
+
+      if (!rows || rows.length === 0) {
+        console.log("no groups exist");
+        return res.json({groups: []});
+      }
+
+      const groups = rows.map(r => r.name);
+      return res.json({groups});
+
+    }); // closes db.all
+  }); // closes const db
+}); // closes app.get
+
 //get submissions
 app.get('/updateSubmissionsList', function (req, res) {
   console.log("Submissions list update"); //log that it has been done sucessfully
