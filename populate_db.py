@@ -1,9 +1,10 @@
 import sqlite3
 import random
+import string
+import hashlib
 from datetime import date, timedelta
 
 # TODO
-# hash passwords for users 
 # populate action types table
 # update groups?
 # 200 challenge submissions 
@@ -21,6 +22,17 @@ cursor.execute("DELETE FROM Groups")
 cursor.execute("DELETE FROM Challenges")
 cursor.execute("DELETE FROM ActionLogs")
 
+# randomly generate a password and hash it
+def hashed_password():
+    password = ""
+    for i in range (1, 5):
+        password += string.ascii_letters
+    for i in range(1, 3):
+        password += string.digits
+    for i in range(1, 2):
+        password += string.punctuation
+    return hashlib.sha256(password.encode()).hexdigest()
+        
 # insert users into db
 def populate_users(cursor):
     users = []
@@ -29,8 +41,8 @@ def populate_users(cursor):
         # default role is participant
         role = "participant"
         email = f"user{i}@exeter.ac.uk"
-        # use hashing 
-        password = "123"
+        # store hashed password 
+        password = hashed_password()
 
         users.append((display_name, role, email, password))
     
@@ -147,7 +159,7 @@ def populate_action_logs(cursor):
         quantity = random.randint(1, 10)
 
         # randomly choose a date in the last 30 days
-        date = today - timedelta(days = random.randint(0, 30))
+        date = (today - timedelta(days = random.randint(0, 30)))
 
         # randomly choose whether evidence is required or not
         evidence_required = random.choice([True, False])
