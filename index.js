@@ -140,13 +140,19 @@ app.post('/addAction', function (req, res) {
                           return res.status(400).json({error:"no challenge found"});
                         }
                         if (challenge) {
-                          db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_logs, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, req.body.group_id, log_id], e => {
-                            if (e) {
+                          db.get("SELECT group_id FROM Groups WHERE name = ?", [req.body.group], async (e, group) => {
+                            if (e || !challenge) {
                               console.log(e.message);
-                              return res.status(500).json({ error: "Failed to create submission" });
-                            } else {
-                              return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                              return res.status(400).json({error:"no group found found"});
                             }
+                            db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_logs, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
+                              if (e) {
+                                console.log(e.message);
+                                return res.status(500).json({ error: "Failed to create submission" });
+                              } else {
+                                return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                              }
+                            })
                           })
                         }
                       })
@@ -499,8 +505,8 @@ app.listen(port, () => {
 // getgroups. DONE
 // get submissions DONE
 // join group. DONE
-// user groups
+// user groups DONE
 // getcarbon, ie carbon saved from that action.
 // get permissions. DONE
 // individual carbon saved. DONE
-// approve deny a submssion
+// approve deny a submssion 
