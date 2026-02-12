@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <div id="backdrop"></div>
     <div class="header-container"></div>
 
     <div style="padding:12rem">
@@ -52,13 +53,21 @@
             var s_modal = document.getElementById("upload-modal");
             var s_btn = document.getElementById("upload");
             var s_span = document.getElementById("close-upload");
+            var backdrop = document.getElementById("backdrop");
 
             s_btn.onclick = function () {
                 s_modal.style.display = "block";
+                backdrop.style.display = "block";
             };
             s_span.onclick = function () {
                 s_modal.style.display = "none";
+                backdrop.style.display = "none";
             };
+            
+            backdrop.addEventListener('click', function  () {
+                s_modal.style.display = "none";
+                backdrop.style.display = "none";
+            });
         </script>
 
         <h1>Play with friends</h1><br>
@@ -83,13 +92,21 @@
             var j_modal = document.getElementById("join-modal");
             var j_span = document.getElementById("close-join");
             var j_btn = document.getElementById("join");
+            var backdrop = document.getElementById("backdrop");
 
             j_btn.onclick = function () {
                 j_modal.style.display = "block";
+                backdrop.style.display = "block";
             };
             j_span.onclick = function () {
                 j_modal.style.display = "none";
+                backdrop.style.display = "none";
             };
+            
+            backdrop.addEventListener('click', function  () {
+                j_modal.style.display = "none";
+                backdrop.style.display = "none";
+            });
         </script>
     </div>
 
@@ -106,10 +123,17 @@
     <script>
         var d_modal = document.getElementById("data-modal");
         var d_span = document.getElementById("close-data");
+            var backdrop = document.getElementById("backdrop");
 
-        d_span.onclick = function () {
-            d_modal.style.display = "none";
-        };
+            d_span.onclick = function () {
+                d_modal.style.display = "none";
+                backdrop.style.display = "none";
+            };
+            
+            backdrop.addEventListener('click', function  () {
+                d_modal.style.display = "none";
+                backdrop.style.display = "none";
+            });
     </script>
 
     <div class="total">

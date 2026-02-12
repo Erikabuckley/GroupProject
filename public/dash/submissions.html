@@ -14,6 +14,7 @@
 </head>
 
 <body>
+    <div id="backdrop"></div>
     <div class="header-container"></div>
     <div style="padding-top:12rem">
         <h1> Challenges to approve</h1>
@@ -39,10 +40,12 @@
     <script>
         var a_modal = document.getElementById("approveDeny-modal");
         var a_span = document.getElementById("close-approveDeny");
+        var backdrop = document.getElementById("backdrop");
 
         a_span.onclick = function () {
             a_modal.style.display = "none";
-        };            
+            backdrop.style.display = "none";
+        };           
     </script>
     </div>
 
