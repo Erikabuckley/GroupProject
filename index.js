@@ -207,7 +207,7 @@ app.post('/addGroup', function (req, res) {
 
         const user_id = userRow.user_id;
 
-        db.get("SELECT 1 FROM ParticipantGroup WHERE group_id = ? AND user_id = ?", [group_id, user_id],
+        db.get("SELECT 1 FROM ParticipantGroups WHERE group_id = ? AND user_id = ?", [group_id, user_id],
           (e, participantRow) => {
             if (e) {
               console.log(e.message);
@@ -219,7 +219,7 @@ app.post('/addGroup', function (req, res) {
               return res.status(409).json({error: "User already in group"});
             }
 
-            db.run("INSERT INTO ParticipantGroup (group_id, user_id) VALUES (?, ?)", [group_id, user_id], function (e) {
+            db.run("INSERT INTO ParticipantGroups (group_id, user_id) VALUES (?, ?)", [group_id, user_id], function (e) {
                 if (e) {
                   console.log(e.message);
                   return;
@@ -362,7 +362,6 @@ app.get('/updateMissionList', function (req, res) {
       }
     });
   });
-  // FRONT END ISSUE? - this is working on the front in the submit action form, but not on the dashboard
   // res.json({title: ['walk 1km','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct missions only, email is in the authorisation ehader
 });
 
@@ -403,7 +402,7 @@ app.get('/updateUserGroupsList', function (req, res) {
       return res.status(500).json({error: "database failure"});
     }
 
-    db.all("SELECT name FROM Groups", [], (e, rows) => {//need to update to ensure its user group only 
+    db.all("SELECT Groups.name FROM Groups JOIN ParticipantGroups ON ParticipantGroups.group_id = Groups.group_id JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email =?", [req.get('Authorization')], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({error: "database failure"});
@@ -474,9 +473,10 @@ app.listen(port, () => {
 // get challenges.DONE
 // get missions.DONE
 // getgroups. DONE
-// get submissions
+// get submissions DONE
 // join group. DONE
 // user groups
 // getcarbon, ie carbon saved from that action.
 // get permissions. DONE
 // individual carbon saved. DONE
+// approve deny a submssion
