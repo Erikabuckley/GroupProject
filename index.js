@@ -469,12 +469,14 @@ app.listen(port, () => {
 // signup check if exists sign up 401.DONE
 // update user account to moderator DONE
 // log when user logs out. DONE
-// store data when person submits - dashutil. 
+// store data when person submits - dashutil. DONE
 // return new total when page refreshed. DONE
-// get challenges.
-// get missions.
-// getgroups.
+// get challenges.DONE
+// get missions.DONE
+// getgroups. DONE
+// get submissions
 // join group. DONE
+// user groups
 // getcarbon, ie carbon saved from that action.
 // get permissions. DONE
 // individual carbon saved. DONE
