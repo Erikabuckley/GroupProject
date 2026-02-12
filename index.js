@@ -249,7 +249,7 @@ app.post('/upgrade', function (req, res) {
       console.log(e.message);
       return res.status(500).json({error:"database failure"});
     }
-    db.get("UPDATE Users SET role = 'moderator' WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
+    db.get("UPDATE Users SET role = 'moderator' WHERE Users.email =?",[req.body.email], (e, row) => {
       if (e) {
         console.log(e.message);
         }
@@ -423,8 +423,31 @@ app.get('/updateUserGroupsList', function (req, res) {
 //get submissions
 app.get('/updateSubmissionsList', function (req, res) {
   console.log("Submissions list update"); //log that it has been done sucessfully
-  res.json({title: ['one','two','three'], id: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi'], evidence: ['onesfsi09vhjdfi9vhjfi90vfi0vgh9','twofrijferihjre9ivhrihgerg9iheg9iegeh9i','threefijfrifjoivjdfivjdfi']})// replace with a db query, return title, id, evedenc => if none put null in place of it nsubmittor name and coresponding array from db
-});
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error: "database failure"});
+    }
+
+    db.all("SELECT ActionTypes.name, ActionLogs.log_id, ActionLogs.evidence_required FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'pending'", [], (e, rows) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({error: "database failure"});
+      }
+
+      if (!rows || rows.length === 0) {
+        console.log("no submissions exist");
+        return res.json({title: [], id:[], evidance:[]});
+      }
+
+      const title = rows.map(r => r.ActionTypes.name);
+      const id = rows.map(r => r.ActionLogs.log_id);
+      const evidence = rows.map(r => r.ActionLogs.evidance_required);
+      return res.json({title,id,evidence});
+
+    }); // closes db.all
+  }); // closes const db
+}); // closes app.get
 
 //get carbon
 app.get('/getCarbon', function (req, res) {
@@ -434,20 +457,21 @@ app.get('/getCarbon', function (req, res) {
 
 app.get('/checkPerm', function (req, res) {
   console.log("Checked user permissions"); //log that it has been done sucessfully
-      const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    db.get("SELECT role FROM Users WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
       if (e) {
         console.log(e.message);
-        return res.status(500).json({error:"database failure"});
+        return res.status(500).json({error: "database failure"});
+
       }
       if (row){
-        db.get("SELECT role FROM Users WHERE Users.email =?",[req.get('Authorization')], (e, row) => {
-          if (e) {
-            console.log(e.message);
-          }
-          return res.json({perm : row.role})
-        });
+        return res.json({perm : row.role})
       }
-      return res.status(404).json({error:"user not found"})
+    });  
   });
 });
 

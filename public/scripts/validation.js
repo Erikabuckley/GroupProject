@@ -19,7 +19,6 @@ if (form) {
             );
             const data = await res.json();
             if (res.status === 401) {
-                const data = await res.json();
                 document.getElementById('error-message').textContent = data.error;
                 document.getElementById('error-message').style.visibility = 'visible';
             }

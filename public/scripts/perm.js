@@ -1,6 +1,6 @@
 checkPerm()
 
-export async function checkPerm() {
+async function checkPerm() {
     const res = await fetch("/checkPerm",//gets the access level of the user
         {
             method: "GET",

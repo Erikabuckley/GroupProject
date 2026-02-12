@@ -7,7 +7,7 @@
 //    - /updateMissionList      -> fills #mission-input options (data.title)
 //    - /updateChallengeList    -> fills #challenge-input options (data.title)
 //    - /updateGroupList        -> fills #group-input options (data.groups)
-//    - /updateUserGroupsList   -> fills #group-challenge-input options (data.title)
+//    - /updateUserGroupsList   -> fills #group-challenge-input options (data.groups)
 //    - /updateTotalIndi        -> sets #indi-carbon (data.total)
 //
 // 2) Evidence submit (#evidanceForm):
@@ -141,7 +141,7 @@ function makeFetchMock(overrides = {}) {
     if (url === "/updateMissionList") return { json: async () => ({ title: [] }) };
     if (url === "/updateChallengeList") return { json: async () => ({ title: [] }) };
     if (url === "/updateGroupList") return { json: async () => ({ groups: [] }) };
-    if (url === "/updateUserGroupsList") return { json: async () => ({ title: [] }) };
+    if (url === "/updateUserGroupsList") return { json: async () => ({ groups: [] }) };
     if (url === "/updateTotalIndi") return { json: async () => ({ total: "0" }) };
 
     // Any unexpected endpoint returns empty JSON by default
@@ -172,7 +172,7 @@ test("DASHBOARD: Page load fetches data and populates dropdowns", async () => {
     },
     "/updateUserGroupsList": async () => {
       fetchedUrls.push("/updateUserGroupsList");
-      return { json: async () => ({ title: ["MyGroup"] }) };
+      return { json: async () => ({ groups: ["MyGroup"] }) };
     },
     "/updateTotalIndi": async () => {
       fetchedUrls.push("/updateTotalIndi");
