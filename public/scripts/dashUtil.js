@@ -17,7 +17,7 @@ if (form) {
 
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
-        
+
         const formData = new FormData();
         formData.append("mission", mission);
         formData.append("challenge", challenge);
@@ -155,5 +155,5 @@ async function updateIndi() {
         }
     );
     const data = await res.json();
-    document.getElementById("indi-carbon").textContent = data.total +'kg';
+    document.getElementById("indi-carbon").textContent = data.total + 'kg';
 }
