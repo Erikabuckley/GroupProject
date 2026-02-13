@@ -14,49 +14,57 @@ async function getSubmissions() {
     var id = data.id;
     var evidence = data.evidence;
 
-    var submissions = document.getElementById("submissions");
+    var submissions = document.getElementById("submissions-container");
     submissions.innerHTML = "";
 
-    for (let i = 0; i < title.length; i++) {// creates a card for each one of them
-        let cardDiv = document.createElement("div")
-        let titleDiv = document.createElement("div");
-        let idDiv = document.createElement("div");
-        let evidenceDiv = document.createElement("div");
+    const grouped = {};
 
-        cardDiv.className = "card";
-        cardDiv.id = "submission" + String(i);
-        titleDiv.className = "title";
-        idDiv.className = "id";
-        evidenceDiv.className = "evidance";
+    for (let i = 0; i < id.length; i++) {
+        if (!grouped[id[i]]) {
+            grouped[id[i]] = [];
+        }
 
-        cardDiv.dataset.index = i;
-        cardDiv.dataset.title = title[i];
-        cardDiv.dataset.id = id[i];
-        cardDiv.dataset.evidence = evidence[i];
-
-        titleDiv.textContent = title[i];
-        idDiv.textContent = id[i];
-        evidenceDiv.textContent = evidence[i];
-
-        idDiv.style.display = "none";// hides the id to make it annonamous
-
-        cardDiv.appendChild(titleDiv);
-        cardDiv.appendChild(idDiv);
-        cardDiv.appendChild(evidenceDiv);
-
-        submissions.appendChild(cardDiv);//adds each card to the list of cards
-
-        cardDiv.addEventListener('click', () => { //checks if a card has been clicked
-            selectedCard = {
-                index: i,
-                title: title[i],
-                id: id[i],
-                evidence: evidence[i]
-            };
-            document.getElementById('approveDeny-modal').style.display = 'block';//display approval screen
+        grouped[id[i]].push({
+            title: title[i],
+            id: id[i],
+            evidence: evidence[i],
+            index: i
         });
     }
-};
+       Object.keys(grouped).forEach(groupId => {
+
+        // Group container
+        const submissionDiv = document.createElement("div");
+        submissionDiv.className = "submission";
+        submissionDiv.dataset.id = groupId;
+
+        grouped[groupId].forEach(item => {
+
+            const cardDiv = document.createElement("div");
+            const titleDiv = document.createElement("div");
+            const evidenceDiv = document.createElement("div");
+
+            cardDiv.className = "card";
+            titleDiv.className = "title";
+            evidenceDiv.className = "evidence";
+
+            titleDiv.textContent = item.title;
+            evidenceDiv.textContent = item.evidence;
+
+            cardDiv.appendChild(titleDiv);
+            cardDiv.appendChild(evidenceDiv);
+
+            submissionDiv.appendChild(cardDiv);
+        });
+         
+        submissionDiv.addEventListener('click', () => {
+            selectedCard = grouped[groupId];
+            document.getElementById('approveDeny-modal').style.display = 'block';
+        });
+
+        submissions.appendChild(submissionDiv);
+    });
+}
 
 getSubmissions();
 

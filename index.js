@@ -435,7 +435,7 @@ app.get('/updateSubmissionsList', function (req, res) {
       return res.status(500).json({error: "database failure"});
     }
 
-    db.all("SELECT ActionTypes.name, ActionLogs.log_id, ActionLogs.evidence_required FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'pending'", [], (e, rows) => {
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'Pending'", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({error: "database failure"});
@@ -446,9 +446,9 @@ app.get('/updateSubmissionsList', function (req, res) {
         return res.json({title: [], id:[], evidance:[]});
       }
 
-      const title = rows.map(r => r.ActionTypes.name);
-      const id = rows.map(r => r.ActionLogs.log_id);
-      const evidence = rows.map(r => r.ActionLogs.evidance_required);
+      const title = rows.map(r => r.name);
+      const id = rows.map(r => r.submission_id);
+      const evidence = rows.map(r => r.evidance_required);
       return res.json({title,id,evidence});
 
     }); // closes db.all

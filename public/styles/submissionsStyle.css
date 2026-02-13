@@ -1,11 +1,11 @@
-.card{
+.submission{
     background-color: var(--main);
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;
 }
 
-.card:hover{
+.submission:hover{
     background-color: var(--second);
 }
 .title{
@@ -16,11 +16,22 @@
     font-style: italic;
 
 }
+.card{
+    background-color: white;
+    margin:1rem;
+    padding:1rem;
+    border-radius: 2rem;
+}
 
-#submissions{
+#submissions-container{
     display: flex;
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
 }
 
+.submission-group {
+    border: 2px solid red;
+    margin-bottom: 20px;
+    padding: 10px;
+}
