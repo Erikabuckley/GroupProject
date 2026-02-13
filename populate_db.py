@@ -81,49 +81,49 @@ def populate_challenges(cursor):
             "title": "Litter picking",
             "scope": "Personal",
             "rules": "Pick up ten pieces of litter in a day",
-            "scoring": "5 points" 
+            "scoring": 5
         },
         {
             "title": "Make a journey by foot",
             "scope": "Personal",
             "rules": "Switch a journey made by a vehicle to one by foot",
-            "scoring": "5 points"
+            "scoring": 5
         },
         {
             "title": "Take public transport",
             "scope": "Personal",
             "rules": "Make a singular journey by public transport",
-            "scoring": "5 points"
+            "scoring": 5
         },
         {
             "title": "Vegeterian for 5 days",
             "scope": "Personal",
             "rules": "Eat 5 vegetarian meals in a week",
-            "scoring": "10 points"
+            "scoring": 10
         },
         {
             "title": "Vegan for 3 days",
             "scope": "Personal",
             "rules": "Eat 3 vegan meals in a week",
-            "scoring": "10 points"
+            "scoring": 10
         },
         {
             "title": "100km cycle",
             "scope": "Group",
             "rules": "Complete a 100km cycle between the group over 1 month",
-            "scoring": "30 points"
+            "scoring": 30
         },
         {
             "title": "Saving CO2",
             "scope": "Group",
             "rules": "Save 500kg CO2 between the group in a month)",
-            "scoring": "40 points"
+            "scoring": 40
         },
         {
             "title": "Recycle",
             "scope": "Personal",
             "rules": "Take 50kg of recycling to a recycling point",
-            "scoring": "30 points"
+            "scoring": 30
         }
     ]
 
