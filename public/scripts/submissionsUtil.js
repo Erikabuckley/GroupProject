@@ -60,6 +60,13 @@ async function getSubmissions() {
             titleDiv.textContent = item.title;
             evidenceDiv.textContent = item.evidence;
 
+            const img = document.createElement("img");
+            img.src = item.evidence;
+            img.alt = "Submission evidence";
+            img.className = "evidence-photo";
+
+            evidenceDiv.appendChild(img);
+
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(evidenceDiv);
 

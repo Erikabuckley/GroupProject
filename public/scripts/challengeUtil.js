@@ -47,7 +47,6 @@ async function getMissions() {
     );
     const data = await res.json();// gets all mission information
     var title = data.title;
-    var date = data.date;
 
     var challenges = document.getElementById("missions");
     challenges.innerHTML = "";
@@ -55,15 +54,11 @@ async function getMissions() {
     for (let i = 0; i < title.length; i++) {
         let cardDiv = document.createElement("div")
         let titleDiv = document.createElement("div");
-        let dateDiv = document.createElement("div");
         cardDiv.className = "card";
         titleDiv.className = "title";
-        dateDiv.className = "date";
 
         titleDiv.innerHTML = title[i];
-        dateDiv.innerHTML = date[i];
         cardDiv.appendChild(titleDiv);
-        cardDiv.appendChild(dateDiv);
 
         missions.appendChild(cardDiv);//adds each mission to a card then adds this to the main div
     }
