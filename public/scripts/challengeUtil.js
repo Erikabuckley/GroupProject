@@ -48,8 +48,8 @@ async function getMissions() {
     const data = await res.json();// gets all mission information
     var title = data.title;
 
-    var challenges = document.getElementById("missions");
-    challenges.innerHTML = "";
+    var missions = document.getElementById("missions");
+    missions.innerHTML = "";
 
     for (let i = 0; i < title.length; i++) {
         let cardDiv = document.createElement("div")
