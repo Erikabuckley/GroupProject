@@ -270,11 +270,34 @@ app.post('/upgrade', function (req, res) {
 
 // approve or deny a submission
 app.post('/approveDeny', function (req, res) {
-  console.log("submission request received"); //log that it has been done sucessfully
-  //use the id that is in json body, this use match db id
-  res.end();
-});
+  console.log("Approve deny request received"); //log that it has been done sucessfully
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({error:"database failure"});
+    }
+    if (req.body.outcome === 'approve'){
+      db.get("UPDATE Submissions SET status = 'Approved' WHERE Submissions.submission_id = ? ",[req.body.id], (e, row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        console.log("Submission aprove sucessfull");
+        res.end();
+      });
+    } else if (req.body.outcome === 'deny'){
+      db.get("UPDATE Submissions SET status = 'Denied' WHERE Submissions.id = ? ",[req.body.id], (e, row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        console.log("Submission deny sucessfull");
+        res.end();
 
+      });
+    } else{
+      return res.status(500).json({error:"database failure"});
+    }
+  });
+});
 
 // update total carbon saved
 app.get('/updateTotal', function (req, res) {
@@ -435,7 +458,7 @@ app.get('/updateSubmissionsList', function (req, res) {
       return res.status(500).json({error: "database failure"});
     }
 
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'Pending'", [], (e, rows) => {
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({error: "database failure"});
@@ -449,7 +472,8 @@ app.get('/updateSubmissionsList', function (req, res) {
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
       const evidence = rows.map(r => r.evidance_required);
-      return res.json({title,id,evidence});
+      const challenge_title = rows.map(r => r.title);
+      return res.json({title,id,evidence,challenge_title});
 
     }); // closes db.all
   }); // closes const db
@@ -498,7 +522,7 @@ app.listen(port, () => {
 // signup check if exists sign up 401.DONE
 // update user account to moderator DONE
 // log when user logs out. DONE
-// store data when person submits - dashutil. DONE
+// store data when person submits - dashutil. DONE NEED TO UPDATE WITH NEW SCHEMA
 // return new total when page refreshed. DONE
 // get challenges.DONE
 // get missions.DONE
@@ -509,4 +533,4 @@ app.listen(port, () => {
 // getcarbon, ie carbon saved from that action.
 // get permissions. DONE
 // individual carbon saved. DONE
-// approve deny a submssion 
+// approve deny a submssion DONE

@@ -1,4 +1,4 @@
-let selectedCard = null;
+let selectedSubmission = null;
 
 async function getSubmissions() {
     const res = await fetch("/updateSubmissionsList",//gets current submission information
@@ -13,6 +13,8 @@ async function getSubmissions() {
     var title = data.title;
     var id = data.id;
     var evidence = data.evidence;
+    var challenge_title = data.challenge_title;
+
 
     var submissions = document.getElementById("submissions-container");
     submissions.innerHTML = "";
@@ -28,6 +30,7 @@ async function getSubmissions() {
             title: title[i],
             id: id[i],
             evidence: evidence[i],
+            challenge_title: challenge_title[i],
             index: i
         });
     }
@@ -35,8 +38,14 @@ async function getSubmissions() {
 
         // Group container
         const submissionDiv = document.createElement("div");
+        const challengeTitleDiv = document.createElement("div");
         submissionDiv.className = "submission";
+        challengeTitleDiv.className = "challenge_title"
+        challengeTitleDiv.textContent = grouped[groupId][0].challenge_title;
         submissionDiv.dataset.id = groupId;
+
+        submissionDiv.appendChild(challengeTitleDiv);
+
 
         grouped[groupId].forEach(item => {
 
@@ -58,7 +67,11 @@ async function getSubmissions() {
         });
          
         submissionDiv.addEventListener('click', () => {
-            selectedCard = grouped[groupId];
+            selectedSubmission = {
+                id: groupId,
+                challenge_title: grouped[groupId][0].challenge_title,
+                logs: grouped[groupId]
+            };            
             document.getElementById('approveDeny-modal').style.display = 'block';
         });
 
@@ -68,14 +81,14 @@ async function getSubmissions() {
 
 getSubmissions();
 
-async function approveDeny(name, outcome, reason, id) {
+async function approveDeny(outcome, reason, id) {
     await fetch("/approveDeny",
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ name, outcome, reason, id }
+            body: JSON.stringify({outcome, reason, id }
             )
         }
 
@@ -87,7 +100,7 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     e.preventDefault(); // stop page reload
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
-    await approveDeny(selectedCard.title, decision, reason, selectedCard.id);  //calls function to subbmit information to database
+    await approveDeny(decision, reason, selectedSubmission.id);  //calls function to subbmit information to database
     form.reset();
     document.getElementById('approveDeny-modal').style.display = 'none';
 });
