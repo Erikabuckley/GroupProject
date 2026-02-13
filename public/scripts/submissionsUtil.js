@@ -89,13 +89,14 @@ async function getSubmissions() {
 getSubmissions();
 
 async function approveDeny(outcome, reason, id) {
+    const mod_email = localStorage.getItem('name')
     await fetch("/approveDeny",
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({outcome, reason, id }
+            body: JSON.stringify({outcome, reason, id, mod_email}
             )
         }
 

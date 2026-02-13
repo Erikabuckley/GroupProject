@@ -11,5 +11,5 @@ async function updateTotal() {
         }
     );
     const data = await res.json();
-    document.getElementById("total-carbon").textContent = data.total;//updates the total on the home page with the new total
+    document.getElementById("total-carbon").textContent = data.total + 'kg';//updates the total on the home page with the new total
 }

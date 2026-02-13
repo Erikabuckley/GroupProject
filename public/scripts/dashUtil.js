@@ -135,7 +135,7 @@ async function updateUserGroupsList() {
 
 async function showData(num, source) {
     document.getElementById("data-modal").style.display = "block";
-    document.getElementById("ammount").innerText = (num + "gt");
+    document.getElementById("ammount").innerText = (num + "kg");
     document.getElementById("source").innerText = (source);
 }
 
@@ -150,5 +150,5 @@ async function updateIndi() {
         }
     );
     const data = await res.json();
-    document.getElementById("indi-carbon").textContent = data.total;
+    document.getElementById("indi-carbon").textContent = data.total +'kg';
 }

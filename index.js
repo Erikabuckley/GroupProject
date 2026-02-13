@@ -8,6 +8,7 @@ const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
 const { getgroups } = require('process');
 const { CLIENT_RENEG_WINDOW } = require('tls');
+const { timeStamp } = require('console');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
@@ -145,7 +146,7 @@ app.post('/addAction', function (req, res) {
                               console.log(e.message);
                               return res.status(400).json({error:"no group found found"});
                             }
-                            db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_logs, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
+                            db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
                               if (e) {
                                 console.log(e.message);
                                 return res.status(500).json({ error: "Failed to create submission" });
@@ -276,26 +277,40 @@ app.post('/approveDeny', function (req, res) {
       console.log(e.message);
       return res.status(500).json({error:"database failure"});
     }
-    if (req.body.outcome === 'approve'){
-      db.get("UPDATE Submissions SET status = 'Approved' WHERE Submissions.submission_id = ? ",[req.body.id], (e, row) => {
-        if (e) {
-          console.log(e.message);
+    db.get("SELECT user_id FROM Users WHERE email = ?",[req.body.mod_email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      } else if (row){
+        const id = row.user_id
+        const timestamp = new Date().toISOString();
+        db.run("INSERT INTO ModerationDecisions (submission_id, moderator_id, decision, reason, timestamp)VALUES (?, ?, ?, ?, ?) ",[req.body.id, id ,req.body.outcome, req.body.reason, timestamp], (e) => {
+          if (e) {
+            console.log(e.message);
+          } else{
+          console.log("Request added to db");
+          }; 
+        });
+        if (req.body.outcome === 'approve'){
+          db.get("UPDATE Submissions SET status = 'Approved' WHERE Submissions.submission_id = ? ",[req.body.id], (e, row) => {
+            if (e) {
+              console.log(e.message);
+            }
+            console.log("Submission aprove sucessfull");
+            res.end();
+          });
+        } else if (req.body.outcome === 'deny'){
+          db.get("UPDATE Submissions SET status = 'Denied' WHERE Submissions.id = ? ",[req.body.id], (e, row) => {
+            if (e) {
+              console.log(e.message);
+            }
+            console.log("Submission deny sucessfull");
+            res.end();
+          });
         }
-        console.log("Submission aprove sucessfull");
-        res.end();
-      });
-    } else if (req.body.outcome === 'deny'){
-      db.get("UPDATE Submissions SET status = 'Denied' WHERE Submissions.id = ? ",[req.body.id], (e, row) => {
-        if (e) {
-          console.log(e.message);
-        }
-        console.log("Submission deny sucessfull");
-        res.end();
-
-      });
-    } else{
-      return res.status(500).json({error:"database failure"});
-    }
+      } else{
+        return res.status(500).json({error:"database failure"});
+      }
+    });
   });
 });
 
@@ -308,7 +323,7 @@ app.get('/updateTotal', function (req, res) {
         return res.status(500).json({error:"database failure"});
       }
       // check if user exists
-      db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs WHERE Submissions.status = 'approved'", (e, row) => {
+      db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.status = 'Approved'", (e, row) => {
         if (e) {
           console.log(e.message);
         }
@@ -327,7 +342,7 @@ app.get('/updateTotalIndi', function (req, res) {
       return res.status(500).json({error:"database failure"});
     }
     // check if user exists
-    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?",[req.get('Authorization')], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -458,7 +473,7 @@ app.get('/updateSubmissionsList', function (req, res) {
       return res.status(500).json({error: "database failure"});
     }
 
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_logs JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({error: "database failure"});
