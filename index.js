@@ -142,16 +142,47 @@ app.post('/addAction', function (req, res) {
                         }
                         if (challenge) {
                           db.get("SELECT group_id FROM Groups WHERE name = ?", [req.body.group], async (e, group) => {
-                            if (e || !challenge) {
+                            if (e || !group) {
                               console.log(e.message);
                               return res.status(400).json({error:"no group found found"});
                             }
-                            db.run("INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')", [challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
+                            // get all submissions for this group submission -challenge and group
+                            db.get("SELECT submission_id FROM Submissions WHERE challenge_id = ? AND group_id = ?", [challenge.challenge_id, group.group_id], async (e, submission) => {
+                              // if no rows then find highest submission id and increment
                               if (e) {
                                 console.log(e.message);
-                                return res.status(500).json({ error: "Failed to create submission" });
+                                return res.status(400).json({error:"database error"});
+                              }
+                              // if rows then save submission id
+                              if (submission) {
+                                db.run("INSERT INTO Submissions (submission_id, challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, ?, 0, 'Pending')", [submission.submission_id, challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
+                                  if (e) {
+                                    console.log(e.message);
+                                    return res.status(500).json({ error: "Failed to create submission" });
+                                  } else {
+                                    return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                                  }
+                                })
                               } else {
-                                return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                                db.get("SELECT MAX(submission_id) AS max_id FROM Submissions", [], async (e, row) => {
+                                  if (e) {
+                                    console.log(e.message);
+                                    return res.status(400).json({error:"no group found found"});
+                                  }
+                                  if (row) {
+                                    const sub_id = row.max_id + 1;
+                                  } else {
+                                    const sub_id = 1;
+                                  }
+                                  db.run("INSERT INTO Submissions (submission_id, challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, ?, 0, 'Pending')", [sub_id, challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
+                                    if (e) {
+                                      console.log(e.message);
+                                      return res.status(500).json({ error: "Failed to create submission" });
+                                    } else {
+                                      return res.json({carbon : co2_saved, source: source_url}); // return the amount of carbon saved and conversion source
+                                    }
+                                  })
+                                })
                               }
                             })
                           })
