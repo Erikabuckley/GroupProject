@@ -9,43 +9,47 @@
     <script type="text/javascript" src="../scripts/auth.js" defer></script>
     <script type="text/javascript" src="../scripts/perm.js" defer></script>
     <script type="text/javascript" src="../scripts/submissionsUtil.js" defer></script>
-    
+
     <title>Submissions</title>
 </head>
 
 <body>
+    <div id="backdrop"></div>
     <div class="header-container"></div>
-    <div style="padding-top:12rem">
+    <div>
         <h1> Challenges to approve</h1>
     </div>
-    <div id="submissions"></div>
+    <div id="submissions-container"></div>
 
     <div id="approveDeny-modal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="close-approveDeny">&times;</span>
-                <h2>Is this submission acceptable:</h2>
-                <form class="form" id="approveDenyForm">
-                    <label for="approve">Approve</label>
-                    <input type="radio" name="val" value="approve" id="approve" required>
-                    <label for="approve">Deny</label>
-                    <input type="radio" name="val" value="deny" id="deny" required><br>
-                    <label for="reason-input">Please provide a reason</label><br>
-                    <textarea required id="reason-input"></textarea><br>
-                    <input type="submit" value="Submit" name="confirm" id="approveDeny-submit" class="in-button">
-                </form>
-            </div>
+        <div class="modal-content">
+            <span class="close" id="close-approveDeny">&times;</span>
+            <h2>Is this submission acceptable:</h2>
+            <form class="form" id="approveDenyForm">
+                <label for="approve">Approve</label>
+                <input type="radio" name="val" value="approve" id="approve" required>
+                <label for="approve">Deny</label>
+                <input type="radio" name="val" value="deny" id="deny" required><br>
+                <label for="reason-input">Please provide a reason</label><br>
+                <textarea required id="reason-input"></textarea><br>
+                <input type="submit" value="Submit" name="confirm" id="approveDeny-submit" class="in-button">
+            </form>
         </div>
+    </div>
 
-        <script>
-            var a_modal = document.getElementById("approveDeny-modal");
-            var a_span = document.getElementById("close-approveDeny");
+    <script>
+        var a_modal = document.getElementById("approveDeny-modal");
+        var a_span = document.getElementById("close-approveDeny");
+        var backdrop = document.getElementById("backdrop");
 
-            a_span.onclick = function () {
-               a_modal.style.display = "none";
-            };            
-        </script>
+        a_span.onclick = function () {
+            a_modal.style.display = "none";
+            backdrop.style.display = "none";
+        };           
+    </script>
     </div>
 
     <div class="footer-container"></div>
 </body>
+
 </html>
