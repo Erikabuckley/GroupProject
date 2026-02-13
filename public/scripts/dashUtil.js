@@ -12,19 +12,24 @@ if (form) {
         const mission = document.getElementById("mission-input").value;
         const quantity = document.getElementById("quantity-input").value;
         const challenge = document.getElementById("challenge-input").value;
-        const upload = document.getElementById("upload-input").value;
         const group = document.getElementById("group-challenge-input").value;
         const email = localStorage.getItem('name');
-        const res = await fetch("/addAction",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ mission, challenge, upload, email, quantity, group}
-                )
-            }
-        );
+
+        const uploadInput = document.getElementById("upload-input");
+        const file = uploadInput.files[0];
+        
+        const formData = new FormData();
+        formData.append("mission", mission);
+        formData.append("challenge", challenge);
+        formData.append("quantity", quantity);
+        formData.append("group", group);
+        formData.append("email", email);
+        if (file) formData.append("upload", file);
+
+        const res = await fetch("/addAction", {
+            method: "POST",
+            body: formData, // send as multipart/form-data
+        });
         const data = await res.json();
         document.getElementById("upload-modal").style.display = "none";
         showData(String(data.carbon), String(data.source));

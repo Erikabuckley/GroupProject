@@ -1,18 +1,27 @@
 const express = require('express'); //imports express ie frmaework we are using
 const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
 const path = require('path');
+const multer = require("multer");
 const { OPEN_READWRITE } = require('sqlite3');
-const app = express();
 const sqlite3 = require('sqlite3').verbose(); 
 const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
-const { getgroups } = require('process');
-const { CLIENT_RENEG_WINDOW } = require('tls');
-const { timeStamp } = require('console');
+const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
 
+//for saving image to file
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, "public/uploads"));
+    },
+    filename: (req, file, cb) => {
+        const timestamp = Date.now();
+        cb(null, `${timestamp}-${file.originalname}`);
+    },
+});
+const upload = multer({ storage });
 
 // get data from the login
 app.post('/login', async (req, res) => {
@@ -81,9 +90,14 @@ app.post('/signUp', async (req, res) => {
 });
 
 // get data from the  action
-app.post('/addAction', function (req, res) {
+app.post('/addAction', upload.single('upload'),function (req, res) {
   console.log("Action request received"); // log that it has been done sucessfully
-  console.log(req.body.email);
+  
+  let uploadedFilePath = null;
+  if (req.file) {
+    uploadedFilePath = `/uploads/${req.file.filename}`; // public path for frontend
+    console.log("File saved to:", uploadedFilePath);
+  }  
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -108,6 +122,7 @@ app.post('/addAction', function (req, res) {
             console.log(e.message);
             return res.status(400).json({error:"no conversion factor found"});
           }
+          const evidencePath = uploadedFilePath || 'no file';
           if (factor) {
             const co2_saved = factor.value * req.body.quantity;
             const source_url = factor.source;
@@ -117,9 +132,10 @@ app.post('/addAction', function (req, res) {
                 console.log(e.message);
                 return res.status(400).json({error:"no user found"});
               }
+
               if (user) {
                 if (req.body.challenge === 'no') {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], e => {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], e => {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
@@ -128,7 +144,7 @@ app.post('/addAction', function (req, res) {
                     }
                   })
                 } else {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, req.body.upload, co2_saved], function (e) {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], function (e) {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
@@ -518,7 +534,7 @@ app.get('/updateSubmissionsList', function (req, res) {
 
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
-      const evidence = rows.map(r => r.evidance_required);
+      const evidence = rows.map(r => r.evidence_required);
       const challenge_title = rows.map(r => r.title);
       return res.json({title,id,evidence,challenge_title});
 

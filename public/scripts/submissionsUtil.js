@@ -58,14 +58,16 @@ async function getSubmissions() {
             evidenceDiv.className = "evidence";
 
             titleDiv.textContent = item.title;
-            evidenceDiv.textContent = item.evidence;
-
-            const img = document.createElement("img");
-            img.src = item.evidence;
-            img.alt = "Submission evidence";
-            img.className = "evidence-photo";
-
-            evidenceDiv.appendChild(img);
+            
+            if (item.evidence) {
+                const img = document.createElement("img");
+                img.src = item.evidence; // this should be the full URL from backend
+                img.alt = "Submission evidence";
+                img.className = "evidence-photo";
+                evidenceDiv.appendChild(img);
+            } else {
+                evidenceDiv.textContent = "No evidence uploaded"; // fallback text
+            }
 
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(evidenceDiv);

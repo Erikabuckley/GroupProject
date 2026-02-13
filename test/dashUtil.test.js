@@ -209,9 +209,16 @@ test("DASHBOARD: Submitting evidence calls /addAction and shows result modal", a
 
   dom.window.fetch = makeFetchMock({
     "/addAction": async (url, options = {}) => {
-      payload = JSON.parse(options.body);
+      if (options.body instanceof dom.window.FormData) {
+        payload = {};
+        for (const [key, value] of options.body.entries()) {
+          payload[key] = value;
+        }
+      } else {
+        payload = JSON.parse(options.body);
+      }
       return { json: async () => ({ carbon: 100, source: "link here" }) };
-    },
+    }
   });
 
   dom.window.localStorage.setItem("name", "user@test.com");
