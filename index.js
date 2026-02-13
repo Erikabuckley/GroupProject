@@ -169,10 +169,11 @@ app.post('/addAction', function (req, res) {
                                     console.log(e.message);
                                     return res.status(400).json({error:"no group found found"});
                                   }
+                                  var sub_id;
                                   if (row) {
-                                    const sub_id = row.max_id + 1;
+                                     sub_id = row.max_id + 1;
                                   } else {
-                                    const sub_id = 1;
+                                      sub_id = 1;
                                   }
                                   db.run("INSERT INTO Submissions (submission_id, challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, ?, 0, 'Pending')", [sub_id, challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
                                     if (e) {
