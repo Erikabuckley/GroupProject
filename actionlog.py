@@ -4,8 +4,8 @@ import sqlite3
 con = sqlite3.connect("CarbonChallenge.db")
 cursor = con.cursor()
 
-cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'wiki.com', 'km', 'co2', 5, 'empty'), (102, 'wiki.com', 'pcs', 'co2', 2, 'empty')")
-cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 pieces', 'pcs', 102)")
+cursor.execute("INSERT OR IGNORE INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 5, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 2, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 3, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'kcal', 'g', 5, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'kcal', 'g', 4, 'empty')")
+cursor.execute("INSERT OR IGNORE INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'vegan for a day', 'kcal', 104), (5, 'FOOD', 'vegeterian for a day', 'kcal', 105)")
 
 
 '''Drive 1mile = 280g carbon https://www.carbonindependent.org/17.html 
