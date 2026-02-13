@@ -80,6 +80,8 @@ async function getSubmissions() {
                 logs: grouped[groupId]
             };            
             document.getElementById('approveDeny-modal').style.display = 'block';
+            document.getElementById('backdrop').style.display = "block";
+
         });
 
         submissions.appendChild(submissionDiv);
@@ -111,4 +113,6 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     await approveDeny(decision, reason, selectedSubmission.id);  //calls function to subbmit information to database
     form.reset();
     document.getElementById('approveDeny-modal').style.display = 'none';
+    
+    document.getElementById('backdrop').style.display = "none";
 });

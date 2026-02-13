@@ -12,5 +12,5 @@ Keira Manglani: DevOps
 Darcy Luke: UI & UX & requirements 
 Thalia Champ: Documentation and comms
 
-## view 
+## to view deployed version
 https://groupproject-e980.onrender.com/

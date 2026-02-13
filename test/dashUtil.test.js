@@ -15,7 +15,7 @@
 //      { mission, challenge, upload, email, quantity, group }
 //    - hides #upload-modal and shows #data-modal
 //    - renders:
-//      #ammount = "<carbon>gt"
+//      #ammount = "<carbon>kg"
 //      #source  = "<source>"
 //
 // 3) Join group (#joinForm):
@@ -192,7 +192,7 @@ test("DASHBOARD: Page load fetches data and populates dropdowns", async () => {
   assert.ok(fetchedUrls.includes("/updateUserGroupsList"), "Expected /updateUserGroupsList on load");
 
   // Stat updated
-  assert.equal(dom.window.document.getElementById("indi-carbon").textContent, "500");
+  assert.equal(dom.window.document.getElementById("indi-carbon").textContent, "500kg");
 
   // Ensure user-groups dropdown got populated
   const groupChallengeSelect = dom.window.document.getElementById("group-challenge-input");
@@ -255,7 +255,7 @@ test("DASHBOARD: Submitting evidence calls /addAction and shows result modal", a
   // UI changes after submit
   assert.equal(doc.getElementById("upload-modal").style.display, "none");
   assert.equal(doc.getElementById("data-modal").style.display, "block");
-  assert.equal(readText(doc.getElementById("ammount")), "100gt");
+  assert.equal(readText(doc.getElementById("ammount")), "100kg");
   assert.equal(readText(doc.getElementById("source")), "link here");
 });
 
