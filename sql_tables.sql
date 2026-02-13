@@ -72,19 +72,21 @@ CREATE TABLE IF NOT EXISTS Challenges (
     title TEXT NOT NULL, 
     scope TEXT NOT NULL, 
     rules TEXT NOT NULL, 
-    scoring TEXT NOT NULL, 
+    scoring INTEGER NOT NULL, 
     start_date TEXT NOT NULL, 
     end_date TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Submissions (
-    submission_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    submission_id INTEGER NOT NULL,
+    linked_action_log INTEGER NOT NULL,
     challenge_id INTEGER NOT NULL, 
     user_id INTEGER NOT NULL, 
     group_id INTEGER NOT NULL,
-    linked_action_logs TEXT NOT NULL,
     points INTEGER NOT NULL,
     status TEXT NOT NULL,
+    PRIMARY KEY (submission_id, linked_action_log),
+    FOREIGN KEY (linked_action_log) REFERENCES ActionLogs(log_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
     FOREIGN KEY (user_id) REFERENCES Participants(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
