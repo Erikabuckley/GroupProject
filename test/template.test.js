@@ -114,6 +114,8 @@ test("TEMPLATE: Sign Out button clears session", async () => {
 
   dom.window.localStorage.setItem("auth", "1");
   dom.window.localStorage.setItem("name", "me");
+  dom.window.localStorage.setItem("type", "moderator");
+
 
   loadScript(dom);
   await new Promise((r) => setTimeout(r, 20));
@@ -128,4 +130,6 @@ test("TEMPLATE: Sign Out button clears session", async () => {
   assert.ok(signOutCalled, "Should call /signOut endpoint");
   assert.equal(dom.window.localStorage.getItem("auth"), null);
   assert.equal(dom.window.localStorage.getItem("name"), null);
+    assert.equal(dom.window.localStorage.getItem("type"), null);
+
 });

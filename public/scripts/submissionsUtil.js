@@ -34,7 +34,7 @@ async function getSubmissions() {
             index: i
         });
     }
-       Object.keys(grouped).forEach(groupId => {
+    Object.keys(grouped).forEach(groupId => {
 
         // Group container
         const submissionDiv = document.createElement("div");
@@ -58,27 +58,29 @@ async function getSubmissions() {
             evidenceDiv.className = "evidence";
 
             titleDiv.textContent = item.title;
-            evidenceDiv.textContent = item.evidence;
 
-            const img = document.createElement("img");
-            img.src = item.evidence;
-            img.alt = "Submission evidence";
-            img.className = "evidence-photo";
-
-            evidenceDiv.appendChild(img);
+            if (item.evidence) {
+                const img = document.createElement("img");
+                img.src = item.evidence; // this should be the full URL from backend
+                img.alt = "Submission evidence";
+                img.className = "evidence-photo";
+                evidenceDiv.appendChild(img);
+            } else {
+                evidenceDiv.textContent = "No evidence uploaded"; // fallback text
+            }
 
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(evidenceDiv);
 
             submissionDiv.appendChild(cardDiv);
         });
-         
+
         submissionDiv.addEventListener('click', () => {
             selectedSubmission = {
                 id: groupId,
                 challenge_title: grouped[groupId][0].challenge_title,
                 logs: grouped[groupId]
-            };            
+            };
             document.getElementById('approveDeny-modal').style.display = 'block';
             document.getElementById('backdrop').style.display = "block";
 
@@ -98,7 +100,7 @@ async function approveDeny(outcome, reason, id) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({outcome, reason, id, mod_email}
+            body: JSON.stringify({ outcome, reason, id, mod_email }
             )
         }
 
@@ -113,6 +115,6 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     await approveDeny(decision, reason, selectedSubmission.id);  //calls function to subbmit information to database
     form.reset();
     document.getElementById('approveDeny-modal').style.display = 'none';
-    
+
     document.getElementById('backdrop').style.display = "none";
 });

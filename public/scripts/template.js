@@ -30,6 +30,7 @@ async function loadHeader() {
                 )
                 localStorage.removeItem('auth');
                 localStorage.removeItem('name');
+                localStorage.removeItem('type');
                 window.location.href = "../index.html"
             });
         };
