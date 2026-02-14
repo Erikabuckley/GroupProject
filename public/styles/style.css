@@ -29,7 +29,6 @@ body {
 }
 
 .header {
-    position: flex;
     min-height: auto;
     left: 0;
     top: 0;
@@ -39,6 +38,7 @@ body {
     flex-wrap: nowrap;
     justify-content: space-between;
     font-weight: bold;
+    align-items: center;
 }
 
 .header.index {
@@ -51,7 +51,8 @@ body {
     margin-right: 1rem;
     margin-left: 1rem;
     padding-top: 2rem;
-    padding: 30px 40px;
+    padding-bottom: 2rem;
+    padding-right: 1rem;
 }
 
 .header-heading a {
@@ -123,8 +124,8 @@ body {
 }
 
 #logo{
-    max-width: auto;
-    max-height: 50px;
+    max-height: 65px;
+    padding-left: 1rem;
 }
 
 .in-button {

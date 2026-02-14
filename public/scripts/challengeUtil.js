@@ -27,7 +27,7 @@ async function getChallenges() {
         dateDiv.className = "date";
 
         titleDiv.innerHTML = title[i];
-        dateDiv.innerHTML = date[i];
+        dateDiv.innerHTML = "End date: "+ date[i];
         cardDiv.appendChild(titleDiv);
         cardDiv.appendChild(dateDiv);
 

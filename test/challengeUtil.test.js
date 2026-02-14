@@ -83,7 +83,7 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
   const challengeCards = window.document.querySelectorAll("#challenges .card");
   assert.equal(challengeCards.length, 2);
   assert.equal(challengeCards[0].querySelector(".title").textContent, "Challenge A");
-  assert.equal(challengeCards[0].querySelector(".date").textContent, "2026-02-01");
+  assert.equal(challengeCards[0].querySelector(".date").textContent, "End date: 2026-02-01");
 
   // Assert mission DOM
   const missionCards = window.document.querySelectorAll("#missions .card");

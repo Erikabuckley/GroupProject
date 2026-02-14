@@ -42,9 +42,9 @@ app.post('/login', async (req, res) => {
         console.log("user exists"); // log that user exists
         if (passwordMatches) {
           res.json({ type: row.role }); // if valid return role
-          console.log("sign in user sucessful"); // log that user has been signed in
+          console.log("User sign in sucessful"); // log that user has been signed in
         } else {
-          console.log("incorrect password");
+          console.log("Incorrect password enterd");
           return res.status(401).json({ error: "Incorrect password, please try again" }); // return error
         }
       } else {
@@ -239,7 +239,7 @@ app.post('/addGroup', function (req, res) {
       }
 
       if (!row) {
-        console.log("group does not exist");
+        console.log("Group does not exist");
         return res.status(404).json({ error: "group does not exist" });
       }
 
@@ -399,7 +399,6 @@ app.get('/updateTotalIndi', function (req, res) {
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
   console.log("Challenge list update"); //log that it has been done sucessfully
-  // res.json({title: ['challenge 1','challenge 2','challenge3'],date: ['monday','tuesday','wednsday']})// replace with a db query return title, date ending as values and matching array in db for currenct challenges only, email is in the authorisation header
 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
@@ -407,19 +406,19 @@ app.get('/updateChallengeList', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
 
-    db.all("SELECT title, start_date FROM Challenges", [], (e, rows) => {
+    db.all("SELECT title, end_date FROM Challenges WHERE end_date > DATE('now')", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
 
       if (!rows || rows.length === 0) {
-        console.log("no challenges exist");
+        console.log("No challenges exist");
         return res.json({ challenges: [] });
       }
 
       const title = rows.map(r => r.title);
-      const date = rows.map(r => r.start_date);
+      const date = rows.map(r => r.end_date);
       return res.json({ title, date });
 
     }); // closes db.all
@@ -441,7 +440,7 @@ app.get('/updateMissionList', function (req, res) {
         return res.status(500).json({ error: "database failure" });
       }
       if (!rows || rows.length === 0) {
-        console.log("no missions exist");
+        console.log("No missions exist");
         return res.json({ title: [] });
       }
       if (rows) {
@@ -469,7 +468,7 @@ app.get('/updateGroupList', function (req, res) {
       }
 
       if (!rows || rows.length === 0) {
-        console.log("no groups exist");
+        console.log("No groups exist");
         return res.json({ groups: [] });
       }
 
@@ -481,7 +480,7 @@ app.get('/updateGroupList', function (req, res) {
 }); // closes app.get
 
 app.get('/updateUserGroupsList', function (req, res) {
-  console.log("User roup list update"); //log that it has been done sucessfully
+  console.log("User group list update"); //log that it has been done sucessfully
 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
@@ -496,7 +495,7 @@ app.get('/updateUserGroupsList', function (req, res) {
       }
 
       if (!rows || rows.length === 0) {
-        console.log("no groups exist");
+        console.log("User is in no groups");
         return res.json({ groups: [] });
       }
 
@@ -523,7 +522,7 @@ app.get('/updateSubmissionsList', function (req, res) {
       }
 
       if (!rows || rows.length === 0) {
-        console.log("no submissions exist");
+        console.log("No submissions exist");
         return res.json({ title: [], id: [], evidance: [] });
       }
 
