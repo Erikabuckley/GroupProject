@@ -141,8 +141,8 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
   assert.deepEqual(groupVals, ["G1", "G2"]);
   assert.deepEqual(userGroupVals, ["UG1"]);
 
-  // Indi total updated (script does: data.total + 'kg')
-  assert.equal(window.document.getElementById("indi-carbon").textContent, "10kg");
+  // Indi total updated (script does: data.total + 'g')
+  assert.equal(window.document.getElementById("indi-carbon").textContent, "10g");
 });
 
 /* TEST 2: Evidence submit posts /addAction (FormData), hides upload modal, shows data */
@@ -217,7 +217,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
   // Confirm upload modal hidden + data modal shown and filled
   assert.equal(window.document.getElementById("upload-modal").style.display, "none");
   assert.equal(window.document.getElementById("data-modal").style.display, "block");
-  assert.equal(window.document.getElementById("ammount").innerText, "7kg");
+  assert.equal(window.document.getElementById("ammount").innerText, "7g");
   assert.equal(window.document.getElementById("source").innerText, "Test source");
 });
 

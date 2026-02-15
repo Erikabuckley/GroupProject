@@ -3,7 +3,7 @@
 // updateTotal():
 // - GET /updateTotal
 // - reads JSON { total: number }
-// - sets #total-carbon textContent to "<total>kg"
+// - sets #total-carbon textContent to "<total>g"
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -51,7 +51,7 @@ test("TOTAL (real script): loads total.js and updates #total-carbon from /update
   await tick();
 
   assert.ok(fetchCall, "Expected fetch to be called by total.js");
-  assert.equal(window.document.getElementById("total-carbon").textContent, "42kg");
+  assert.equal(window.document.getElementById("total-carbon").textContent, "42g");
 
   // Cleanup: total.js assigns `total = ...` without let/const
   delete window.total;
@@ -73,7 +73,7 @@ test("TOTAL (real script): overwrites existing text in #total-carbon", async () 
   loadRealScript(window, "public/scripts/total.js");
   await tick();
 
-  assert.equal(window.document.getElementById("total-carbon").textContent, "0kg");
+  assert.equal(window.document.getElementById("total-carbon").textContent, "0g");
 
   delete window.total;
 });

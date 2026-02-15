@@ -178,10 +178,17 @@ def populate_action_logs(cursor):
         action_logs
     )
 
+def populate_action_conversion_factors(cursor):
+    cursor.execute("DELETE FROM ConversionFactors")
+    cursor.execute("DELETE FROM ActionTypes")
+    cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820, 'empty')")
+    cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'vegan for a day', 'kcal', 104), (5, 'FOOD', 'vegeterian for a day', 'kcal', 105)")
+
 populate_users(cursor)
 populate_groups(cursor)
 populate_challenges(cursor)
 populate_action_logs(cursor)
+populate_action_conversion_factors(cursor)
 
 # check that the above have been added to the database
 
@@ -197,6 +204,8 @@ print("Challenges:", cursor.fetchone()[0])
 cursor.execute("SELECT COUNT(*) FROM ActionLogs")
 print("Action logs:", cursor.fetchone()[0])
 
+cursor.execute("SELECT COUNT(*) FROM ConversionFactors")
+print("Conversion factors:", cursor.fetchone()[0])
 # save and close the connection
 con.commit()
 con.close()
