@@ -92,7 +92,7 @@ async function getSubmissions() {
 
 getSubmissions();
 
-async function approveDeny(outcome, reason, id) {
+async function approveDeny(outcome, reason, id,challenge_name) {
     const mod_email = localStorage.getItem('name')
     await fetch("/approveDeny",
         {
@@ -100,7 +100,7 @@ async function approveDeny(outcome, reason, id) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ outcome, reason, id, mod_email }
+            body: JSON.stringify({ outcome, reason, id, mod_email, challenge_name}
             )
         }
 
@@ -112,7 +112,7 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     e.preventDefault(); // stop page reload
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
-    await approveDeny(decision, reason, selectedSubmission.id);  //calls function to subbmit information to database
+    await approveDeny(decision, reason, selectedSubmission.id, selectedSubmission.challenge_title);  //calls function to subbmit information to database
     form.reset();
     document.getElementById('approveDeny-modal').style.display = 'none';
 

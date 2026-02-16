@@ -332,25 +332,33 @@ app.post('/approveDeny', function (req, res) {
             console.log(e.message);
           } else {
             console.log("Request added to db");
-          };
+            if (req.body.outcome === 'approve') {
+              db.get("SELECT scoring AS score FROM Challenges WHERE title = ? ", [req.body.challenge_name], (e, row) => {
+                if (e) {
+                  console.log(e.message);
+                }
+                console.log("Retreived points sucesfully");
+                if (row){
+                  db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
+                    if (e) {
+                      console.log(e.message);
+                    }
+                    console.log("Submission aprove sucessfull");
+                    res.end();
+                  });
+                }
+              });
+            } else if (req.body.outcome === 'deny') {
+              db.run("UPDATE Submissions SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e, row) => {
+                if (e) {
+                  console.log(e.message);
+                }
+                console.log("Submission deny sucessfull");
+                res.end();
+              });
+            }
+          }
         });
-        if (req.body.outcome === 'approve') {
-          db.get("UPDATE Submissions SET status = 'Approved' WHERE Submissions.submission_id = ? ", [req.body.id], (e, row) => {
-            if (e) {
-              console.log(e.message);
-            }
-            console.log("Submission aprove sucessfull");
-            res.end();
-          });
-        } else if (req.body.outcome === 'deny') {
-          db.get("UPDATE Submissions SET status = 'Denied' WHERE Submissions.id = ? ", [req.body.id], (e, row) => {
-            if (e) {
-              console.log(e.message);
-            }
-            console.log("Submission deny sucessfull");
-            res.end();
-          });
-        }
       } else {
         return res.status(500).json({ error: "database failure" });
       }
@@ -367,7 +375,7 @@ app.get('/updateTotal', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.status = 'Approved'", (e, row) => {
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs", (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -386,11 +394,30 @@ app.get('/updateTotalIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.get('Authorization')], (e, row) => {
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Users.email = ?", [req.get('Authorization')], (e, row) => {
       if (e) {
         console.log(e.message);
       }
       console.log("Individual total update sucessfull");
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// update total carbon saved by individual
+app.get('/updatePointsIndi', function (req, res) {
+  console.log("Total individual update request recieved");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.get('Authorization')], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log("Individual points update sucessfull");
       return res.json({ total: row.total + 0 })
     });
   });

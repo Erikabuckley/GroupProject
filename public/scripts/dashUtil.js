@@ -3,7 +3,7 @@ updateMissionList();
 updateGroupList();
 updateUserGroupsList();
 updateIndi();
-
+updatePoints();
 
 const form = document.getElementById('evidanceForm')
 if (form) {
@@ -156,4 +156,18 @@ async function updateIndi() {
     );
     const data = await res.json();
     document.getElementById("indi-carbon").textContent = data.total + 'g';
+}
+
+async function updatePoints() {
+    const res = await fetch("/updatePointsIndi",
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": localStorage.getItem('name')
+            }
+        }
+    );
+    const data = await res.json();
+    document.getElementById("indi-points").textContent = data.total + ' points';
 }
