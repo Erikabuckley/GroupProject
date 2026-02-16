@@ -6,6 +6,8 @@
 //   updateGroupList();
 //   updateUserGroupsList();
 //   updateIndi();
+//   updatePointsIndi();
+
 //
 // It also attaches submit listeners to #evidanceForm and #joinForm (if they exist).
 //
@@ -53,6 +55,7 @@ function makeWindow() {
      <select id="group-challenge-input"></select>
 
      <div id="indi-carbon"></div>
+    <div id="indi-points"></div>
 
      <div id="upload-modal" style="display:block"></div>
      <div id="data-modal" style="display:none"></div>
@@ -112,6 +115,10 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
     if (url === "/updateTotalIndi") {
       return { async json() { return { total: 10 }; } };
     }
+    
+    if (url === "/updatePointsIndi") {
+      return { async json() { return { total: 5 }; } };
+    }
 
     throw new Error("Unexpected fetch call: " + url);
   };
@@ -126,6 +133,7 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
     "/updateGroupList",
     "/updateUserGroupsList",
     "/updateTotalIndi",
+    "/updatePointsIndi",
   ]) {
     assert.ok(seen.has(u), `Expected call to ${u}`);
   }
@@ -143,6 +151,7 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
 
   // Indi total updated (script does: data.total + 'g')
   assert.equal(window.document.getElementById("indi-carbon").textContent, "10g");
+  assert.equal(window.document.getElementById("indi-points").textContent, "5 points");
 });
 
 /* TEST 2: Evidence submit posts /addAction (FormData), hides upload modal, shows data */
@@ -160,7 +169,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
     if (url === "/updateGroupList") return { async json() { return { groups: ["G1"] }; } };
     if (url === "/updateUserGroupsList") return { async json() { return { groups: ["UG1"] }; } };
     if (url === "/updateTotalIndi") return { async json() { return { total: 0 }; } };
-
+    if (url === "/updatePointsIndi") return { async json() { return { total: 5 }; } };
     if (url === "/addAction") {
       lastAddAction = { url, opts };
       return { async json() { return { carbon: 7, source: "Test source" }; } };
@@ -236,6 +245,7 @@ test("DASHBOARD (real script): join group 409 shows error message", async () => 
     if (url === "/updateGroupList") return { async json() { return { groups: ["G1"] }; } };
     if (url === "/updateUserGroupsList") return { async json() { return { groups: [] }; } };
     if (url === "/updateTotalIndi") return { async json() { return { total: 0 }; } };
+    if (url === "/updatePointsIndi") return { async json() { return { total: 5}; } };
 
     if (url === "/addGroup") {
       addGroupCalled = true;
@@ -285,6 +295,7 @@ test("DASHBOARD (real script): join group success attempts redirect to dashboard
     if (url === "/updateGroupList") return { async json() { return { groups: ["G1"] }; } };
     if (url === "/updateUserGroupsList") return { async json() { return { groups: [] }; } };
     if (url === "/updateTotalIndi") return { async json() { return { total: 0 }; } };
+    if (url === "/updatePointsIndi") return { async json() { return { points: 0 }; } };
 
     if (url === "/addGroup") {
       assert.equal(opts.method, "POST");

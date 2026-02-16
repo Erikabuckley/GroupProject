@@ -210,6 +210,7 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
     reason: "Looks good",
     id: "A",
     mod_email: "mod@example.com",
+    challenge_name: 'Challenge X'
   });
 
   // Assert modal/backdrop closed
@@ -329,6 +330,8 @@ test("SUBMISSIONS (real script): submit works even if no decision radio selected
         reason: "No decision picked",
         id: "A",
         mod_email: "mod@example.com",
+        challenge_name: "Challenge X",
+
       });
 
       return { status: 200, async json() { return {}; } };
