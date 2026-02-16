@@ -1,41 +1,32 @@
 .total-screen {
     display: flex;
+    align-items: center;
 }
 
 .total-text {
     text-align: justify;
 }
 
-
-
 .rank-screen {
     display: flex;
-    padding-top: 4rem;
 }
-
 
 .rank-text {
-    padding-left: 8rem;
     text-align: justify;
-}
-
-.rank {
-    padding-left: 4rem
 }
 
 .award-screen {
     display: flex;
-    padding-top: 4rem;
+    align-items: center;
 }
 
 .award-text {
-    padding-right: 8rem;
     text-align: justify;
 }
 
 .award {
-    padding-top: 6rem;
-    padding-right: 4rem;
+    padding : 3rem;
+    margin-left: auto;
 }
 
 
