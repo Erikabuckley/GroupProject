@@ -12,7 +12,7 @@ async function checkPerm() {
     );
     const data = await res.json();
     var perm = data.perm;
-    if (!(perm === 'moderator')) { //checks the stored acces level to allow acces to moderator features
+    if (!(perm === 'moderator')) { //checks the stored access level to allow access to moderator features
         window.location.href = '../index.html'
     }
 }

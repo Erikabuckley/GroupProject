@@ -13,11 +13,11 @@ if (button) {
             }
         );
         if (res.status === 401) {
-            document.getElementById('error-message').style.visibility = 'visible';   //if the user is nnot allowed to be upgraded then will display an error message
+            document.getElementById('error-message').style.visibility = 'visible';   //if the user is not allowed to be upgraded then will display an error message
         }
         else {
             localStorage.setItem('auth', '1');
-            window.location.href = "../validation/login.html"; // if not will promt them to relogin to show moderator features
+            window.location.href = "../validation/login.html"; // if not will prompt them to re-login to show moderator features
         }
     });
 };

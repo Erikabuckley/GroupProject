@@ -7,7 +7,7 @@ async function loadFooter() {
 async function loadHeader() {
     if (document.URL.includes("dash")) {
         await loadDashHeader();
-        const type = localStorage.getItem('type'); //prevents unauthorised acces to ribbon elements
+        const type = localStorage.getItem('type'); //prevents unauthorised access to ribbon elements
         if (type === 'moderator') {
             document.getElementById('participant').style.display = "none";
             document.getElementById('moderator').style.display = "flex";

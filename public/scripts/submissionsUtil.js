@@ -20,7 +20,7 @@ async function getSubmissions() {
     submissions.innerHTML = "";
 
     const grouped = {};
-
+    // groups submissions by their submission id 
     for (let i = 0; i < id.length; i++) {
         if (!grouped[id[i]]) {
             grouped[id[i]] = [];
@@ -72,10 +72,10 @@ async function getSubmissions() {
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(evidenceDiv);
 
-            submissionDiv.appendChild(cardDiv);
+            submissionDiv.appendChild(cardDiv);// adds each card to the submission div
         });
 
-        submissionDiv.addEventListener('click', () => {
+        submissionDiv.addEventListener('click', () => {// checks if a submission has been clicked on and pop up will show
             selectedSubmission = {
                 id: groupId,
                 challenge_title: grouped[groupId][0].challenge_title,
@@ -92,7 +92,7 @@ async function getSubmissions() {
 
 getSubmissions();
 
-async function approveDeny(outcome, reason, id,challenge_name) {
+async function approveDeny(outcome, reason, id,challenge_name) {// sends the moderators decision to backend which updates the database
     const mod_email = localStorage.getItem('name')
     await fetch("/approveDeny",
         {

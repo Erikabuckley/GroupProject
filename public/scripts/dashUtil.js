@@ -64,7 +64,7 @@ if (joinForm) {
 };
 
 async function updateMissionList() {
-    const res = await fetch("/updateMissionList",
+    const res = await fetch("/updateMissionList",// gets the current missions
         {
             method: "GET",
             headers: {
@@ -77,12 +77,12 @@ async function updateMissionList() {
     var vals = data.title;
     var selectElement = document.getElementById('mission-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v, v));
+        selectElement.appendChild(new Option(v, v));// adds each one to the drop down box
 
     };
 }
 async function updateChallengeList() {
-    const res = await fetch("/updateChallengeList",
+    const res = await fetch("/updateChallengeList",// gets the current challenges and their dates
         {
             method: "GET",
             headers: {
@@ -95,13 +95,13 @@ async function updateChallengeList() {
     var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v, v));
+        selectElement.appendChild(new Option(v, v));// adds them to the drop down
 
     };
 };
 
 async function updateGroupList() {
-    const res = await fetch("/updateGroupList",
+    const res = await fetch("/updateGroupList",// gets the groups that are available to join
         {
             method: "GET",
             headers: {
@@ -114,13 +114,13 @@ async function updateGroupList() {
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v, v));
+        selectElement.appendChild(new Option(v, v));// adds each one to the drop down box
 
     };
 };
 
 async function updateUserGroupsList() {
-    const res = await fetch("/updateUserGroupsList",
+    const res = await fetch("/updateUserGroupsList",// gets the groups that the user is currently in
         {
             method: "GET",
             headers: {
@@ -133,12 +133,12 @@ async function updateUserGroupsList() {
     var vals = data.groups;
     var selectElement = document.getElementById('group-challenge-input');
     for (let v of vals) {
-        selectElement.appendChild(new Option(v, v));
+        selectElement.appendChild(new Option(v, v));// adds them to the drop down
 
     };
 }
 
-async function showData(num, source) {
+async function showData(num, source) {// shows the total carbon saved by that individual
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("ammount").innerText = (num + "g");
     document.getElementById("source").innerText = (source);
@@ -158,7 +158,7 @@ async function updateIndi() {
     document.getElementById("indi-carbon").textContent = data.total + 'g';
 }
 
-async function updatePoints() {
+async function updatePoints() {// gets the total number of points the individual has gained
     const res = await fetch("/updatePointsIndi",
         {
             method: "GET",
