@@ -59,7 +59,7 @@ async function getSubmissions() {
 
             titleDiv.textContent = item.title;
 
-            if (item.evidence) {
+            if (item.evidence && item.evidence !== "no file") {
                 const img = document.createElement("img");
                 img.src = item.evidence; // this should be the full URL from backend
                 img.alt = "Submission evidence";
