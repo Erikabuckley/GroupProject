@@ -142,6 +142,7 @@ async function showData(num, source) {// shows the total carbon saved by that in
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("ammount").innerText = (num + "g");
     document.getElementById("source").innerText = (source);
+    document.getElementById("source").setAttribute ("href", source);
 }
 
 async function updateIndi() {

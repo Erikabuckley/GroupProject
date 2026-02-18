@@ -134,7 +134,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
               }
 
               if (user) {
-                if (req.body.challenge === 'no') {
+                if (req.body.challenge === 'No') {
                   db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], e => {
                     if (e) {
                       console.log(e.message);
@@ -150,7 +150,6 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                       return res.status(500).json({ error: "Failed to create action log" });
                     } else {
                       const log_id = this.lastID;
-
                       db.get("SELECT challenge_id FROM Challenges WHERE title = ?", [req.body.challenge], async (e, challenge) => {
                         if (e || !challenge) {
                           console.log(e.message);
