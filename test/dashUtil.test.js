@@ -1,4 +1,4 @@
-// Real-script tests for our front-end file: public/scripts/dashUtil.js
+// test/dashUtil.test.js
 //
 // dashUtil.js runs these immediately on load:
 //   updateChallengeList();
@@ -12,16 +12,16 @@
 // It also attaches submit listeners to #evidanceForm and #joinForm (if they exist).
 //
 // So in these tests we:
-// 1) Create a jsdom page with all DOM elements the script expects
-// 2) Mock window.fetch BEFORE loading the script (because it fetches on load)
-// 3) Load and execute our real dashUtil.js using window.eval()
-// 4) Wait for async fetch/json work to finish
+// Create a jsdom page with all DOM elements the script expects
+// Mock window.fetch BEFORE loading the script (because it fetches on load)
+// Load and execute our real dashUtil.js using window.eval()
+// Wait for async fetch/json work to finish
 //
 // What we test:
-// - Page load populates dropdowns + indi total
-// - Evidence submit POSTs /addAction (FormData), hides upload modal, shows data modal
-// - Join group: 409 shows error message
-// - Join group: success attempts redirect to dashboard.html
+// Page load populates dropdowns + indi total
+// Evidence submit POSTs /addAction (FormData), hides upload modal, shows data modal
+// Join group: 409 shows error message
+// Join group: success attempts redirect to dashboard.html
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -84,7 +84,7 @@ function makeWindow() {
   return { window: dom.window, jsdomErrors };
 }
 
-/* TEST 1: Page Load populates dropdowns + updates indi total */
+//TEST 1: Page Load populates dropdowns + updates indi total//
 test("DASHBOARD (real script): on load populates dropdowns and updates indi total", async () => {
   const { window } = makeWindow();
 
@@ -154,7 +154,7 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
   assert.equal(window.document.getElementById("indi-points").textContent, "5 points");
 });
 
-/* TEST 2: Evidence submit posts /addAction (FormData), hides upload modal, shows data */
+//TEST 2: Evidence submit posts /addAction (FormData), hides upload modal, shows data /
 test("DASHBOARD (real script): evidence submit posts /addAction, hides upload modal, shows data modal", async () => {
   const { window } = makeWindow();
 
@@ -230,7 +230,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
   assert.equal(window.document.getElementById("source").innerText, "Test source");
 });
 
-/* TEST 3: Join group 409 shows error message */
+//TEST 3: Join group 409 shows error message /
 test("DASHBOARD (real script): join group 409 shows error message", async () => {
   const { window } = makeWindow();
 
@@ -282,7 +282,7 @@ test("DASHBOARD (real script): join group 409 shows error message", async () => 
   assert.equal(err.style.visibility, "visible");
 });
 
-/* TEST 4: Join group success attempts redirect */
+//TEST 4: Join group success attempts redirect /
 test("DASHBOARD (real script): join group success attempts redirect to dashboard.html", async () => {
   const { window, jsdomErrors } = makeWindow();
 

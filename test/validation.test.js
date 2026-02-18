@@ -1,13 +1,13 @@
-// Real-script tests for our front-end file: public/scripts/validation.js
+// test/validation.test.js
 // validation.js attaches a submit handler to #form and branches on
 // e.submitter.value ("Log in" vs "Sign up").
 //
 // What we test:
-// 1) LOGIN 401 -> shows #error-message (text + visibility)
-// 2) LOGIN success -> sets localStorage (type/auth/name) + calls /login
-// 3) SIGN UP with priv/tandc NOT checked -> does NOT call fetch
-// 4) SIGN UP 401 -> shows #error-message (text + visibility)
-// 5) SIGN UP success -> calls /signUp (redirect not asserted in jsdom)
+// LOGIN 401 -> shows #error-message (text + visibility)
+// LOGIN success -> sets localStorage (type/auth/name) + calls /login
+// SIGN UP with priv/tandc NOT checked -> does NOT call fetch
+// SIGN UP 401 -> shows #error-message (text + visibility)
+// SIGN UP success -> calls /signUp (redirect not asserted in jsdom)
 
 const test = require("node:test");
 const assert = require("node:assert/strict");

@@ -1,9 +1,9 @@
-// What we test:
-// 1) Header Loading: Verifies that the script fetches the correct 
+// test/template.test.js
+// Header Loading: Verifies that the script fetches the correct 
 //    HTML templates (dashHeader, basicHeader, etc.) based on URL.
-// 2) User Types: Verifies that if a user is a 'moderator', the 
+// User Types: Verifies that if a user is a 'moderator', the 
 //    participant view is hidden and moderator view is shown.
-// 3) Sign Out: Verifies that clicking sign out clears localStorage.
+// Sign Out: Verifies that clicking sign out clears localStorage.
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
