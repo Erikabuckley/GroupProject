@@ -9,7 +9,6 @@ with open("sql_tables.sql", "r") as f:
     sql_script = f.read()
 
 # Execute the SQL script
-# con.set_trace_callback(print)
 con.executescript(sql_script)
 cursor = con.execute(
     "SELECT name FROM sqlite_master WHERE type='table';"

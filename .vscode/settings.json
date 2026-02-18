@@ -9,5 +9,7 @@
         }
     ],
     "sqltools.useNodeRuntime": true,
-    "livePreview.defaultPreviewPath": "/dash/user/groupmetrics.html"
+    "livePreview.defaultPreviewPath": "/dash/user/groupmetrics.html",
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
 }

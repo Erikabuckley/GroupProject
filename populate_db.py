@@ -4,14 +4,6 @@ import string
 import hashlib
 from datetime import date, timedelta
 
-# TODO
-# populate action types table
-# update groups?
-# 200 challenge submissions 
-# 80 evidence submissions 
-# 40 moderation decisions 
-# 100 edge case submissions to test anti-gaming checks + moderation
-
 # Connect to database
 con = sqlite3.connect("CarbonChallenge.db")
 cursor = con.cursor()
@@ -206,6 +198,7 @@ print("Action logs:", cursor.fetchone()[0])
 
 cursor.execute("SELECT COUNT(*) FROM ConversionFactors")
 print("Conversion factors:", cursor.fetchone()[0])
+
 # save and close the connection
 con.commit()
 con.close()
