@@ -8,36 +8,40 @@ from datetime import date, timedelta
 con = sqlite3.connect("CarbonChallenge.db")
 cursor = con.cursor()
 
-# ensure the database tables are empty before populating them 
+# ensure the database tables are empty before populating them
 cursor.execute("DELETE FROM Users")
 cursor.execute("DELETE FROM Groups")
 cursor.execute("DELETE FROM Challenges")
 cursor.execute("DELETE FROM ActionLogs")
 
 # randomly generate a password and hash it
+
+
 def hashed_password():
     password = ""
-    for i in range (1, 5):
+    for i in range(1, 5):
         password += string.ascii_letters
     for i in range(1, 3):
         password += string.digits
     for i in range(1, 2):
         password += string.punctuation
     return hashlib.sha256(password.encode()).hexdigest()
-        
+
 # insert users into db
+
+
 def populate_users(cursor):
     users = []
-    for i in range(1, 61): 
+    for i in range(1, 61):
         display_name = f"user_{i}"
         # default role is participant
         role = "participant"
         email = f"user{i}@exeter.ac.uk"
-        # store hashed password 
+        # store hashed password
         password = hashed_password()
 
         users.append((display_name, role, email, password))
-    
+
     cursor.executemany(
         """ 
         INSERT INTO Users (display_name, role, email, password)
@@ -47,26 +51,31 @@ def populate_users(cursor):
     )
 
 # insert groups into db
+
+
 def populate_groups(cursor):
     groups = []
     for i in range(1, 11):
         name = f"group_{i}"
-        
+
         groups.append((name,))
 
     cursor.executemany(
         """ 
         INSERT INTO Groups (name)
         VALUES (?)
-        """, 
+        """,
         groups
     )
 
+
 today = date.today()
-start_date = today - timedelta(days = 365)
-end_date = today + timedelta(days = 365)
+start_date = today - timedelta(days=365)
+end_date = today + timedelta(days=365)
 
 # insert challenges into db
+
+
 def populate_challenges(cursor):
     challenges_info = [
         {
@@ -122,7 +131,8 @@ def populate_challenges(cursor):
     challenges = []
 
     for c in challenges_info:
-        challenges.append((c["title"], c["scope"], c["rules"], c["scoring"], start_date, end_date))
+        challenges.append((c["title"], c["scope"], c["rules"],
+                          c["scoring"], start_date, end_date))
 
     cursor.executemany(
         """
@@ -133,6 +143,8 @@ def populate_challenges(cursor):
     )
 
 # insert action logs into db
+
+
 def populate_action_logs(cursor):
     action_logs = []
     for i in range(1, 501):
@@ -140,7 +152,7 @@ def populate_action_logs(cursor):
         cursor.execute("SELECT user_id FROM Users")
         user_ids = [row[0] for row in cursor.fetchall()]
 
-        # action type id (FK) - 3 types: travel, food, waste 
+        # action type id (FK) - 3 types: travel, food, waste
         # do same way as user_id once made action type table?
         action_type_id = random.randint(1, 3)
 
@@ -151,7 +163,7 @@ def populate_action_logs(cursor):
         quantity = random.randint(1, 10)
 
         # randomly choose a date in the last 30 days
-        date = (today - timedelta(days = random.randint(0, 30)))
+        date = (today - timedelta(days=random.randint(0, 30)))
 
         # randomly choose whether evidence is required or not
         evidence_required = random.choice([True, False])
@@ -160,7 +172,8 @@ def populate_action_logs(cursor):
         # use default factor id once made action table
         calculated_co2e = random.randint(1, 100)
 
-        action_logs.append((action_type_id, user_id, quantity, date, evidence_required, calculated_co2e))
+        action_logs.append((action_type_id, user_id, quantity,
+                           date, evidence_required, calculated_co2e))
 
     cursor.executemany(
         """ 
@@ -170,11 +183,13 @@ def populate_action_logs(cursor):
         action_logs
     )
 
+
 def populate_action_conversion_factors(cursor):
     cursor.execute("DELETE FROM ConversionFactors")
     cursor.execute("DELETE FROM ActionTypes")
     cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820, 'empty')")
     cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'vegan for a day', 'kcal', 104), (5, 'FOOD', 'vegeterian for a day', 'kcal', 105)")
+
 
 populate_users(cursor)
 populate_groups(cursor)
@@ -202,4 +217,3 @@ print("Conversion factors:", cursor.fetchone()[0])
 # save and close the connection
 con.commit()
 con.close()
-

@@ -1,7 +1,19 @@
 # Campus Carbon Challenge Game and Dashboard
 
-## Description
+## Overview
 Educating 1st year students and staff at the University of Exeter about its sustainability goals and reducing overall carbon emissions by promoting individual behaviour change. We have developed a game and dashboard where users complete in weekly and monthly challenges for points that rewards activities that save C02.
+
+## Live demo
+To access the website, click on the following link: 
+
+https://groupproject-e980.onrender.com/
+
+A screen should appear which will signify that the backend is being retrieved, please wait for the main page to load.
+Users will be directed to the main dashboard where the following actions can be completed:
+- Create an account (via 'Sign Up') to access the full platform
+- Log in using existing credentials
+- Upgrades to a moderator role via the 'Settings' tab
+
 
 ## Features
 - User Registration and Login
@@ -13,36 +25,47 @@ Educating 1st year students and staff at the University of Exeter about its sust
 - Upgrade to a moderator account for approval and rejection workflows
 - Access to Terms & Conditions, Accessibility Statement(s), and Privacy Policy
 
-## Usage - Running from the Deployed Application
-To access the website, click on the following link: 
-https://groupproject-e980.onrender.com/
-A screen should appear which will signify that the backend is being retrieved, please wait for the main page to load.
-Users will be directed to the main dashboard where the following actions can be completed:
-- Create an account (via 'Sign Up') to access the full platform
-- Log in using existing credentials
-- Upgrades to a moderator role via the 'Settings' tab
 
-## Usage - Running the Application Locally
-Please see the Installation and Requirements sections first.
-- To start the system, type the ``npm run dev`` into the command line.
-- Click the link (in the terminal) to display the website in your local browser.
+## Instillation
+### Clone or download the repository
 
-## Installation
-- Navigate to https://github.com/Erikabuckley/GroupProject and download the source code from the repository
-- Unzip the folder then navigate to ‘GroupProject-main’
-- Type ``npm install`` into the command line to install dependencies (success will result in ‘up to date’)
+```bash
+git clone https://github.com/Erikabuckley/GroupProject.git
+```
+
+Or download directly and unzip
+
+### Install dependencies
+Navigate to the project folder:
+
+```bash
+cd GroupProject-main
+npm install
+```
+
+### Running the application locally
+To start the development server run:
+
+```bash 
+npm run dev
+```
+Click the link in the terminal  to display the website in your browser.
 
 ## Requirements
-- Node.js must be installed (v18+ recommended), to check if Node.js is installed please run 'node --version' in the command line (if Node.js is not installed, please download from https://nodejs.org/en).
-- npm must be installed (if npm is not installed, please run the command ``npm install`` in command line).
+- Node.js must be installed (v18+ recommended), to check if Node.js is installed please run 
+```bash 
+node --version
+``` 
+If Node.js is not installed, please download from https://nodejs.org/en
+- npm (inbuilt with Node.js).
 - A modern web browser (for example Google Chrome).
 
 ## Contributions
-This repository is to be used for marking purposes only.\
-Forking is permitted for review purposes or running the application locally.
+This repository has been created for academic assessment purposes.  
+Any forks or redistributions must retain the original MIT License.
 
 ## License
-MIT - see license file
+This project is licensed under the MIT license - see license file for details.
 
 ## Members
 Erika Buckley: Project lead\
