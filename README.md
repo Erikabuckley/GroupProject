@@ -26,7 +26,7 @@ Users will be directed to the main dashboard where the following actions can be 
 - Access to Terms & Conditions, Accessibility Statement(s), and Privacy Policy
 
 
-## Instillation
+## Installation
 ### Clone or download the repository
 
 ```bash
