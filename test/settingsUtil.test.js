@@ -1,15 +1,15 @@
-// Real-script tests for our front-end file: public/scripts/settingsUtil.js
+// test/settingsUtil.test.js
 // settingsUtil.js:
-// - Looks for button #upgrade-status
-// - On click, POSTs /upgrade with { email } (email from localStorage name)
-// - If status === 401: shows #error-message
-// - Else: sets localStorage auth='1' and attempts redirect to ../validation/login.html
+// Looks for button #upgrade-status
+// On click, POSTs /upgrade with { email } (email from localStorage name)
+// If status === 401: shows #error-message
+// Else: sets localStorage auth='1' and attempts redirect to ../validation/login.html
 //
 // Important:
 // jsdom navigation is not reliable for window.location.href in this setup.
 // So for success we prove the success branch ran by checking:
-// - auth is set to '1'
-// - error message stays hidden
+// auth is set to '1'
+// error message stays hidden
 // Redirect is covered by manual browser testing.
 
 const test = require("node:test");

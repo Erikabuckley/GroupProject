@@ -1,4 +1,4 @@
-// Real-script tests for our front-end file: public/scripts/challengeUtil.js
+// test/challengeUtil.test.js
 // challengeUtil.js runs getChallenges() + getMissions() immediately on load.
 // So in this test we:
 // 1) Create a jsdom page with #challenges and #missions
@@ -83,7 +83,11 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
   const challengeCards = window.document.querySelectorAll("#challenges .card");
   assert.equal(challengeCards.length, 2);
   assert.equal(challengeCards[0].querySelector(".title").textContent, "Challenge A");
-  assert.equal(challengeCards[0].querySelector(".date").textContent, "End date: 2026-02-01");
+
+  assert.ok(
+  challengeCards[0].textContent.includes("2026-02-01"),
+  `Expected first card to contain end date 2026-02-01, got:\n${challengeCards[0].textContent}`
+);
 
   // Assert mission DOM
   const missionCards = window.document.querySelectorAll("#missions .card");

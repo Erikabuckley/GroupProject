@@ -1,13 +1,13 @@
-// Real-script tests for our front-end file: public/scripts/perm.js
+// test/perm.test.js
 // perm.js runs checkPerm() immediately on load.
 // checkPerm():
-// 1) GETs /checkPerm with Authorization header from localStorage name
-// 2) reads JSON { perm: "..." }
-// 3) if perm !== "moderator" it redirects to ../index.html
+// GETs /checkPerm with Authorization header from localStorage name
+// reads JSON { perm: "..." }
+// if perm !== "moderator" it redirects to ../index.html
 //
 // In jsdom, navigation is not implemented, so a redirect attempt may show up as:
-// - a jsdomError "Not implemented: navigation to another Document", OR
-// - a change in window.location.href (depending on jsdom behaviour)
+// a jsdomError "Not implemented: navigation to another Document", OR
+// a change in window.location.href (depending on jsdom behaviour)
 //
 // So we assert redirect using either signal.
 

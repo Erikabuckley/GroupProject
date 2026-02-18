@@ -1,9 +1,9 @@
-// Real-script tests for our front-end file: public/scripts/total.js
+//test/total.test.js
 // total.js calls updateTotal() immediately on load.
 // updateTotal():
-// - GET /updateTotal
-// - reads JSON { total: number }
-// - sets #total-carbon textContent to "<total>g"
+// GET /updateTotal
+// reads JSON { total: number }
+// sets #total-carbon textContent to "<total>g"
 
 const test = require("node:test");
 const assert = require("node:assert/strict");

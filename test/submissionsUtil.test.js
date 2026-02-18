@@ -1,9 +1,9 @@
-// Real-script tests for our front-end file: public/scripts/submissionsUtil.js
+// test/submissionsUtil.test.js
 // submissionsUtil.js:
-// - Calls getSubmissions() immediately on load (GET /updateSubmissionsList)
-// - Groups submissions by id and renders grouped cards (with an image)
-// - Clicking a group sets selectedSubmission and opens approve/deny modal + backdrop
-// - Submitting approve/deny POSTs /approveDeny and closes modal + backdrop
+// Calls getSubmissions() immediately on load (GET /updateSubmissionsList)
+// Groups submissions by id and renders grouped cards (with an image)
+// Clicking a group sets selectedSubmission and opens approve/deny modal + backdrop
+// Submitting approve/deny POSTs /approveDeny and closes modal + backdrop
 //
 // These tests use jsdom to simulate the browser DOM and mock fetch so no real
 // network requests are made.
@@ -44,7 +44,7 @@ function makeWindow() {
   return dom.window;
 }
 
-/* TEST 1: getSubmissions groups by id and renders correct DOM */
+//TEST 1: getSubmissions groups by id and renders correct DOM /
 test("SUBMISSIONS (real script): groups by id and renders submissions + cards + image", async () => {
   const window = makeWindow();
 
@@ -143,7 +143,7 @@ test("SUBMISSIONS (real script): clicking a group opens modal/backdrop", async (
   assert.equal(window.document.getElementById("backdrop").style.display, "block");
 });
 
-/* TEST 3: form submit posts decision/reason/id/mod_email and closes modal */
+//TEST 3: form submit posts decision/reason/id/mod_email and closes modal /
 test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and closes modal", async () => {
   const window = makeWindow();
 
@@ -218,7 +218,7 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   assert.equal(window.document.getElementById("backdrop").style.display, "none");
 });
 
-/* TEST 4: clears previous content before rendering new submissions */
+//TEST 4: clears previous content before rendering new submissions /
 test("SUBMISSIONS (real script): clears old submissions content before rendering", async () => {
   const window = makeWindow();
 
@@ -252,7 +252,7 @@ test("SUBMISSIONS (real script): clears old submissions content before rendering
   assert.equal(groups.length, 1);
 });
 
-/* TEST 5: groups correctly even when ids are mixed order */
+//TEST 5: groups correctly even when ids are mixed order /
 test("SUBMISSIONS (real script): groups correctly even when ids are mixed order", async () => {
   const window = makeWindow();
 
@@ -291,7 +291,7 @@ test("SUBMISSIONS (real script): groups correctly even when ids are mixed order"
   assert.equal(groupB.querySelectorAll(".card").length, 1);
 });
 
-/* TEST 6: submit still posts even if no decision radio selected */
+//TEST 6: submit still posts even if no decision radio selected /
 test("SUBMISSIONS (real script): submit works even if no decision radio selected", async () => {
   const window = makeWindow();
 
@@ -314,16 +314,12 @@ test("SUBMISSIONS (real script): submit works even if no decision radio selected
     if (url === "/approveDeny") {
       const payload = JSON.parse(opts.body);
 
-      /**
-       * NOTE:
-       * If no radio is selected, `decision` becomes undefined.
-       * When we do JSON.stringify({ outcome: undefined, ... }),
-       * JavaScript omits the `outcome` key entirely because `undefined` is not valid JSON.
-       *
-       * So the backend receives { reason, id, mod_email } with NO "outcome" field.
-       * In the real UI this should be prevented by requiring the user to pick approve/deny,
-       * but we test it here to document current behaviour.
-       */
+      // NOTE: If no radio is selected, `decision` becomes undefined. 
+      // When we do JSON.stringify({ outcome: undefined, ... }),
+       //JavaScript omits the `outcome` key entirely because `undefined` is not valid JSON.
+    // So the backend receives { reason, id, mod_email } with NO "outcome" field.
+      // In the real UI this should be prevented by requiring the user to pick approve/deny,
+       //but we test it here to document current behaviour.//
       assert.ok(!("outcome" in payload), "Expected outcome to be omitted when decision is undefined");
 
       assert.deepEqual(payload, {
