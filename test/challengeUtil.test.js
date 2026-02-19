@@ -1,11 +1,11 @@
 // test/challengeUtil.test.js
 // challengeUtil.js runs getChallenges() + getMissions() immediately on load.
 // So in this test we:
-// 1) Create a jsdom page with #challenges and #missions
-// 2) Set localStorage name (used in Authorization header)
-// 3) Mock window.fetch BEFORE loading the script (because it fetches on load)
-// 4) Load and execute our real challengeUtil.js using window.eval()
-// 5) Wait a tick, then assert both lists rendered correctly
+// Create a jsdom page with #challenges and #missions
+// Set localStorage name (used in Authorization header)
+// Mock window.fetch BEFORE loading the script (because it fetches on load)
+// Load and execute our real challengeUtil.js using window.eval()
+// Wait a tick, then assert both lists rendered correctly
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
