@@ -582,6 +582,34 @@ app.get('/checkPerm', function (req, res) {
   });
 });
 
+//get groups and points
+app.get('/updateLeaderboard', function (req, res) {
+  console.log("Group list update"); //log that it has been done sucessfully
+
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    db.all("SELECT name FROM Groups", [], (e, rows) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+
+      if (!rows || rows.length === 0) {
+        console.log("No groups exist");
+        return res.json({ groups: [] });
+      }
+
+      const name = rows.map(r => r.name);
+      return res.json({ name });
+
+    }); // closes db.all
+  }); // closes const db
+}); // closes app.get
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -591,3 +619,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+//add points to leaderbaord and orderby statement
