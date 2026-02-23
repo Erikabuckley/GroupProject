@@ -68,10 +68,10 @@ Any forks or redistributions must retain the original MIT License.
 This project is licensed under the MIT license - see license file for details.
 
 ## Members
-Erika Buckley: Project lead\
-Tanisha Sharma: Technical lead\
-Aoife Richards: Data and ML lead\
+Erika Buckley ekb209@exeter.ac.uk : Project lead\
+Tanisha Sharma ts876@exeter.ac.uk : Technical lead\
+Aoife Richards ar1070@exeter.ac.uk : Data and ML lead\
 Nehir Yurtsever: QA lead\
-Keira Manglani: DevOps\
-Darcy Luke: UI & UX & Requirements\
-Thalia Champ: Documentation and Comms
+Keira Manglani knm205@exeter.ac.uk : DevOps\
+Darcy Luke dal209@exeter.ac.uk : UI & UX & Requirements\
+Thalia Champ tc788@exeter.ac.uk ny292@exeter.ac.uk : Documentation and Comms
