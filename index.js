@@ -16,6 +16,13 @@ app.use(
     secret: "mySecretKey",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      // Prevent client-side access to cookies
+      sameSite: 'strict',
+      // Mitigate CSRF attacks
+      maxAge: 60000
+    }
   })
 );
 
@@ -29,7 +36,6 @@ app.post("/setSession", (req,res) => {
     }
     db.get("SELECT role FROM Users WHERE Users.email =?", [req.body.email], (e, row) => {
       if (e) {
-        console.log(e.message);
         return res.status(500).json({ error: "database failure" });
 
       }
@@ -55,12 +61,13 @@ app.get("/getSession", (req,res) => {
 });
 
 // route to destroy session
-app.get("/destroySession", (req,res) => {
+app.post("/destroySession", (req,res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroy session: ", err);
       res.status(500).send("Error destroying session");
     } else {
+      res.clearCookie("connect.sid");
       res.send("Session destroyed");
     }
   });

@@ -24,7 +24,7 @@ async function loadHeader() {
                 e.preventDefault();
                 await fetch("/destroySession",
                     {
-                        method: "GET",
+                        method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
