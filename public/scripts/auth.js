@@ -7,5 +7,8 @@ export async function checkAuth() {
         },
     });
     const data = await res.json();//gets challenge information
-    return(data.authenticated)
+    return(
+        {auth: data.authenticated,
+        role: data.role}
+    )
 }

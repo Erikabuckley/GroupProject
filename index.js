@@ -36,6 +36,7 @@ app.post("/setSession", (req,res) => {
     }
     db.get("SELECT role FROM Users WHERE Users.email =?", [req.body.email], (e, row) => {
       if (e) {
+        console.log(e.message);
         return res.status(500).json({ error: "database failure" });
 
       }
@@ -43,7 +44,6 @@ app.post("/setSession", (req,res) => {
         req.session.email = req.body.email;
         req.session.role = row.role;
         req.session.authenticated = true;
-        console.log(req.session.authenticated)
         res.send("Session data set");
         res.end();
       }
