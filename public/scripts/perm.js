@@ -1,18 +1,15 @@
 checkPerm()
 
 async function checkPerm() {
-    const res = await fetch("/checkPerm",//gets the access level of the user
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
-            }
-        }
-    );
-    const data = await res.json();
-    var perm = data.perm;
-    if (!(perm === 'moderator')) { //checks the stored access level to allow access to moderator features
+    const res = await fetch("/getSession",
+    {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    });
+    const data = await res.json();//gets challenge information
+    if (data.role != 'moderator') {// checks if the user has logged in or not
         window.location.href = '../index.html'
     }
 }
