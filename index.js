@@ -1,4 +1,5 @@
-const express = require('express'); //imports express ie frmaework we are using
+const express = require('express'); //imports express ie framework we are using
+const session = require("express-session");
 const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
 const path = require('path');
 const multer = require("multer");
@@ -10,6 +11,58 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
+app.use(
+  session({
+    secret: "mySecretKey",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// route to set session data
+app.post("/setSession", (req,res) => {
+  console.log("Checked user permissions"); //log that it has been done sucessfully
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.get("SELECT role FROM Users WHERE Users.email =?", [req.body.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+
+      }
+      if (row) {
+        req.session.email = req.body.email;
+        req.session.role = row.role;
+        req.session.authenticated = true;
+        res.send("Session data set");
+        res.end();
+      }
+    });
+  });
+  
+});
+
+// route to retrieve session data
+app.get("/getSession", (req,res) => {
+  const email = req.session.email;
+  const role = req.session.role;
+  return res.json({ email, role });
+});
+
+// route to destroy session
+app.get("/destroySession", (req,res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroy session: ", err);
+      res.status(500).send("Error destroying session");
+    } else {
+      res.send("Session destroyed");
+    }
+  });
+});
 
 //for saving image to file
 const storage = multer.diskStorage({
@@ -285,11 +338,6 @@ app.post('/addGroup', function (req, res) {
   });
 });
 
-// signout user
-app.post('/signOut', function (req, res) {
-  console.log("Sign request received"); // log that it has been done sucessfully
-  res.end();
-});
 
 // upgrade user to moderator
 app.post('/upgrade', function (req, res) {

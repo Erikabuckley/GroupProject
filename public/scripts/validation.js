@@ -25,7 +25,7 @@ if (form) {
             else {
                 const res = await fetch("/setSession", // send data to backend
                 {
-                    method: "GET", //sending data to the server
+                    method: "POST", //sending data to the server
                     headers: {
                         "Content-Type": "application/json" //tells server how data is formatted
                     },
