@@ -1,4 +1,4 @@
-async function checkPerm() {
+export async function checkPerm() {
     const res = await fetch("/getSession",
     {
         method: "GET",

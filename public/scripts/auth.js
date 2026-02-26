@@ -1,4 +1,4 @@
-async function checkAuth() {
+export async function checkAuth() {
     const res = await fetch("/getSession",
     {
         method: "GET",

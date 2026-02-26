@@ -1,3 +1,6 @@
+import { checkAuth } from "./auth.js";
+import { checkPerm } from "./perm.js";
+
 async function loadFooter() {
     const res = await fetch("/templates/footer.html");
     const html = await res.text();
@@ -6,7 +9,7 @@ async function loadFooter() {
 
 async function loadHeader() {
     if (document.URL.includes("dash")) {
-        const role = checkPerm();
+        const role = await checkPerm();
         await loadDashHeader();
         if (role === 'moderator') {
             document.getElementById('participant').style.display = "none";
@@ -34,7 +37,7 @@ async function loadHeader() {
         await loadBasicHeader();
         const exit = document.getElementById("out");
         if (exit) {
-            const auth = checkAuth();
+            const auth = await checkAuth();
             if (auth) {
                 exit.onclick = function () {
                     window.location.href = "../index.html";
@@ -80,9 +83,21 @@ async function loadDashHeader() {
 }
 
 //uploads correct header and footer to the page
-const auth = checkAuth();
-if (!auth){
-    window.location.href = "../index.html";
+async function init() {
+
+    // Only protect dashboard pages
+    if (document.URL.includes("dash")) {
+
+        const auth = await checkAuth();
+
+        if (!auth) {
+            window.location.href = "../index.html";
+            return;
+        }
+    }
+
+    await loadFooter();
+    await loadHeader();
 }
-loadFooter();
-loadHeader();
+
+init();

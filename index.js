@@ -37,6 +37,7 @@ app.post("/setSession", (req,res) => {
         req.session.email = req.body.email;
         req.session.role = row.role;
         req.session.authenticated = true;
+        console.log(req.session.authenticated)
         res.send("Session data set");
         res.end();
       }
@@ -49,7 +50,8 @@ app.post("/setSession", (req,res) => {
 app.get("/getSession", (req,res) => {
   const email = req.session.email;
   const role = req.session.role;
-  return res.json({ email, role });
+  const authenticated = req.session.authenticated;
+  return res.json({ email, role, authenticated });
 });
 
 // route to destroy session
