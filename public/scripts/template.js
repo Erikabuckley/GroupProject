@@ -1,3 +1,5 @@
+import { checkAuth } from "./auth.js";
+
 async function loadFooter() {
     const res = await fetch("/templates/footer.html");
     const html = await res.text();
@@ -6,9 +8,9 @@ async function loadFooter() {
 
 async function loadHeader() {
     if (document.URL.includes("dash")) {
+        const {auth, role} = await checkAuth();
         await loadDashHeader();
-        const type = localStorage.getItem('type'); //prevents unauthorised access to ribbon elements
-        if (type === 'moderator') {
+        if (role === 'moderator') {
             document.getElementById('participant').style.display = "none";
             document.getElementById('moderator').style.display = "flex";
         } else {
@@ -19,18 +21,14 @@ async function loadHeader() {
         if (out) {
             out.addEventListener('click', async (e) => {
                 e.preventDefault();
-                await fetch("/signOut",
+                await fetch("/destroySession",
                     {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify({ name: localStorage.getItem('name') }) //turn to json
                     }
                 )
-                localStorage.removeItem('auth');
-                localStorage.removeItem('name');
-                localStorage.removeItem('type');
                 window.location.href = "../index.html"
             });
         };
@@ -38,7 +36,8 @@ async function loadHeader() {
         await loadBasicHeader();
         const exit = document.getElementById("out");
         if (exit) {
-            if (localStorage.getItem('auth') != '1') {
+            const auth = await checkAuth();
+            if (auth) {
                 exit.onclick = function () {
                     window.location.href = "../index.html";
                 }
@@ -83,5 +82,21 @@ async function loadDashHeader() {
 }
 
 //uploads correct header and footer to the page
-loadFooter();
-loadHeader();
+async function init() {
+
+    // Only protect dashboard pages
+    if (document.URL.includes("dash")) {
+
+        const {auth, role} = await checkAuth();
+
+        if (!auth) {
+            window.location.href = "../index.html";
+            return;
+        }
+    }
+
+    await loadFooter();
+    await loadHeader();
+}
+
+init();
