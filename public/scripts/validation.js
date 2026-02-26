@@ -23,9 +23,15 @@ if (form) {
                 document.getElementById('error-message').style.visibility = 'visible';
             }
             else {
-                localStorage.setItem('type', data.type);
-                localStorage.setItem('auth', '1');
-                localStorage.setItem('name', email);
+                const res = await fetch("/setSession", // send data to backend
+                {
+                    method: "GET", //sending data to the server
+                    headers: {
+                        "Content-Type": "application/json" //tells server how data is formatted
+                    },
+                    body: JSON.stringify({ email, password } //turn to json
+                    )
+                });
                 window.location.href = "../dash/dashboard.html";//redirect   
             }
         }

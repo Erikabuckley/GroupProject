@@ -19,18 +19,14 @@ async function loadHeader() {
         if (out) {
             out.addEventListener('click', async (e) => {
                 e.preventDefault();
-                await fetch("/signOut",
+                await fetch("/destroySession",
                     {
-                        method: "POST",
+                        method: "GET",
                         headers: {
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify({ name: localStorage.getItem('name') }) //turn to json
                     }
                 )
-                localStorage.removeItem('auth');
-                localStorage.removeItem('name');
-                localStorage.removeItem('type');
                 window.location.href = "../index.html"
             });
         };
