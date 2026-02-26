@@ -1,5 +1,3 @@
-checkPerm()
-
 async function checkPerm() {
     const res = await fetch("/getSession",
     {
@@ -9,7 +7,5 @@ async function checkPerm() {
         },
     });
     const data = await res.json();//gets challenge information
-    if (data.role != 'moderator') {// checks if the user has logged in or not
-        window.location.href = '../index.html'
-    }
+    return (data.role);
 }

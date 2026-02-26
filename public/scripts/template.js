@@ -6,9 +6,9 @@ async function loadFooter() {
 
 async function loadHeader() {
     if (document.URL.includes("dash")) {
+        const role = checkPerm();
         await loadDashHeader();
-        const type = localStorage.getItem('type'); //prevents unauthorised access to ribbon elements
-        if (type === 'moderator') {
+        if (role === 'moderator') {
             document.getElementById('participant').style.display = "none";
             document.getElementById('moderator').style.display = "flex";
         } else {
@@ -34,7 +34,8 @@ async function loadHeader() {
         await loadBasicHeader();
         const exit = document.getElementById("out");
         if (exit) {
-            if (localStorage.getItem('auth') != '1') {
+            const auth = checkAuth();
+            if (auth) {
                 exit.onclick = function () {
                     window.location.href = "../index.html";
                 }
@@ -79,5 +80,9 @@ async function loadDashHeader() {
 }
 
 //uploads correct header and footer to the page
+const auth = checkAuth();
+if (!auth){
+    window.location.href = "../index.html";
+}
 loadFooter();
 loadHeader();
