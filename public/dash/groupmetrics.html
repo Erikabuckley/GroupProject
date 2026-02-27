@@ -19,20 +19,34 @@
     <div>
         <h1> Group metrics </h1>
         <div class="key-stats">
-            <div>
-                <h2> Stat 1 </h2>
-            </div>
-            <div>
-                <h2> Stat 2 </h2>
-            </div>
+            <h2> Total Carbon Saved: </h2>
+            <h2> Total Points Earned: </h2>
         </div>
         <py-script>
         <!-- Insert Python code to show graph -->
-        <!-- display(fig, target="graph", append=False) -->
+        <!-- display(fig, target="show-graph1", append=False) -->
         </py-script>
 
-        <div class="graph" id="graph">
-            <h1> Graph </h1>
+        <div class="graph-block">
+            <div class="graph" id="graph1">
+                <h1> Carbon Saved Overtime </h1>
+            </div>
+            <div class="graph" id="graph2">
+                <h1> Points Earned Overtime </h1>
+            </div>
+        </div>
+
+        <div class="filters">
+        <!-- Add to js files the actions for each auto filter button - table -->
+        <button type="button" class="in-button" id="filter-one">My Contributions</button>
+        <button type="button" class="in-button" id="filter-two">Sort By: Date Submitted</button>
+        <button type="button" class="in-button" id="filter-three">Filter 2</button>
+        </div>
+
+        <div class="table">
+            <h1>
+                Table
+            </h1>
         </div>
     </div>
     <div class="footer-container"></div>

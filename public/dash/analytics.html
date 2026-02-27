@@ -7,13 +7,56 @@
     <link rel="stylesheet" href="../styles/submissionsStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
 
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
+
+    <py-config> packages = ["numpy", "matplotlib"] </py-config>
+
     <title>Analytics</title>
 </head>
 
 <body>
     <div class="header-container"></div>
     <div>
-        <h1> View participant analytics</h1>
+        <h1> View Participant Analytics</h1>
+        <div class="key-stats">
+            <h2> Number of Members: </h2>
+            <h2> Total Points Earned: </h2>
+        </div>
+        <py-script>
+        <!-- Insert Python code to show graph -->
+        <!-- display(fig, target="show-graph1", append=False) -->
+        </py-script>
+
+        <div class="graph-block">
+            <div class="graph" id="graph1">
+                <h1> Submissions made Overtime </h1>
+            </div>
+            <div class="graph" id="graph2">
+                <h1> Points Earned Overtime </h1>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-block">
+                <div class="icon-part">
+                    <img src="../images/climate.png" id="stats">
+                </div>
+                <h4>
+                    Challenge Stat
+                </h4>  
+            </div>
+
+            <div class="info-block">
+                <div class="icon-part">
+                    <img src="../images/climate.png" id="stats">
+                </div>
+                <h4>
+                    Mission Stat
+                </h4> 
+            </div>
+        </div>
+
     </div>
     <div class="footer-container"></div>
 </body>
