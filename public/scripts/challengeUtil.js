@@ -7,7 +7,6 @@ async function getChallenges() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -41,7 +40,6 @@ async function getMissions() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );

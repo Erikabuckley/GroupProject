@@ -69,7 +69,6 @@ async function updateMissionList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -87,7 +86,6 @@ async function updateChallengeList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -106,7 +104,6 @@ async function updateGroupList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -125,7 +122,6 @@ async function updateUserGroupsList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -151,7 +147,6 @@ async function updateIndi() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -165,7 +160,6 @@ async function updatePoints() {// gets the total number of points the individual
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
