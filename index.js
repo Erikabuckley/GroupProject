@@ -189,7 +189,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
             const co2_saved = factor.value * req.body.quantity;
             const source_url = factor.source;
             // get relevant user id from email
-            db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.email], async (e, user) => {
+            db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
               if (e || !user) {
                 console.log(e.message);
                 return res.status(400).json({ error: "no user found" });
@@ -281,9 +281,6 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 // add user to a group
 app.post('/addGroup', function (req, res) {
   console.log("Join request received");
-  console.log(req.body.group);
-  console.log(req.body.email);
-
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
       console.log(e.message);
@@ -306,7 +303,7 @@ app.post('/addGroup', function (req, res) {
 
       const group_id = row.group_id;
 
-      db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.email], async (e, userRow) => {
+      db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, userRow) => {
         if (e) {
           console.log(e.message);
           return;
@@ -356,7 +353,7 @@ app.post('/upgrade', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.get("UPDATE Users SET role = 'moderator' WHERE Users.email =?", [req.body.email], (e, row) => {
+    db.get("UPDATE Users SET role = 'moderator' WHERE Users.email =?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -377,7 +374,7 @@ app.post('/approveDeny', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.get("SELECT user_id FROM Users WHERE email = ?", [req.body.mod_email], (e, row) => {
+    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       } else if (row) {
@@ -450,7 +447,7 @@ app.get('/updateTotalIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Users.email = ?", [req.get('Authorization')], (e, row) => {
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -469,7 +466,7 @@ app.get('/updatePointsIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.get('Authorization')], (e, row) => {
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -571,7 +568,7 @@ app.get('/updateUserGroupsList', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
 
-    db.all("SELECT Groups.name FROM Groups JOIN ParticipantGroups ON ParticipantGroups.group_id = Groups.group_id JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email =?", [req.get('Authorization')], (e, rows) => {
+    db.all("SELECT Groups.name FROM Groups JOIN ParticipantGroups ON ParticipantGroups.group_id = Groups.group_id JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email =?", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -626,7 +623,7 @@ app.get('/checkPerm', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.get("SELECT role FROM Users WHERE Users.email =?", [req.get('Authorization')], (e, row) => {
+    db.get("SELECT role FROM Users WHERE Users.email =?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });

@@ -13,7 +13,6 @@ if (form) {
         const quantity = document.getElementById("quantity-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const group = document.getElementById("group-challenge-input").value;
-        const email = localStorage.getItem('name');
 
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
@@ -23,7 +22,6 @@ if (form) {
         formData.append("challenge", challenge);
         formData.append("quantity", quantity);
         formData.append("group", group);
-        formData.append("email", email);
         if (file) formData.append("upload", file);
 
         const res = await fetch("/addAction", {
@@ -41,14 +39,13 @@ if (joinForm) {
     joinForm.addEventListener('submit', async (e) => { //wait till form has been submitted
         e.preventDefault(); // stop page reload
         const group = document.getElementById("group-input").value;
-        const email = localStorage.getItem('name');
         const res = await fetch("/addGroup",
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ group, email }
+                body: JSON.stringify({ group }
                 )
             }
         );
@@ -69,7 +66,6 @@ async function updateMissionList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -87,7 +83,6 @@ async function updateChallengeList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -106,7 +101,6 @@ async function updateGroupList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -125,7 +119,6 @@ async function updateUserGroupsList() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -151,7 +144,6 @@ async function updateIndi() {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
@@ -165,7 +157,6 @@ async function updatePoints() {// gets the total number of points the individual
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": localStorage.getItem('name')
             }
         }
     );
