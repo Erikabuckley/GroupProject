@@ -71,7 +71,7 @@ This project is licensed under the MIT license - see license file for details.
 Erika Buckley ekb209@exeter.ac.uk : Project lead\
 Tanisha Sharma ts876@exeter.ac.uk : Technical lead\
 Aoife Richards ar1070@exeter.ac.uk : Data and ML lead\
-Nehir Yurtsever: QA lead\
+Nehir Yurtsever ny292@exeter.ac.uk : QA lead\
 Keira Manglani knm205@exeter.ac.uk : DevOps\
 Darcy Luke dal209@exeter.ac.uk : UI & UX & Requirements\
-Thalia Champ tc788@exeter.ac.uk ny292@exeter.ac.uk : Documentation and Comms
+Thalia Champ tc788@exeter.ac.uk : Documentation and Comms

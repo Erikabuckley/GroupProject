@@ -6,13 +6,34 @@
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
 
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
+
+    <py-config> packages = ["numpy", "matplotlib"] </py-config>
+
     <title>Metrics</title>
 </head>
 
 <body>
     <div class="header-container"></div>
     <div>
-        <h1> group metrics </h1>
+        <h1> Group metrics </h1>
+        <div class="key-stats">
+            <div>
+                <h2> Stat 1 </h2>
+            </div>
+            <div>
+                <h2> Stat 2 </h2>
+            </div>
+        </div>
+        <py-script>
+        <!-- Insert Python code to show graph -->
+        <!-- display(fig, target="graph", append=False) -->
+        </py-script>
+
+        <div class="graph" id="graph">
+            <h1> Graph </h1>
+        </div>
     </div>
     <div class="footer-container"></div>
 </body>
