@@ -24,6 +24,7 @@
                 <span class="close" id="close-upload">&times;</span>
                 <h2>Upload submission: </h2>
                 <form class="form" id="evidanceForm">
+                    <span id="error" class="error"></span>
                     <label for="mission-input">What mission is your action for?</label>
                     <select required name="Mission" id="mission-input">
                         <option value="" selected disabled hidden>Select a mission</option>
@@ -145,6 +146,12 @@
         <h1>Total Points Earned  To-date</h1>
         <p id="indi-points"></p>
     </div>
+
+    <div id="log history">
+        <h1>Challenge submission history:</h1>
+        <div id="log"></div>
+    </div>
+
     <div class="footer-container"></div>
 </body>
 

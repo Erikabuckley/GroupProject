@@ -212,12 +212,16 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                       return res.status(500).json({ error: "Failed to create action log" });
                     } else {
                       const log_id = this.lastID;
-                      db.get("SELECT challenge_id FROM Challenges WHERE title = ?", [req.body.challenge], async (e, challenge) => {
+                      db.get("SELECT challenge_id, evidence_required FROM Challenges WHERE title = ?", [req.body.challenge], async (e, challenge) => {
                         if (e || !challenge) {
                           console.log(e.message);
                           return res.status(400).json({ error: "no challenge found" });
+                        } 
+                        
+                        if (evidence_required === true && evidencePath === 'no file'){
+                          return res.status(400).json({ error: "This challenge requires evidence" });
                         }
-                        if (challenge) {
+                        else if (challenge) {
                           db.get("SELECT group_id FROM Groups WHERE name = ?", [req.body.group], async (e, group) => {
                             if (e || !group) {
                               console.log(e.message);
@@ -486,7 +490,7 @@ app.get('/updateChallengeList', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
 
-    db.all("SELECT title, end_date FROM Challenges WHERE end_date > DATE('now')", [], (e, rows) => {
+    db.all("SELECT title, end_date, evidence_required FROM Challenges WHERE end_date > DATE('now')", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -499,7 +503,8 @@ app.get('/updateChallengeList', function (req, res) {
 
       const title = rows.map(r => r.title);
       const date = rows.map(r => r.end_date);
-      return res.json({ title, date });
+      const evidence = rows.map(r => r.evidence_required);
+      return res.json({ title, date, evidence });
 
     }); // closes db.all
   }); // closes const db
@@ -605,12 +610,42 @@ app.get('/updateSubmissionsList', function (req, res) {
         console.log("No submissions exist");
         return res.json({ title: [], id: [], evidance: [] });
       }
-
+      // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
       const evidence = rows.map(r => r.evidence_required);
       const challenge_title = rows.map(r => r.title);
-      return res.json({ title, id, evidence, challenge_title });
+      return res.json({ title, id, evidence, challenge_title, flag: 'hello this is a flag' });
+
+    }); // closes db.all
+  }); // closes const db
+}); // closes app.get
+
+//get log CHANGE TO LOG INSTED OF SUBMISSIONS
+app.get('/updateLog', function (req, res) {
+  console.log("Submissions list update"); //log that it has been done sucessfully
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+
+      if (!rows || rows.length === 0) {
+        console.log("No submissions exist");
+        return res.json({ title: [], id: [], evidance: [] });
+      }
+      // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
+      const title = rows.map(r => r.name);
+      const id = rows.map(r => r.submission_id);
+      const evidence = rows.map(r => r.evidence_required);
+      const challenge_title = rows.map(r => r.title);
+      return res.json({ title, id, evidence, challenge_title, status: false, reason: 'hello this is why it got approved or denied' });
 
     }); // closes db.all
   }); // closes const db
@@ -675,3 +710,6 @@ app.listen(port, () => {
 });
 
 //add points to leaderbaord and orderby statement
+// update updateLog to get user challenge submissions
+// update submissios list to check if a flag has been raised and return it
+// add flagging route
