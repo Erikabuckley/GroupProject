@@ -68,6 +68,63 @@
     flex-direction: column;
 }
 
+#log{
+    width: 100%;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.submission{
+    background-color: var(--main);
+    margin:1rem;
+    padding:1rem;
+    border-radius: 2rem;
+}
+
+.submission:hover{
+    background-color: var(--second);
+}
+
+.title{
+    font-weight: bold;
+}
+
+.challenge_title{
+    color: white;
+    font-size : 20px;
+    padding:1rem;
+}
+
+.card{
+    background-color: white;
+    margin:1rem;
+    padding:1rem;
+    border-radius: 2rem;
+    display:flex;
+    flex-direction: column;
+}
+
+#submissions-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.evidence-photo{
+    max-height: 100px;
+    max-width:100px;
+    padding: 1rem;;
+}
+
+.feedback{
+    font-style: italic;
+    color:black;
+}
+
+
+/* MOVE THIS TO A SEPERATE FILE THAT IT IS FOR*/
 .key-stats h2 {
     width: 30%;
     border: 2px groove var(--second);

@@ -14,6 +14,7 @@ async function getSubmissions() {
     var id = data.id;
     var evidence = data.evidence;
     var challenge_title = data.challenge_title;
+    var flag = data.flag;
 
 
     var submissions = document.getElementById("submissions-container");
@@ -39,8 +40,10 @@ async function getSubmissions() {
         // Group container
         const submissionDiv = document.createElement("div");
         const challengeTitleDiv = document.createElement("div");
+
         submissionDiv.className = "submission";
         challengeTitleDiv.className = "challenge_title"
+
         challengeTitleDiv.textContent = grouped[groupId][0].challenge_title;
         submissionDiv.dataset.id = groupId;
 
@@ -52,12 +55,21 @@ async function getSubmissions() {
             const cardDiv = document.createElement("div");
             const titleDiv = document.createElement("div");
             const evidenceDiv = document.createElement("div");
+            const flagDiv = document.createElement("div");
 
             cardDiv.className = "card";
             titleDiv.className = "title";
             evidenceDiv.className = "evidence";
+            flagDiv.className = "flag";
+
 
             titleDiv.textContent = item.title;
+
+            if (flag != null){
+                flagDiv.textContent = flag; //change to itteration no. flag
+            } else{
+                flagDiv.textContent = "";
+            }
 
             if (item.evidence && item.evidence !== "no file") {
                 const img = document.createElement("img");
@@ -71,6 +83,8 @@ async function getSubmissions() {
 
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(evidenceDiv);
+            cardDiv.appendChild(flagDiv);
+
 
             submissionDiv.appendChild(cardDiv);// adds each card to the submission div
         });

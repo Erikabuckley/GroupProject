@@ -17,10 +17,7 @@
     font-size : 20px;
     padding:1rem;
 }
-.name{
-    font-style: italic;
 
-}
 .card{
     background-color: white;
     margin:1rem;
@@ -37,12 +34,6 @@
     justify-content: space-between;
 }
 
-.submission-group {
-    border: 2px solid red;
-    margin-bottom: 20px;
-    padding: 10px;
-}
-
 .evidence-photo{
     max-height: 100px;
     max-width:100px;
@@ -52,4 +43,8 @@
 
 .evidence-photo:hover{
     transform: scale(2);
+}
+
+.flag{
+    color: red;
 }

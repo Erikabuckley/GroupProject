@@ -13,6 +13,7 @@ async function getChallenges() {
     const data = await res.json();//gets challenge information
     var title = data.title;
     var date = data.date;
+    var evidence = data.evidence;
 
     var challenges = document.getElementById("challenges");
     challenges.innerHTML = "";
@@ -21,14 +22,24 @@ async function getChallenges() {
         let cardDiv = document.createElement("div")
         let titleDiv = document.createElement("div");
         let dateDiv = document.createElement("div");
+        let evidenceDiv = document.createElement("div");
+        let img = document.createElement("img");
+
+        if (evidence[i]){
+            img.src= "../images/image.png"
+        }
+
         cardDiv.className = "card";
         titleDiv.className = "title";
         dateDiv.className = "date";
+        evidenceDiv.className = "evidence";
 
         titleDiv.innerHTML = title[i];
         dateDiv.innerHTML = "End date: "+ date[i];
+        evidenceDiv.appendChild(img);
         cardDiv.appendChild(titleDiv);
         cardDiv.appendChild(dateDiv);
+        cardDiv.appendChild(evidenceDiv)
 
         challenges.appendChild(cardDiv);//adds each challenge to a card and adds them the the main div
     }
