@@ -2,10 +2,12 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <link rel="stylesheet" href="../styles/submissionsStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
+    <script type="text/javascript" src="../scripts/analyticsUtil.js" defer></script>
     <script type="module" src="../scripts/modCheck.js" defer></script>
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
@@ -21,8 +23,16 @@
     <div>
         <h1> View Participant Analytics</h1>
         <div class="key-stats">
-            <h2> Number of Members: </h2>
-            <h2> Total Points Earned: </h2>
+            <div class="total">
+                <h2> Number of Members: </h2>
+                <p id="members"></p>
+            </div>
+            <div class="total">
+               <h2> Total Points Earned: </h2>
+                <p id="points"></p>
+            </div><
+
+
         </div>
         <py-script>
         <!-- Insert Python code to show graph -->

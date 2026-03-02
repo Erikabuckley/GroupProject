@@ -442,6 +442,25 @@ app.get('/updateTotal', function (req, res) {
   });
 });
 
+// update total carbon saved
+app.get('/updatePoints', function (req, res) {
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    console.log("Total update request received");
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs", (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log("Total update sucessfull");
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
 // update total carbon saved by individual
 app.get('/updateTotalIndi', function (req, res) {
   console.log("Total individual update request recieved");
@@ -479,6 +498,64 @@ app.get('/updatePointsIndi', function (req, res) {
     });
   });
 });
+
+// update total carbon saved by individual
+app.get('/updateTotalGroup', function (req, res) {
+  console.log("Total individual update request recieved");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log("Individual total update sucessfull");
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// update total carbon saved by individual
+app.get('/updatePointsGroup', function (req, res) {
+  console.log("Total individual update request recieved");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log("Individual points update sucessfull");
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// gets the total number of users
+app.get('/getMembers', function (req, res) {
+  console.log("Get memebrs");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log("Individual points update sucessfull");
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
 
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
@@ -713,3 +790,6 @@ app.listen(port, () => {
 // update updateLog to get user challenge submissions
 // update submissios list to check if a flag has been raised and return it
 // add flagging route
+// add updatetotalgroup and updatepointsgroup to do group not individual
+// updatepoints needs to be points i just copid from updatetotal
+// getMembers needs addiing body to it

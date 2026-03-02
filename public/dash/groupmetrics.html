@@ -2,9 +2,11 @@
 <html lang="en">
 
 <head>
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
+    <script type="text/javascript" src="../scripts/groupUtil.js" defer></script>
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
@@ -19,9 +21,17 @@
     <div>
         <h1> Group metrics </h1>
         <div class="key-stats">
-            <h2> Total Carbon Saved: </h2>
-            <h2> Total Points Earned: </h2>
+            <div class="total">
+                <h2>Total Carbon Saved:</h2>
+                <p id="group-carbon"></p>
+            </div>
+
+            <div class="total">
+                <h2>Total Points Earned:</h2>
+                <p id="group-points"></p>
+            </div>
         </div>
+
         <py-script>
         <!-- Insert Python code to show graph -->
         <!-- display(fig, target="show-graph1", append=False) -->
