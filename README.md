@@ -14,6 +14,8 @@ Users will be directed to the main dashboard where the following actions can be 
 - Log in using existing credentials
 - Upgrades to a moderator role via the 'Settings' tab
 
+## Scrum board
+https://github.com/users/Erikabuckley/projects/2
 
 ## Features
 - User Registration and Login
