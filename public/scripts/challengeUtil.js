@@ -2,7 +2,7 @@ getChallenges();
 getMissions();
 
 async function getChallenges() {
-    const res = await fetch("/updateChallengeList",//route to backend
+    const res = await fetch("/updateChallengeList",// gets challenge information from backend
         {
             method: "GET",
             headers: {

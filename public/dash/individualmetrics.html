@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
+    <script type="text/javascript" src="../scripts/indiUtil.js" defer></script>
+
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
+
+    <py-config> packages = ["numpy", "matplotlib"] </py-config>
 
     <title>Metrics</title>
 </head>
@@ -14,7 +20,18 @@
     <div class="header-container"></div>
     <div>
         <h1> Individual metrics </h1>
-    </div>
+        <div class="key-stats">
+            <div class="total">
+                <h2>Total Carbon Saved:</h2>
+                <p id="indi-carbon"></p>
+            </div>
+
+            <div class="total">
+                <h2>Total Points Earned:</h2>
+                <p id="indi-points"></p>
+            </div>
+        </div>
+
     <div class="footer-container"></div>
 </body>
 

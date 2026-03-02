@@ -499,7 +499,7 @@ app.get('/updatePointsIndi', function (req, res) {
   });
 });
 
-// update total carbon saved by individual
+// update total carbon saved by group
 app.get('/updateTotalGroup', function (req, res) {
   console.log("Total individual update request recieved");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
@@ -518,7 +518,7 @@ app.get('/updateTotalGroup', function (req, res) {
   });
 });
 
-// update total carbon saved by individual
+// update total carbon saved by group
 app.get('/updatePointsGroup', function (req, res) {
   console.log("Total individual update request recieved");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
@@ -539,7 +539,7 @@ app.get('/updatePointsGroup', function (req, res) {
 
 // gets the total number of users
 app.get('/getMembers', function (req, res) {
-  console.log("Get memebrs");
+  console.log("Request for memebers");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -550,7 +550,7 @@ app.get('/getMembers', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Individual points update sucessfull");
+      console.log("Sucesful memebr update");
       return res.json({ total: row.total + 0 })
     });
   });
