@@ -11,5 +11,16 @@ async function updateTotal() {
         }
     );
     const data = await res.json();
-    document.getElementById("total-carbon").textContent = data.total + 'g';//updates the total on the home page with the new total
+    var obj = document.getElementById('total-carbon');
+    var max = data.total/1000;
+    let current = 0;
+    let interval = setInterval(function(){
+        current ++
+        if (current >= max) {
+            obj.innerHTML = current + 'kg';
+            clearInterval(interval);
+            return;
+        }
+        obj.innerHTML = current + 'kg';
+    },10);
 }

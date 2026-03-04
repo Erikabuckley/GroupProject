@@ -18,19 +18,29 @@
 
 <body>
     <div class="header-container"></div>
-    <div>
-        <h1> Individual metrics </h1>
-        <div class="key-stats">
-            <div class="total">
-                <h2>Total Carbon Saved:</h2>
-                <p id="indi-carbon"></p>
-            </div>
-
-            <div class="total">
-                <h2>Total Points Earned:</h2>
-                <p id="indi-points"></p>
-            </div>
+    <h1> Individual metrics </h1>
+    <div class="key-stats">
+        <div class="total">
+            <h2>Total Carbon Saved:</h2>
+            <p id="indi-carbon"></p>
         </div>
+
+        <div class="total">
+            <h2>Total Points Earned:</h2>
+            <p id="indi-points"></p>
+        </div>
+    </div>
+    <div class="filters">
+        <button type="button" class="in-button" id="filter-one">Sort By: Date Submitted</button>
+        <button type="button" class="in-button" id="filter-two">Sort By: Action Type</button>
+    </div>
+
+    <div class="table">
+        <h1>
+            Table
+        </h1>
+        <table id="data-table"></table>
+    </div>
 
     <div class="footer-container"></div>
 </body>
