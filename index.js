@@ -698,7 +698,7 @@ app.get('/updateSubmissionsList', function (req, res) {
   }); // closes const db
 }); // closes app.get
 
-//get log CHANGE TO LOG INSTED OF SUBMISSIONS
+//get log
 app.get('/updateLog', function (req, res) {
   console.log("Submissions list update"); //log that it has been done sucessfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
@@ -727,6 +727,12 @@ app.get('/updateLog', function (req, res) {
     }); // closes db.all
   }); // closes const db
 }); // closes app.get
+
+
+//gets information for the table
+app.get('/updateTable', function (req, res) {
+    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
+});
 
 app.get('/checkPerm', function (req, res) {
   console.log("Checked user permissions"); //log that it has been done sucessfully
@@ -787,9 +793,10 @@ app.listen(port, () => {
 });
 
 //add points to leaderbaord and orderby statement
-// update updateLog to get user challenge submissions
+// update updateLog to get user challenge submissions only
 // update submissios list to check if a flag has been raised and return it
 // add flagging route
 // add updatetotalgroup and updatepointsgroup to do group not individual
 // updatepoints needs to be points i just copid from updatetotal
 // getMembers needs addiing body to it
+// updateTable needs correcting
