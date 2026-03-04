@@ -5,7 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .moderator {
@@ -17,7 +17,7 @@
 }
 
 .header-heading {
-    font-size: 2rem;
+    font-size: 3rem;
     text-align: center;
     color: white;
 }
@@ -32,9 +32,15 @@
 }
 
 .ribon-heading a {
+    font-weight: bold;
     color: white;
     text-decoration: none;
 }
+
+.ribon-heading a:hover {
+    color: var(--main);
+}
+
 
 .close {
   color: #aaa;
@@ -168,6 +174,7 @@
 .filters button {
     margin: 1rem;
 }
+
 
 .info-section {
     padding: 2rem;

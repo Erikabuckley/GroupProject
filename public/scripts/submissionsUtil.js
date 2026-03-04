@@ -10,7 +10,6 @@ async function getSubmissions() {
         }
     );
     const data = await res.json();
-    var title = data.title;
     var id = data.id;
     var evidence = data.evidence;
     var challenge_title = data.challenge_title;

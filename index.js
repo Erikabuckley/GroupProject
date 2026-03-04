@@ -730,8 +730,20 @@ app.get('/updateLog', function (req, res) {
 
 
 //gets information for the table
-app.get('/updateTable', function (req, res) {
+app.get('/updateTableIndi', function (req, res) {
+    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [100,100,100], cat : ['food', 'food', 'food']});
+});
+app.get('/updateTableDate', function (req, res) {
     return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
+});
+app.get('/updateTableType', function (req, res) {
+    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
+});
+app.get('/updateTableDateIndi', function (req, res) {
+    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
+});
+app.get('/updateTableTypeIndi', function (req, res) {
+    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
 });
 
 app.get('/checkPerm', function (req, res) {
@@ -799,4 +811,4 @@ app.listen(port, () => {
 // add updatetotalgroup and updatepointsgroup to do group not individual
 // updatepoints needs to be points i just copid from updatetotal
 // getMembers needs addiing body to it
-// updateTable needs correcting
+// 5 updateTable routes  needs correcting
