@@ -24,7 +24,8 @@ const del_button = document.getElementById('delete-account');
 if (del_button) {
     del_button.addEventListener('click', async (e) => {
         e.preventDefault();
-        const res = await fetch("/delete",
+        if (confirm("Do you want to delete your account")){
+            await fetch("/delete",
             {
                 method: "POST",
                 headers: {
@@ -32,6 +33,7 @@ if (del_button) {
                 },
             }
         );
-        window.location.href = "../index.html"; // if not will prompt them to re-login to show moderator features
+        window.location.href = "../index.html"; 
+        }
     });
 };

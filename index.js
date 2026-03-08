@@ -722,7 +722,7 @@ app.get('/updateLog', function (req, res) {
       const id = rows.map(r => r.submission_id);
       const evidence = rows.map(r => r.evidence_required);
       const challenge_title = rows.map(r => r.title);
-      return res.json({ title, id, evidence, challenge_title, status: false, reason: 'hello this is why it got approved or denied' });
+      return res.json({ title, id, evidence, challenge_title, status: 'pending', reason: 'hello this is why it got approved or denied' });
 
     }); // closes db.all
   }); // closes const db
