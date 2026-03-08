@@ -883,7 +883,7 @@ app.listen(port, () => {
 // update updateLog to get user challenge submissions only
 // update submissios list to check if a flag has been raised and return it
 // add flagging route
-// add updatetotalgroup and updatepointsgroup to do group not individual
-// updatepoints needs to be points i just copid from updatetotal
+// add updatetotalgroup and updatepointsgroup to do group not individual x
+// updatepoints needs to be points i just copid from updatetotal x
 // getMembers needs addiing body to it
 // 5 updateTable routes  needs correcting
