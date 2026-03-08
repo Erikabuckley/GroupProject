@@ -1,12 +1,3 @@
-// test/challengeUtil.test.js
-// challengeUtil.js runs getChallenges() + getMissions() immediately on load.
-// So in this test we:
-// Create a jsdom page with #challenges and #missions
-// Set localStorage name (used in Authorization header)
-// Mock window.fetch BEFORE loading the script (because it fetches on load)
-// Load and execute our real challengeUtil.js using window.eval()
-// Wait a tick, then assert both lists rendered correctly
-
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { JSDOM } = require("jsdom");
@@ -32,17 +23,12 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
   );
   const { window } = dom;
 
-  // Our script sends Authorization header from localStorage name
-  window.localStorage.setItem("name", "tester@example.com");
-
-  // Track calls to both endpoints
   let calledChallenge = false;
   let calledMission = false;
 
   window.fetch = async (url, opts) => {
     assert.equal(opts.method, "GET");
     assert.equal(opts.headers["Content-Type"], "application/json");
-    assert.equal(opts.headers["Authorization"], "tester@example.com");
 
     if (url === "/updateChallengeList") {
       calledChallenge = true;
@@ -51,6 +37,7 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
           return {
             title: ["Challenge A", "Challenge B"],
             date: ["2026-02-01", "2026-02-02"],
+            evidence: [true, false],
           };
         },
       };
@@ -70,26 +57,22 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
     throw new Error("Unexpected fetch call: " + url);
   };
 
-  // Load our real script (it immediately calls getChallenges() and getMissions())
   loadRealScript(window, "public/scripts/challengeUtil.js");
-
-  // Wait for both async calls to finish rendering
+  await tick();
   await tick();
 
   assert.ok(calledChallenge, "Expected /updateChallengeList to be called on load");
   assert.ok(calledMission, "Expected /updateMissionList to be called on load");
 
-  // Assert challenge DOM
   const challengeCards = window.document.querySelectorAll("#challenges .card");
   assert.equal(challengeCards.length, 2);
   assert.equal(challengeCards[0].querySelector(".title").textContent, "Challenge A");
 
   assert.ok(
-  challengeCards[0].textContent.includes("2026-02-01"),
-  `Expected first card to contain end date 2026-02-01, got:\n${challengeCards[0].textContent}`
-);
+    challengeCards[0].textContent.includes("2026-02-01"),
+    `Expected first card to contain end date 2026-02-01, got:\n${challengeCards[0].textContent}`
+  );
 
-  // Assert mission DOM
   const missionCards = window.document.querySelectorAll("#missions .card");
   assert.equal(missionCards.length, 3);
   assert.equal(missionCards[0].querySelector(".title").textContent, "Mission 1");
@@ -105,26 +88,42 @@ test("CHALLENGES (real script): clears existing content before rendering", async
   );
   const { window } = dom;
 
-  window.localStorage.setItem("name", "tester@example.com");
+  window.fetch = async (url, opts) => {
+    assert.equal(opts.method, "GET");
+    assert.equal(opts.headers["Content-Type"], "application/json");
 
-  window.fetch = async (url) => {
     if (url === "/updateChallengeList") {
-      return { async json() { return { title: ["C"], date: ["D"] }; } };
+      return {
+        async json() {
+          return {
+            title: ["C"],
+            date: ["D"],
+            evidence: [false],
+          };
+        },
+      };
     }
+
     if (url === "/updateMissionList") {
-      return { async json() { return { title: ["M"] }; } };
+      return {
+        async json() {
+          return {
+            title: ["M"],
+          };
+        },
+      };
     }
+
     throw new Error("Unexpected fetch call: " + url);
   };
 
   loadRealScript(window, "public/scripts/challengeUtil.js");
   await tick();
+  await tick();
 
-  // OLD should be gone because script sets innerHTML = ""
   assert.equal(window.document.getElementById("challenges").textContent.includes("OLD"), false);
   assert.equal(window.document.getElementById("missions").textContent.includes("OLD"), false);
 
-  // And new cards exist
   assert.equal(window.document.querySelectorAll("#challenges .card").length, 1);
   assert.equal(window.document.querySelectorAll("#missions .card").length, 1);
 });

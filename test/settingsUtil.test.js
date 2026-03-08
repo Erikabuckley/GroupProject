@@ -1,20 +1,6 @@
-// test/settingsUtil.test.js
-// settingsUtil.js:
-// Looks for button #upgrade-status
-// On click, POSTs /upgrade with { email } (email from localStorage name)
-// If status === 401: shows #error-message
-// Else: sets localStorage auth='1' and attempts redirect to ../validation/login.html
-//
-// Important:
-// jsdom navigation is not reliable for window.location.href in this setup.
-// So for success we prove the success branch ran by checking:
-// auth is set to '1'
-// error message stays hidden
-// Redirect is covered by manual browser testing.
-
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { JSDOM } = require("jsdom");
+const { JSDOM, VirtualConsole } = require("jsdom");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -29,64 +15,93 @@ async function tick() {
 }
 
 function makeWindow() {
+  const virtualConsole = new VirtualConsole();
+  const jsdomErrors = [];
+  virtualConsole.on("jsdomError", (e) => jsdomErrors.push(e));
+
   const dom = new JSDOM(
     `<!doctype html>
-     <button id="upgrade-status">Upgrade</button>
-     <div id="error-message" style="visibility:hidden"></div>`,
+     <html>
+     <body>
+       <button id="upgrade-status">Upgrade</button>
+       <button id="delete-account">Delete</button>
+       <div id="error-message" style="visibility:hidden"></div>
+     </body>
+     </html>`,
     {
       url: "https://example.com/settings.html",
       runScripts: "dangerously",
+      virtualConsole,
     }
   );
-  return dom.window;
+
+  return { window: dom.window, jsdomErrors };
 }
 
-test("SETTINGS (real script): upgrade success sets auth and keeps error hidden", async () => {
-  const window = makeWindow();
+test("SETTINGS (real script): upgrade success posts correctly and keeps error hidden", async () => {
+  const { window, jsdomErrors } = makeWindow();
 
-  // Email comes from localStorage name
-  window.localStorage.setItem("name", "tester@example.com");
-
-  // Capture request so we can assert endpoint + payload
   let lastRequest = null;
 
-  window.fetch = async (url, opts) => {
+  window.fetch = async (url, opts = {}) => {
     lastRequest = { url, opts };
 
-    // Assert request is correct
     assert.equal(url, "/upgrade");
     assert.equal(opts.method, "POST");
     assert.equal(opts.headers["Content-Type"], "application/json");
-    assert.deepEqual(JSON.parse(opts.body), { email: "tester@example.com" });
+    assert.equal(opts.body, undefined);
 
-    // Success response
-    return { status: 200, async json() { return {}; } };
+    return {
+      status: 200,
+      async json() {
+        return {};
+      },
+    };
   };
 
-  // Load our real script (attaches click handler)
   loadRealScript(window, "public/scripts/settingsUtil.js");
   await tick();
 
-  // Click the upgrade button
   window.document.getElementById("upgrade-status").click();
   await tick();
+  await tick();
 
-  // Prove fetch happened
   assert.ok(lastRequest, "Expected POST /upgrade to be called");
 
-  // Prove we hit the success branch
-  assert.equal(window.localStorage.getItem("auth"), "1");
+  assert.equal(
+    window.document.getElementById("error-message").style.visibility,
+    "hidden"
+  );
 
-  // Error should remain hidden on success
-  assert.equal(window.document.getElementById("error-message").style.visibility, "hidden");
+  const hrefChanged = window.location.href.includes("../validation/login.html")
+    || window.location.href.includes("/validation/login.html");
+
+  const navError = jsdomErrors.some((e) =>
+    String(e && e.message ? e.message : e).includes("navigation")
+  );
+
+  assert.ok(
+    hrefChanged || navError,
+    "Expected redirect attempt to login page on successful upgrade"
+  );
 });
 
-test("SETTINGS (real script): upgrade failure (401) shows error message and does not set auth", async () => {
-  const window = makeWindow();
+test("SETTINGS (real script): upgrade failure (401) shows error message", async () => {
+  const { window } = makeWindow();
 
-  window.localStorage.setItem("name", "tester@example.com");
+  window.fetch = async (url, opts = {}) => {
+    assert.equal(url, "/upgrade");
+    assert.equal(opts.method, "POST");
+    assert.equal(opts.headers["Content-Type"], "application/json");
+    assert.equal(opts.body, undefined);
 
-  window.fetch = async () => ({ status: 401, async json() { return {}; } });
+    return {
+      status: 401,
+      async json() {
+        return {};
+      },
+    };
+  };
 
   loadRealScript(window, "public/scripts/settingsUtil.js");
   await tick();
@@ -94,9 +109,8 @@ test("SETTINGS (real script): upgrade failure (401) shows error message and does
   window.document.getElementById("upgrade-status").click();
   await tick();
 
-  // Error should be visible
-  assert.equal(window.document.getElementById("error-message").style.visibility, "visible");
-
-  // Auth should not be set to 1
-  assert.notEqual(window.localStorage.getItem("auth"), "1");
+  assert.equal(
+    window.document.getElementById("error-message").style.visibility,
+    "visible"
+  );
 });
