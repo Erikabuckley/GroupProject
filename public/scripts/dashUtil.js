@@ -230,8 +230,12 @@ async function updateLog(){
         submissionDiv.appendChild(challengeTitleDiv);
         submissionDiv.appendChild(feedbackDiv);
 
-        if (!status){ //CHANGE ONCE BACKEND DONE
-            submissionDiv.style.backgroundColor = "red";
+        if (status === 'denied'){
+            submissionDiv.style.backgroundColor = "#D9544D";
+        } else if (status == 'pending'){
+            submissionDiv.style.backgroundColor = "#686b6c";
+        } else{
+            submissionDiv.style.backgroundColor = "#93ef90";
         }
 
 
