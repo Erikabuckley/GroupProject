@@ -7,6 +7,7 @@ const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
+const { brotliDecompress } = require('zlib');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -868,6 +869,81 @@ app.get('/updatePointsGroup', function (req, res) {
   });
 });
 
+// gets the numbers of participants in the game
+app.get('/getMembers', function (req, res) {
+  console.log("All members of system");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    db.get("SELECT COUNT(user_id) AS members FROM Users", (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.members + 0 })
+    });
+  });
+});
+
+// gets the total number of points gained
+app.get('/updatePoints', function (req, res) {
+  console.log("All members of system");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    db.get("SELECT SUM(points) AS total FROM Submissions", (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// get individual user's carbon and the dates saved
+app.get('/updateActionDatesIndi', function (req, res) {
+  console.log("CO2 saved over time by user"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT ActionLogs.date, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      const dates = rows.map(r => r.date);
+      const carbon = rows.map(r => r.calculated_co2e)
+      return res.json({ dates, carbon })
+    });
+  });
+});
+
+// get group's carbon and the dates saved
+app.get('/updateActionDatesGroup', function (req, res) {
+  console.log("CO2 saved over time by user"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.all("SELECT ActionLogs.date, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups on ParticipantGroups.user_id = Submissions.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      const dates = rows.map(r => r.date);
+      const carbon = rows.map(r => r.calculated_co2e)
+      return res.json({ dates, carbon })
+    });
+  });
+});
+
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
@@ -885,5 +961,5 @@ app.listen(port, () => {
 // add flagging route
 // add updatetotalgroup and updatepointsgroup to do group not individual x
 // updatepoints needs to be points i just copid from updatetotal x
-// getMembers needs addiing body to it
+// getMembers needs addiing body to it x
 // 5 updateTable routes  needs correcting
