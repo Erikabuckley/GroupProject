@@ -889,7 +889,7 @@ app.get('/getMembers', function (req, res) {
 
 // gets the total number of points gained
 app.get('/updatePoints', function (req, res) {
-  console.log("All members of system");
+  console.log("All points gained in system");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -897,6 +897,24 @@ app.get('/updatePoints', function (req, res) {
     }
 
     db.get("SELECT SUM(points) AS total FROM Submissions", (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// gets the total amount of carbon saved
+app.get('/updateCarbon', function (req, res) {
+  console.log("All carbon saved in system");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    db.get("SELECT SUM(calculated_co2e) AS total FROM ActionLogs", (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -927,7 +945,7 @@ app.get('/updateActionDatesIndi', function (req, res) {
 
 // get group's carbon and the dates saved
 app.get('/updateActionDatesGroup', function (req, res) {
-  console.log("CO2 saved over time by user"); 
+  console.log("CO2 saved over time by group"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -946,7 +964,7 @@ app.get('/updateActionDatesGroup', function (req, res) {
 
 // get individual user's carbon and the action type
 app.get('/updateActionTypesIndi', function (req, res) {
-  console.log("CO2 saved over time by user"); 
+  console.log("CO2 saved by action type by user"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -966,7 +984,7 @@ app.get('/updateActionTypesIndi', function (req, res) {
 
 // get groups's carbon and the action type
 app.get('/updateActionTypesGroup', function (req, res) {
-  console.log("CO2 saved over time by user"); 
+  console.log("CO2 saved by action type by group"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
