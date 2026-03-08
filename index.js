@@ -539,7 +539,7 @@ app.get('/updatePointsGroup', function (req, res) {
 
 // gets the total number of users
 app.get('/getMembers', function (req, res) {
-  console.log("Request for memebers");
+  console.log("Request for members");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -793,6 +793,81 @@ app.get('/updateLeaderboard', function (req, res) {
     }); // closes db.all
   }); // closes const db
 }); // closes app.get
+
+// gets the total number of g of  c02 the person has saved
+app.get('/updateTotalIndi', function (req, res) {
+  console.log("Total co2e saved by user"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// gets the total number of points the individual has gained
+app.get('/updatePointsIndi', function (req, res) { 
+  console.log("Total points saved by user"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissons.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// gets the total amount of carbon the group had saved
+app.get('/updateTotalGroup', function (req, res) {
+  console.log("Total co2e saved by group"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    // check if user exists
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN ParticipantGroups on ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
+// gets the total amount of carbon the group had saved
+app.get('/updatePointsGroup', function (req, res) {
+  console.log("Total co2e saved by group"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    // check if user exists
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN ParticipantGroups on ParticipantGroups.user_id = Submissions.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ total: row.total + 0 })
+    });
+  });
+});
+
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
