@@ -32,9 +32,10 @@
             </div>
         </div>
 
-      <div id="show-graph2">
-        <py-script>
-            <!-- Insert Python code to show graph -->
+    </div>
+    <div id="show-graph1"></div>
+    <div id="show-graph2"></div>
+    <py-script>
             import matplotlib.pyplot as plt
             import numpy as np
             from js import fetch
@@ -42,6 +43,7 @@
             import js
             import json
             import asyncio
+            from datetime import datetime
 
             # retrieving data
             async def get_data():
@@ -67,18 +69,47 @@
                 fig, ax1 = plt.subplots()
                 x1 = 0
                 x2 = 1
-                ax1.bar(x1, [points], width=0.4, color="green")
+                ax1.bar(x1, [points], width=0.4, color=(0.6, 0.8, 0.7))
                 ax1.set_ylabel("Number of points")
 
                 ax2 = ax1.twinx()
-                ax2.bar(x2, [co2emissions], width=0.4, color="green")
+                ax2.bar(x2, [co2emissions], width=0.4, color=(0.6, 0.8, 0.7))
                 ax2.set_ylabel("Carbon emissions (g)")
 
                 plt.xticks([x1, x2], ["Points gained", "CO2 saved"])
 
                 plt.title("Total group points and carbon metrics")
 
+                display(fig, target="show-graph1", append=False)
+
+            async def get_co2_data():
+                res = await fetch("/updateActionDatesGroup")
+                data = (await res.json()).to_py()
+
+                dates = [] 
+                carbon = []
+
+                for row in data:
+                    dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+                    carbon.append(row["calculated_co2e"])
+
+                return dates, carbon
+
+            async def make_scatter():
+                dates, carbon = await get_co2_data()
+                fig, ax = plt.subplots()
+                ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
+
+                ax.set_xlabel("Date")
+                ax.set_ylabel("CO2 Saved (g)")
+                ax.set_title("Carbon Emissions Saved Over Time By Group")
+
+                plt.xticks(rotation=45)
+                plt.tight_layout()
+
                 display(fig, target="show-graph2", append=False)
+
+            asyncio.ensure_future(make_scatter())
             asyncio.ensure_future(make_chart())
         </py-script>
 

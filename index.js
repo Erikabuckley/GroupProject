@@ -936,7 +936,7 @@ app.get('/updateActionDatesIndi', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      
+
       return res.json(rows)
     });
   });
@@ -950,13 +950,12 @@ app.get('/updateActionDatesGroup', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT ActionLogs.date, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups on ParticipantGroups.user_id = Submissions.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
+    db.all("SELECT date(ActionLogs.date) AS date, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
-      const dates = rows.map(r => r.date);
-      const carbon = rows.map(r => r.calculated_co2e)
-      return res.json({ dates, carbon })
+    
+      return res.json(rows)
     });
   });
 });

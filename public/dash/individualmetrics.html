@@ -75,7 +75,7 @@
 
             plt.title("Total points and carbon metrics")
 
-            display(fig, target="show-graph1", append=True)
+            display(fig, target="show-graph1", append=False)
 
         async def get_co2_data():
             res = await fetch("/updateActionDatesIndi")
