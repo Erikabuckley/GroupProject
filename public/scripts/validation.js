@@ -32,7 +32,6 @@ if (form) {
                     body: JSON.stringify({ email, password } //turn to json
                     )
                 });
-                console.log(data.type)
                 if (data.type === 'moderator'){
                     window.location.href = "../dash/analytics.html";//redirect   
                 } else{

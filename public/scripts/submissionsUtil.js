@@ -14,7 +14,7 @@ async function getSubmissions() {
     var evidence = data.evidence;
     var challenge_title = data.challenge_title;
     var flag = data.flag;
-    var title = data.title; // ERIKA LOOK AT THIS!!
+    var title = data.title;
 
 
     var submissions = document.getElementById("submissions-container");

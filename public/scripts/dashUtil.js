@@ -14,6 +14,7 @@ if (form) {
         const quantity = document.getElementById("quantity-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const group = document.getElementById("group-challenge-input").value;
+        const declaration = document.getElementById("declaration").checked;
 
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
@@ -21,7 +22,12 @@ if (form) {
             error = document.getElementById("error")
             error.textContent = "You must select a group if the action is for a challenge"
             error.style.visibility = "visible"
-        } else{
+        } else  if (declaration){
+            error = document.getElementById("error")
+            error.textContent = "You must declare no sensitive information has been uploaded"
+            error.style.visibility = "visible"
+        } 
+        else{
             const formData = new FormData();
             formData.append("mission", mission);
             formData.append("challenge", challenge);
