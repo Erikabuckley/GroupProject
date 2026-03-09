@@ -7,6 +7,7 @@ const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specifys the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
+const { resolveSoa } = require('dns');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -803,6 +804,85 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// delete user information
+app.post("/delete", (req,res) => {
+  console.log("Delete request received");
+  console.log(req.session.email);
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // find user id
+    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
+      if (e || !user) {
+        console.log(e.message);
+        return res.status(400).json({ error: "no user found" });
+      }
+      if (user) {
+        const user_id = user.user_id;
+        // delete pending decisions
+        db.each("SELECT submission_id FROM Submissions WHERE user_id = ?", [user_id], (e, row) => {
+          if (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
+          db.run("DELETE FROM ModerationDecisions WHERE submission_id = ?", [row.submission_id], e => {
+            if (e) {
+              console.log(e.message);
+              return res.sendStatus(500);
+            }
+          });
+        });          
+        // delete submissions
+        db.run("DELETE FROM Submissions WHERE user_id = ?", [user_id], e => {
+          if (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
+        });
+        // remove all evidence submitted
+        const fs = require('fs');
+        db.each("SELECT evidence_required FROM ActionLogs WHERE user_id = ?", [user_id], (e, row) => {
+          if (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
+          fs.unlink(row.evidence_required, (err) => {
+            if (e) {
+              console.log(e.message);
+              return res.sendStatus(500);
+            }
+            console.log("File removed successfully");
+          });
+        });
+        // delete action logs
+        db.run("DELETE FROM ActionLogs WHERE user_id = ?", [user_id], e => {
+          if (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
+        });
+        // delete row from ParticipantGroups
+        db.run("DELETE FROM ParticipantGroups WHERE user_id = ?", [user_id], e => {
+          if (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
+        });
+        // delete row from User
+        db.run("DELETE FROM Users WHERE user_id = ?", [user_id], e => {
+          if (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
+        });
+        res.sendStatus(200);
+      }
+    });
+  })
+})
 
 //add points to leaderbaord and orderby statement
 // update updateLog to get user challenge submissions only
