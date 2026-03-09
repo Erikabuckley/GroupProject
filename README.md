@@ -1,7 +1,7 @@
 # Campus Carbon Challenge Game and Dashboard
 
 ## Overview
-Educating 1st year students and staff at the University of Exeter about its sustainability goals and reducing overall carbon emissions by promoting individual behaviour change. We have developed a game and dashboard where users complete in weekly and monthly challenges for points that rewards activities that save C02.
+Educating 1st year students and staff at the University of Exeter about its sustainability goals and reducing overall carbon emissions by promoting individual behavior change. We have developed a game and dashboard where users complete in weekly and monthly challenges for points that rewards activities that save C02.
 
 ## Live demo
 To access the website, click on the following link: 
