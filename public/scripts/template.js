@@ -13,15 +13,9 @@ async function loadHeader() {
         if (role === 'moderator') {
             document.getElementById('participant').style.display = "none";
             document.getElementById('moderator').style.display = "flex";
-            document.getElementById('maintainer').style.display = "none";
-        } else if(role === 'maintainer') {
-            document.getElementById('participant').style.display = "none";
-            document.getElementById('moderator').style.display = "none";
-            document.getElementById('maintainer').style.display = "flex";
         } else {
             document.getElementById('participant').style.display = "flex";
             document.getElementById('moderator').style.display = "none";
-            document.getElementById('maintainer').style.display = "none";
         }
         const out = document.getElementById('signOut') //logs them out
         if (out) {
