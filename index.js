@@ -932,13 +932,12 @@ app.get('/updateActionDatesIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT ActionLogs.date, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+    db.all("SELECT date(ActionLogs.date) AS date, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
-      const dates = rows.map(r => r.date);
-      const carbon = rows.map(r => r.calculated_co2e)
-      return res.json({ dates, carbon })
+      
+      return res.json(rows)
     });
   });
 });
