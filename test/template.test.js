@@ -3,7 +3,7 @@
 //    HTML templates (dashHeader, basicHeader, etc.) based on URL.
 // User Types: Verifies that if a user is a 'moderator', the 
 //    participant view is hidden and moderator view is shown.
-// Sign Out: Verifies that clicking sign out clears localStorage.
+// Sign Out: Verifies that clicking sign out calls /destroySession.
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -19,8 +19,6 @@ const SCRIPT_PATH = (() => {
     return candidates.find((p) => fs.existsSync(p));
 })();
 
-// We need a flexible DOM maker because template.js acts differently 
-// depending on the current page URL.
 function makeDom(url) {
   return new JSDOM(
     `
@@ -29,6 +27,7 @@ function makeDom(url) {
     
     <div id="participant" style="display:none"></div>
     <div id="moderator" style="display:none"></div>
+    <div id="maintainer" style="display:none"></div>
     <button id="signOut">Sign Out</button>
     <div id="logo">Logo</div>
     
@@ -41,37 +40,47 @@ function makeDom(url) {
   );
 }
 
+// FIX: strip the ES module import line before eval (jsdom cannot handle import statements),
+//      then inject a mock checkAuth that reads from localStorage — matching what the script expects.
 function loadScript(dom) {
-  const code = fs.readFileSync(SCRIPT_PATH, "utf8");
+  let code = fs.readFileSync(SCRIPT_PATH, "utf8");
+
+  // Remove the import line so jsdom eval doesn't crash
+  code = code.replace(/^\s*import\s+.*?['"].*?['"];?\s*$/m, "");
+
+  // Inject a mock checkAuth that reads from localStorage, matching the script's usage:
+  //   const { auth, role } = await checkAuth();
+  const mockCheckAuth = `
+    async function checkAuth() {
+      const type = window.localStorage.getItem("type");
+      const auth = !!window.localStorage.getItem("auth");
+      return { auth, role: type };
+    }
+  `;
+
+  code = mockCheckAuth + code;
   dom.window.eval(code);
 }
 
 test("TEMPLATE: Loads dashboard header and shows Moderator view", async () => {
-  // 1. Setup DOM as if we are on the dashboard
   const dom = makeDom("http://localhost/dash/dashboard.html");
 
-  // 2. Mock Fetch
   dom.window.fetch = async (url) => {
-    // Return dummy text for templates
     if (url.includes(".html")) {
       return { text: async () => "<div>Header Loaded</div>" };
     }
     return { status: 404 };
   };
 
-  // 3. Set user type to moderator
+  dom.window.localStorage.setItem("auth", "1");
   dom.window.localStorage.setItem("type", "moderator");
   
   loadScript(dom);
-  
-  // Wait for fetches
   await new Promise((r) => setTimeout(r, 20));
 
-  // 4. Verify Header content was injected
   const header = dom.window.document.getElementsByClassName("header-container")[0];
   assert.ok(header.innerHTML.includes("Header Loaded"));
 
-  // 5. Verify logic: Moderator div should be visible (flex), Participant hidden
   const modDiv = dom.window.document.getElementById("moderator");
   const partDiv = dom.window.document.getElementById("participant");
   
@@ -83,11 +92,11 @@ test("TEMPLATE: Loads dashboard header and shows Participant view", async () => 
   const dom = makeDom("http://localhost/dash/dashboard.html");
 
   dom.window.fetch = async (url) => {
-      if (url.includes(".html")) return { text: async () => "" };
-      return { status: 404 };
+    if (url.includes(".html")) return { text: async () => "" };
+    return { status: 404 };
   };
 
-  // Set user type to standard participant
+  dom.window.localStorage.setItem("auth", "1");
   dom.window.localStorage.setItem("type", "user");
   
   loadScript(dom);
@@ -100,14 +109,16 @@ test("TEMPLATE: Loads dashboard header and shows Participant view", async () => 
   assert.equal(modDiv.style.display, "none", "Moderator div should be hidden");
 });
 
-test("TEMPLATE: Sign Out button clears session", async () => {
+// FIX: script calls /destroySession (not /signOut) and does NOT clear localStorage —
+//      it only redirects. Test now reflects actual script behaviour.
+test("TEMPLATE: Sign Out button calls /destroySession", async () => {
   const dom = makeDom("http://localhost/dash/dashboard.html");
   let signOutCalled = false;
 
   dom.window.fetch = async (url) => {
-    if (url === "/signOut") {
-        signOutCalled = true;
-        return { status: 200 };
+    if (url === "/destroySession") {
+      signOutCalled = true;
+      return { status: 200 };
     }
     return { text: async () => "" };
   };
@@ -116,20 +127,14 @@ test("TEMPLATE: Sign Out button clears session", async () => {
   dom.window.localStorage.setItem("name", "me");
   dom.window.localStorage.setItem("type", "moderator");
 
-
   loadScript(dom);
   await new Promise((r) => setTimeout(r, 20));
 
-  // Simulate click
   const btn = dom.window.document.getElementById("signOut");
   btn.click();
-  
-  await new Promise((r) => setTimeout(r, 0));
 
-  // Verify backend call and localStorage clearing
-  assert.ok(signOutCalled, "Should call /signOut endpoint");
-  assert.equal(dom.window.localStorage.getItem("auth"), null);
-  assert.equal(dom.window.localStorage.getItem("name"), null);
-    assert.equal(dom.window.localStorage.getItem("type"), null);
+  await new Promise((r) => setTimeout(r, 20));
 
+  // Script calls /destroySession then redirects — it does not clear localStorage
+  assert.ok(signOutCalled, "Should call /destroySession endpoint");
 });

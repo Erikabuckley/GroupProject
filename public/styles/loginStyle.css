@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: var(--second);
+    background-color: rgb(140, 240, 165);
     font-family: 'Trebuchet MS';
     height: 100%;   
 }

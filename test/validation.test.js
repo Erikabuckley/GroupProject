@@ -4,7 +4,7 @@
 //
 // What we test:
 // LOGIN 401 -> shows #error-message (text + visibility)
-// LOGIN success -> sets localStorage (type/auth/name) + calls /login
+// LOGIN success -> calls /login then /setSession (no localStorage — server handles session)
 // SIGN UP with priv/tandc NOT checked -> does NOT call fetch
 // SIGN UP 401 -> shows #error-message (text + visibility)
 // SIGN UP success -> calls /signUp (redirect not asserted in jsdom)
@@ -54,12 +54,11 @@ function loadValidationScript(dom) {
   dom.window.eval(code);
 }
 
-// Dispatch submit event and attach e.submitter (jsdom doesn’t set it automatically)
+// Dispatch submit event and attach e.submitter (jsdom doesn't set it automatically)
 function submitForm(dom, buttonId) {
   const form = dom.window.document.getElementById("form");
   const btn = dom.window.document.getElementById(buttonId);
 
-  // Ensure the exact strings the production code checks
   btn.value = buttonId === "loginBtn" ? "Log in" : "Sign up";
   btn.setAttribute("value", btn.value);
 
@@ -101,35 +100,43 @@ test("LOGIN: status 401 shows #error-message", async () => {
   assert.notEqual(dom.window.localStorage.getItem("auth"), "1");
 });
 
-test("LOGIN: success sets localStorage (redirect not asserted in jsdom)", async () => {
+test("LOGIN: success calls /login then /setSession (redirect not asserted in jsdom)", async () => {
   const dom = makeDom();
 
   dom.window.document.getElementById("email-input").value = "user@test.com";
   dom.window.document.getElementById("password-input").value = "pass";
 
-  let called = null;
+  let loginCalled = null;
+  let setSessionCalled = false;
 
+  // FIX: script calls /login first, then /setSession on success — mock both.
+  // Script does NOT set localStorage; session is handled server-side.
   dom.window.fetch = async (url, options) => {
-    called = { url, options };
-    return {
-      status: 200,
-      json: async () => ({ type: "moderator" }),
-    };
+    if (url === "/login") {
+      loginCalled = { url, options };
+      return {
+        status: 200,
+        json: async () => ({ type: "moderator" }),
+      };
+    }
+    if (url === "/setSession") {
+      setSessionCalled = true;
+      return { status: 200, json: async () => ({}) };
+    }
+    throw new Error("Unexpected fetch: " + url);
   };
 
   loadValidationScript(dom);
   submitForm(dom, "loginBtn");
   await tick();
 
-  assert.ok(called, "Expected fetch to be called for login");
-  assert.equal(String(called.url), "/login");
-  assert.equal(called.options.method, "POST");
-  assert.equal(called.options.headers["Content-Type"], "application/json");
+  assert.ok(loginCalled, "Expected fetch to be called for /login");
+  assert.equal(String(loginCalled.url), "/login");
+  assert.equal(loginCalled.options.method, "POST");
+  assert.equal(loginCalled.options.headers["Content-Type"], "application/json");
 
-  // Success branch effects
-  assert.equal(dom.window.localStorage.getItem("type"), "moderator");
-  assert.equal(dom.window.localStorage.getItem("auth"), "1");
-  assert.equal(dom.window.localStorage.getItem("name"), "user@test.com");
+  // FIX: verify /setSession was called after successful login
+  assert.ok(setSessionCalled, "Expected /setSession to be called after successful login");
 });
 
 test("SIGN UP: if priv/tandc not checked, it should NOT call fetch", async () => {

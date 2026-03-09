@@ -143,11 +143,12 @@ test("SUBMISSIONS (real script): clicking a group opens modal/backdrop", async (
   assert.equal(window.document.getElementById("backdrop").style.display, "block");
 });
 
-//TEST 3: form submit posts decision/reason/id/mod_email and closes modal /
+//TEST 3: form submit posts decision/reason/id/challenge_name and closes modal /
+// FIX: removed mod_email from expected payload — approveDeny(outcome, reason, id, challenge_name)
+//      never reads localStorage or includes mod_email in the JSON body.
 test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and closes modal", async () => {
   const window = makeWindow();
 
-  // Make sure a selectedSubmission exists by simulating the click behaviour
   window.fetch = async (url) => {
     if (url === "/updateSubmissionsList") {
       return {
@@ -164,9 +165,6 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
     if (url === "/approveDeny") return { status: 200, async json() { return {}; } };
     throw new Error("Unexpected fetch: " + url);
   };
-
-  // Set mod email used by approveDeny()
-  window.localStorage.setItem("name", "mod@example.com");
 
   loadRealScript(window, "public/scripts/submissionsUtil.js");
   await tick();
@@ -189,7 +187,6 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
       lastRequest = { url, opts };
       return { status: 200, async json() { return {}; } };
     }
-    // If anything else is called here, it’s unexpected for this test
     throw new Error("Unexpected fetch: " + url);
   };
 
@@ -204,13 +201,14 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   assert.equal(lastRequest.opts.method, "POST");
   assert.equal(lastRequest.opts.headers["Content-Type"], "application/json");
 
+  // FIX: payload matches JSON.stringify({ outcome, reason, id, challenge_name }) exactly —
+  //      no mod_email field (script never reads localStorage or adds mod_email).
   const payload = JSON.parse(lastRequest.opts.body);
   assert.deepEqual(payload, {
     outcome: "approve",
     reason: "Looks good",
     id: "A",
-    mod_email: "mod@example.com",
-    challenge_name: 'Challenge X'
+    challenge_name: "Challenge X",
   });
 
   // Assert modal/backdrop closed
@@ -292,10 +290,10 @@ test("SUBMISSIONS (real script): groups correctly even when ids are mixed order"
 });
 
 //TEST 6: submit still posts even if no decision radio selected /
+// FIX: removed mod_email from expected payload — script never includes it.
+//      outcome is omitted by JSON.stringify when decision is undefined (standard JS behaviour).
 test("SUBMISSIONS (real script): submit works even if no decision radio selected", async () => {
   const window = makeWindow();
-
-  window.localStorage.setItem("name", "mod@example.com");
 
   window.fetch = async (url, opts) => {
     if (url === "/updateSubmissionsList") {
@@ -314,20 +312,19 @@ test("SUBMISSIONS (real script): submit works even if no decision radio selected
     if (url === "/approveDeny") {
       const payload = JSON.parse(opts.body);
 
-      // NOTE: If no radio is selected, `decision` becomes undefined. 
+      // NOTE: If no radio is selected, `decision` becomes undefined.
       // When we do JSON.stringify({ outcome: undefined, ... }),
-       //JavaScript omits the `outcome` key entirely because `undefined` is not valid JSON.
-    // So the backend receives { reason, id, mod_email } with NO "outcome" field.
+      // JavaScript omits the `outcome` key entirely because `undefined` is not valid JSON.
+      // So the backend receives { reason, id, challenge_name } with NO "outcome" field.
       // In the real UI this should be prevented by requiring the user to pick approve/deny,
-       //but we test it here to document current behaviour.//
+      // but we test it here to document current behaviour.
       assert.ok(!("outcome" in payload), "Expected outcome to be omitted when decision is undefined");
 
+      // FIX: payload only contains fields the script actually sends — no mod_email.
       assert.deepEqual(payload, {
         reason: "No decision picked",
         id: "A",
-        mod_email: "mod@example.com",
         challenge_name: "Challenge X",
-
       });
 
       return { status: 200, async json() { return {}; } };

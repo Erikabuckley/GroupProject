@@ -23,7 +23,7 @@ if (form) {
                 document.getElementById('error-message').style.visibility = 'visible';
             }
             else {
-                const res = await fetch("/setSession", // send data to backend
+                await fetch("/setSession", // send data to backend
                 {
                     method: "POST", //sending data to the server
                     headers: {
@@ -32,7 +32,14 @@ if (form) {
                     body: JSON.stringify({ email, password } //turn to json
                     )
                 });
+                console.log(data.type)
+                if (data.type === 'maintainer'){
+                    window.location.href = "../dash/participants.html";//redirect   
+                }else if (data.type === 'moderator'){
+                    window.location.href = "../dash/analytics.html";//redirect   
+                } else{
                 window.location.href = "../dash/dashboard.html";//redirect   
+                }
             }
         }
         else if (action === 'Sign up') {//check if sign up
