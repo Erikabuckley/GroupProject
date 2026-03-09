@@ -13,7 +13,7 @@ async function getMembers() {// gets the numbers of participants in the game
     const data = await res.json();
     document.getElementById("members").textContent = data.total + ' members';
 }
-async function updatePoints() {// gets the total number of points  gained
+async function updatePoints() {// gets the total number of points gained
     const res = await fetch("/updatePoints",
         {
             method: "GET",
