@@ -23,19 +23,17 @@
         <h1> Group Metrics </h1>
         <div class="key-stats">
             <div class="total">
-                <h2>Total Carbon Saved:</h2>
+                <h1>Total Carbon Saved:</h1>
                 <p id="group-carbon"></p>
             </div>
 
             <div class="total">
-                <h2>Total Points Earned:</h2>
+                <h1>Total Points Earned:</h1>
                 <p id="group-points"></p>
             </div>
         </div>
 
     </div>
-    <div id="show-graph1"></div>
-    <div id="show-graph2"></div>
     <py-script>
             import matplotlib.pyplot as plt
             import numpy as np
@@ -81,7 +79,7 @@
 
                 plt.title("Total group points and carbon metrics")
 
-                display(fig, target="show-graph1", append=False)
+                display(fig, target="graph1", append=False)
 
             async def get_co2_data():
                 res = await fetch("/updateActionDatesGroup")
@@ -108,7 +106,7 @@
                 plt.xticks(rotation=45)
                 plt.tight_layout()
 
-                display(fig, target="show-graph2", append=False)
+                display(fig, target="graph2", append=False)
 
             asyncio.ensure_future(make_scatter())
             asyncio.ensure_future(make_chart())
