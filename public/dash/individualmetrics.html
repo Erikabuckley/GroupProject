@@ -22,12 +22,12 @@
     <h1> Individual Metrics </h1>
     <div class="key-stats">
         <div class="total">
-            <h2>Total Carbon Saved:</h2>
+            <h1>Total Carbon Saved:</h1>
             <p id="indi-carbon"></p>
         </div>
 
         <div class="total">
-            <h2>Total Points Earned:</h2>
+            <h1>Total Points Earned:</h1>
             <p id="indi-points"></p>
         </div>
 
@@ -76,7 +76,7 @@
 
             plt.title("Total points and carbon metrics")
 
-            display(fig, target="show-graph1", append=False)
+            display(fig, target="graph1", append=False)
 
         async def get_co2_data():
             res = await fetch("/updateActionDatesIndi")
@@ -103,12 +103,20 @@
             plt.xticks(rotation=45)
             plt.tight_layout()
 
-            display(fig, target="show-graph2", append=False)
+            display(fig, target="graph2", append=False)
 
         asyncio.ensure_future(make_scatter())
         asyncio.ensure_future(make_chart()) 
     </py-script>
 
+    <div class="graph-block">
+            <div class="graph" id="graph1">
+                <h1> Total points and carbon metrics </h1>
+            </div>
+            <div class="graph" id="graph2">
+                <h1> Carbon emissions saved over time </h1>
+            </div>
+    </div>
     
 
     <div class="filters">

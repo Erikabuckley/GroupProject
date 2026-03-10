@@ -28,6 +28,7 @@ function makeWindow() {
        <select id="challenge-input"></select>
        <select id="group-input"></select>
        <select id="group-challenge-input"></select>
+       <select id="declaration"></select>
 
        <div id="indi-carbon"></div>
        <div id="indi-points"></div>
@@ -73,9 +74,7 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
   window.fetch = async (url, opts = {}) => {
     seen.add(url);
 
-    assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
-
+    assert.ok(!opts || !opts.method || opts.method === "GET");
     if (url === "/updateMissionList") {
       return { async json() { return { title: ["M1", "M2"] }; } };
     }
@@ -189,6 +188,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
   window.document.getElementById("challenge-input").value = "C1";
   window.document.getElementById("group-challenge-input").value = "UG1";
   window.document.getElementById("quantity-input").value = "3";
+  window.document.getElementById("declaration").value = true;
 
   const uploadEl = window.document.getElementById("upload-input");
   const fakeFile = new window.File(["dummy"], "proof.png", { type: "image/png" });

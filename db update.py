@@ -5,7 +5,6 @@ def seed_users():
     users = [
         ('user', 'user', 'user@exeter.ac.uk', 'user123'),
         ('moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
-        ('maintainer', 'maintainer', 'maintainer@exeter.ac.uk', 'maintainer123'),
     ]
 
     con = sqlite3.connect("CarbonChallenge.db")

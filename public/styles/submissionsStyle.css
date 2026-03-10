@@ -103,3 +103,8 @@
     width: 80px;
     height: 80px;
 }
+
+p a{
+    color: var(--second);
+    text-decoration: none;
+}

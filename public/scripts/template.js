@@ -13,15 +13,9 @@ async function loadHeader() {
         if (role === 'moderator') {
             document.getElementById('participant').style.display = "none";
             document.getElementById('moderator').style.display = "flex";
-            document.getElementById('maintainer').style.display = "none";
-        } else if(role === 'maintainer') {
-            document.getElementById('participant').style.display = "none";
-            document.getElementById('moderator').style.display = "none";
-            document.getElementById('maintainer').style.display = "flex";
         } else {
             document.getElementById('participant').style.display = "flex";
             document.getElementById('moderator').style.display = "none";
-            document.getElementById('maintainer').style.display = "none";
         }
         const out = document.getElementById('signOut') //logs them out
         if (out) {
@@ -42,15 +36,19 @@ async function loadHeader() {
         await loadBasicHeader();
         const exit = document.getElementById("out");
         if (exit) {
-            const auth = await checkAuth();
-            if (auth) {
+            const {role, auth} = await checkAuth();
+            if (!auth) {
                 exit.onclick = function () {
                     window.location.href = "../index.html";
                 }
 
             } else {
                 exit.onclick = function () {
-                    window.location.href = "../dash/dashboard.html";
+                    if (role === 'moderator'){
+                    window.location.href = "../dash/analytics.html";
+                    } else{
+                        window.location.href = "../dash/dashboard.html";
+                    }
                 };
             }
         }

@@ -37,7 +37,6 @@ test("AUTH: checkAuth returns auth false and null role when unauthenticated", as
 
     assert.equal(url, "/getSession");
     assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
 
     return {
       ok: true,
@@ -66,9 +65,7 @@ test("AUTH: checkAuth returns auth true and role when authenticated", async () =
     fetchCalled = true;
 
     assert.equal(url, "/getSession");
-    assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
-
+    assert.ok(!opts || !opts.method || opts.method === "GET");
     return {
       ok: true,
       json: async () => ({

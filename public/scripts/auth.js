@@ -1,14 +1,22 @@
 export async function checkAuth() {
-    const res = await fetch("/getSession",//gets the users session to check
-    {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        },
-    });
-    const data = await res.json();
-    return(// returns a boolean if they authenticated or not and their role
-        {auth: data.authenticated,
-        role: data.role}
-    )
+    try {
+        const res = await fetch("/getSession");
+
+        if (!res.ok) throw new Error("Failed to fetch session");
+
+        const data = await res.json();
+
+        return {
+            auth: data.authenticated,
+            role: data.role
+        };
+
+    } catch (err) {
+        console.error("checkAuth error:", err);
+
+        return {
+            auth: false,
+            role: null
+        };
+    }
 }

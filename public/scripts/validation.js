@@ -32,10 +32,7 @@ if (form) {
                     body: JSON.stringify({ email, password } //turn to json
                     )
                 });
-                console.log(data.type)
-                if (data.type === 'maintainer'){
-                    window.location.href = "../dash/participants.html";//redirect   
-                }else if (data.type === 'moderator'){
+                if (data.type === 'moderator'){
                     window.location.href = "../dash/analytics.html";//redirect   
                 } else{
                 window.location.href = "../dash/dashboard.html";//redirect   
