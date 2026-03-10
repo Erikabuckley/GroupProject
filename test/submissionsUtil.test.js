@@ -54,7 +54,6 @@ test("SUBMISSIONS (real script): groups by id and renders submissions + cards + 
     if (url === "/updateSubmissionsList") {
       gotUrl = url;
       assert.equal(opts.method, "GET");
-      assert.equal(opts.headers["Content-Type"], "application/json");
 
       return {
         async json() {

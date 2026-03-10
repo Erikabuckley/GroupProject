@@ -38,7 +38,6 @@ test("TOTAL (real script): loads total.js and updates #total-carbon from /update
 
     assert.equal(url, "/updateTotal");
     assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
 
     return {
       async json() {

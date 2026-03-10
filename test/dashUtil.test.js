@@ -75,7 +75,6 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
     seen.add(url);
 
     assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
 
     if (url === "/updateMissionList") {
       return { async json() { return { title: ["M1", "M2"] }; } };

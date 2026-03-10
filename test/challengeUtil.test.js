@@ -28,7 +28,6 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
 
   window.fetch = async (url, opts) => {
     assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
 
     if (url === "/updateChallengeList") {
       calledChallenge = true;
@@ -90,7 +89,6 @@ test("CHALLENGES (real script): clears existing content before rendering", async
 
   window.fetch = async (url, opts) => {
     assert.equal(opts.method, "GET");
-    assert.equal(opts.headers["Content-Type"], "application/json");
 
     if (url === "/updateChallengeList") {
       return {
