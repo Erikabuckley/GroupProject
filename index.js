@@ -27,10 +27,6 @@ app.use(
   })
 );
 
-app.use(function (req, res, next) {
-  res.status(404).sendFile('validation/404.html', { root: 'public' });
-});
-
 // route to set session data
 app.post("/setSession", (req,res) => {
   console.log("Checked user permissions"); //log that it has been done sucessfully
@@ -1004,17 +1000,6 @@ app.get('/updateActionTypesGroup', function (req, res) {
   });
 });
 
-
-// Define a route for GET requests to the root URL
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
-
 // delete user information
 app.post("/delete", (req,res) => {
   console.log("Delete request received");
@@ -1102,3 +1087,19 @@ app.post("/delete", (req,res) => {
 // updatepoints needs to be points i just copid from updatetotal x
 // getMembers needs addiing body to it x
 // 5 updateTable routes  needs correcting
+
+
+//NEEDS TO BE AT THE BOTTOM
+// Define a route for GET requests to the root URL
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
+
+app.use(function (req, res, next) {
+  res.status(404).sendFile('validation/404.html', { root: 'public' });
+});

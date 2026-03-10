@@ -1,14 +1,7 @@
 getLeaderboard();
 
 async function getLeaderboard() {
-    const res = await fetch("/updateLeaderboard",//route to backend
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateLeaderboard");
     const data = await res.json();//gets challenge information
     var name = data.name;
     //var points = data.points;

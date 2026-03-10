@@ -1,11 +1,6 @@
 export async function checkAuth() {
     try {
-        const res = await fetch("/getSession", { // gets the users session to check
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        });
+        const res = await fetch("/getSession");
 
         if (!res.ok) throw new Error("Failed to fetch session");
 

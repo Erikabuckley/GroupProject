@@ -1,5 +1,5 @@
 const button = document.getElementById('upgrade-status');
-if (button) {
+try{
     button.addEventListener('click', async (e) => {
         e.preventDefault();
         const res = await fetch("/upgrade",
@@ -17,11 +17,14 @@ if (button) {
             window.location.href = "../validation/login.html"; // if not will prompt them to re-login to show moderator features
         }
     });
+} catch (err) {
+    console.error("updatePoints error:", err);
+    document.getElementById("error-message").textContent = "Error upgrading user";
 };
 
 
 const del_button = document.getElementById('delete-account');
-if (del_button) {
+try{
     del_button.addEventListener('click', async (e) => {
         e.preventDefault();
         if (confirm("Do you want to delete your account")){
@@ -36,4 +39,7 @@ if (del_button) {
         window.location.href = "../index.html"; 
         }
     });
-};
+} catch (err) {
+    console.error("updatePoints error:", err);
+    document.getElementById("error-message").textContent = "Error loading deleting your account";
+}

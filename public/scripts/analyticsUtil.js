@@ -3,12 +3,7 @@ getMembers();
 
 async function getMembers() { // gets the numbers of participants in the game
     try {
-        const res = await fetch("/getMembers", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        const res = await fetch("/getMembers");
 
         if (!res.ok) throw new Error("Failed to fetch members");
 
@@ -23,12 +18,7 @@ async function getMembers() { // gets the numbers of participants in the game
 
 async function updatePoints() { // gets the total number of points gained
     try {
-        const res = await fetch("/updatePoints", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        const res = await fetch("/updatePoints");
 
         if (!res.ok) throw new Error("Failed to fetch points");
 
