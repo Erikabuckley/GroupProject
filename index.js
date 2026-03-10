@@ -1017,7 +1017,7 @@ app.get('/updateSubmissions', function (req, res) {
   });
 });
 
-app.get('/updatePointsDate', function (res) {
+app.get('/updatePointsDate', function (req, res) {
   console.log("All points gained over time"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
@@ -1034,7 +1034,7 @@ app.get('/updatePointsDate', function (res) {
   });
 });
 
-app.get('/updateGroupNumbers', function (res) {
+app.get('/updateGroupNumbers', function (req, res) {
   console.log("All groups and the users in the groups"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
@@ -1042,7 +1042,7 @@ app.get('/updateGroupNumbers', function (res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT Groups.name AS name, SUM(ParticipantGroups.user_id) AS total FROM Groups JOIN ParticipantGroups ON ParticipantGroups.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
+    db.all("SELECT Groups.name AS name, COUNT(ParticipantGroups.user_id) AS total FROM Groups JOIN ParticipantGroups ON ParticipantGroups.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
       if (e) {
         console.log(e.message);
       }
