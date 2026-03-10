@@ -1054,6 +1054,23 @@ app.get('/updatePointsDate', function (res) {
   });
 });
 
+app.get('/updateGroupNumbers', function (res) {
+  console.log("All groups and the users in the groups"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT Groups.name AS name, SUM(ParticipantGroups.user_id) AS total FROM Groups JOIN ParticipantGroups ON ParticipantGroups.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json(rows);
+    });
+  });
+});
+
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
