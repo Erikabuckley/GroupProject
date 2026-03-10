@@ -37,8 +37,7 @@ test("TOTAL (real script): loads total.js and updates #total-carbon from /update
     fetchCall = { url, opts };
 
     assert.equal(url, "/updateTotal");
-    assert.equal(opts.method, "GET");
-
+    assert.ok(!opts || !opts.method || opts.method === "GET");
     return {
       async json() {
         // FIX: use total:3000 → max=3, only 3 ticks × 10ms needed.

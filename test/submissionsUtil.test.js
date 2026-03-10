@@ -53,8 +53,7 @@ test("SUBMISSIONS (real script): groups by id and renders submissions + cards + 
   window.fetch = async (url, opts) => {
     if (url === "/updateSubmissionsList") {
       gotUrl = url;
-      assert.equal(opts.method, "GET");
-
+      assert.ok(!opts || !opts.method || opts.method === "GET");
       return {
         async json() {
           // Two ids: A has 2 logs, B has 1 log

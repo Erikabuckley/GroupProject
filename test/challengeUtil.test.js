@@ -27,8 +27,7 @@ test("CHALLENGES (real script): loads challengeUtil.js and renders challenge car
   let calledMission = false;
 
   window.fetch = async (url, opts) => {
-    assert.equal(opts.method, "GET");
-
+  assert.ok(!opts || !opts.method || opts.method === "GET");
     if (url === "/updateChallengeList") {
       calledChallenge = true;
       return {
@@ -88,8 +87,7 @@ test("CHALLENGES (real script): clears existing content before rendering", async
   const { window } = dom;
 
   window.fetch = async (url, opts) => {
-    assert.equal(opts.method, "GET");
-
+  assert.ok(!opts || !opts.method || opts.method === "GET");
     if (url === "/updateChallengeList") {
       return {
         async json() {

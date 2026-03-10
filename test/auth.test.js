@@ -65,8 +65,7 @@ test("AUTH: checkAuth returns auth true and role when authenticated", async () =
     fetchCalled = true;
 
     assert.equal(url, "/getSession");
-    assert.equal(opts.method, "GET");
-
+    assert.ok(!opts || !opts.method || opts.method === "GET");
     return {
       ok: true,
       json: async () => ({
