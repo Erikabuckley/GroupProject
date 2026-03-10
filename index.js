@@ -27,6 +27,10 @@ app.use(
   })
 );
 
+app.use(function (req, res, next) {
+  res.status(404).sendFile('validation/404.html', { root: 'public' });
+});
+
 // route to set session data
 app.post("/setSession", (req,res) => {
   console.log("Checked user permissions"); //log that it has been done sucessfully
@@ -547,7 +551,7 @@ app.get('/getMembers', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.session.email], (e, row) => {
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved' AND Users.email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }

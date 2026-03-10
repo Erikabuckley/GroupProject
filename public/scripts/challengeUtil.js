@@ -2,15 +2,19 @@ getChallenges();
 getMissions();
 
 async function getChallenges() {
-    const res = await fetch("/updateChallengeList",// gets challenge information from backend
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
+    try{
+        const res = await fetch("/updateChallengeList",// gets challenge information from backend
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
             }
-        }
-    );
-    const data = await res.json();//gets challenge information
+        );
+    } catch{
+        
+
+    }
     var title = data.title;
     var date = data.date;
     var evidence = data.evidence;
