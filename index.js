@@ -1037,7 +1037,7 @@ app.get('/updateSubmissions', function (req, res) {
   });
 });
 
-app.get('/updatePointsDate', function (res) {
+app.get('/updatePointsDate', function (req, res) {
   console.log("All points gained over time"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {

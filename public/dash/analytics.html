@@ -35,8 +35,75 @@
 
         </div>
         <py-script>
-        <!-- Insert Python code to show graph -->
-        <!-- display(fig, target="show-graph1", append=False) -->
+
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from js import fetch
+        from pyscript import display
+        import js
+        import json
+        import asyncio
+        from datetime import datetime
+
+        # retrieve submission data 
+        async def get_submission_data():
+            res = await fetch("/updateSubmissions")
+            data = (await res.json()).to_py()
+            
+            dates = []
+            submissions = []
+
+            for row in data:
+                submissions.append(row["submission_id"])
+                dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+
+            return dates, submissions
+
+        async def make_submissions_scatter():
+            dates, submissions = await get_submission_data()
+            fig, ax = plt.subplots()
+            ax.scatter(dates, submissions, color=(0.6, 0.8, 0.7))
+
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Submissions Made")
+            ax.set_title("Submissions Made Over Time")
+
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            display(fig, target="graph1", append=False)
+
+        # retrieve points over time data
+        async def get_points_data():
+            res = await fetch("/updatePointsDate")
+            data = (await res.json()).to_py()
+
+            dates = []
+            points = []
+
+            for row in data:
+                dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+                points.append(row["total"])
+
+            return dates, points
+
+        async def make_points_scatter():
+            dates, points = await get_points_data()
+            fig, ax = plt.subplots()
+            ax.scatter(dates, points, color=(0.6, 0.8, 0.7))
+
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Points Earned")
+            ax.set_title("Points Earned Over Time")
+
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            display(fig, target="graph2", append=False)
+
+
+        asyncio.ensure_future(make_submissions_scatter())
+        asyncio.ensure_future(make_points_scatter())
         </py-script>
 
         <div class="graph-block">
