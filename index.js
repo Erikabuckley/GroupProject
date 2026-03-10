@@ -989,26 +989,6 @@ app.get('/updateActionTypesGroup', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT submission_id, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
-      if (e) {
-        console.log(e.message);
-      }
-      const category = rows.map(r => r.category);
-      const carbon = rows.map(r => r.calculated_co2e);
-      return res.json({ category, carbon });
-    });
-  });
-});
-
-// get groups's carbon and the action type
-app.get('/updateActionTypesGroup', function (req, res) {
-  console.log("CO2 saved by action type by group"); 
-  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-    if (e) {
-      console.log(e.message);
-      return res.status(500).json({ error: "database failure" });
-    }
-    // check if user exists
     db.all("SELECT ActionTypes.category, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
@@ -1086,6 +1066,25 @@ app.get('/getLeaderboard', function (req, res) {
     });
   });
 });
+
+// app.get('/getApprovalTimes', function (req, res) {
+//   console.log("Length of time between submission logged and approved/denied"); 
+//   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+//     if (e) {
+//       console.log(e.message);
+//       return res.status(500).json({ error: "database failure" });
+//     }
+//     db.all("SELECT date(ModerationDecisions.timestamp) AS decision, date(ActionLogs.date) AS submit FROM ActionLogs JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id JOIN Submissions ON Submissions.linked_action_logs = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.timestamp = ActionLogs.date WHERE Users.role = ?", [req.session.email], (e, rows) => {
+//       if (e) {
+//         console.log(e.message);
+//       }
+//       return res.json(rows);
+//     });
+//   });
+// });
+// // moderation decisions timestamp vs action logs date -> SUBMISSIONS
+//   // join based on linked action logs/log id
+//   // where users.role = moderator
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
