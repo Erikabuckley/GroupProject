@@ -1,7 +1,7 @@
 getLeaderboard();
 
 async function getLeaderboard() {
-    const res = await fetch("/updateLeaderboard",//route to backend
+    const res = await fetch("/updateLeaderboard",// gets the number of points per group
         {
             method: "GET",
             headers: {
