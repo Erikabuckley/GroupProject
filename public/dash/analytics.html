@@ -101,9 +101,37 @@
 
             display(fig, target="graph2", append=False)
 
+        async def get_groups_data():
+            res = await fetch("/updateGroupNumbers")
+            data = (await res.json()).to_py()
+
+            num_users = []
+            group_names = []
+
+            for row in data:
+                num_users.append(row["total"])
+                group_names.append(row["name"])
+
+            return num_users, group_names
+            
+        async def make_groups_chart():
+            num_users, group_names = await get_groups_data()
+
+            fig, ax = plt.subplots()
+            ax.bar(group_names, num_users, color=(0.6, 0.8, 0.7))
+            ax.set_xlabel("Groups")
+            ax.set_ylabel("Number of users")
+            ax.set_title("Number Of Users Per Group")
+
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            display(fig, target="graph3", append=False)
+            
 
         asyncio.ensure_future(make_submissions_scatter())
         asyncio.ensure_future(make_points_scatter())
+        asyncio.ensure_future(make_groups_chart())
         </py-script>
 
         <div class="graph-block">
@@ -112,6 +140,9 @@
             </div>
             <div class="graph" id="graph2">
                 <h1> Points Earned Overtime </h1>
+            </div>
+            <div class="graph" id="graph3">
+                <h1> Number Of Users Per Group </h1>
             </div>
         </div>
 
