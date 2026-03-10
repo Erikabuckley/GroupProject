@@ -1028,7 +1028,7 @@ app.get('/updateSubmissions', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT Submissions.submission_id, ActionLogs.date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log", (e, rows) => {
+    db.all("SELECT Submissions.submission_id, date(ActionLogs.date) AS date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log", (e, rows) => {
       if (e) {
         console.log(e.message);
       }
@@ -1037,6 +1037,22 @@ app.get('/updateSubmissions', function (req, res) {
   });
 });
 
+app.get('/updatePointsDate', function (req, res) {
+  console.log("All points gained over time"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT Submissions.submission_id, ActionLogs.date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log", (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json(rows);
+    });
+  });
+});
 
 // Define a route for GET requests to the root URL
 app.get('/', (req, res) => {
@@ -1137,5 +1153,5 @@ app.post("/delete", (req,res) => {
 // 5 updateTable routes  needs correcting
 
 // moderator analytics page
-// all submissions made, and the associated date for each one
+// all submissions made, and the associated date for each one x
 // all groups and number of users per group
