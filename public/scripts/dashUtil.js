@@ -78,14 +78,7 @@ if (joinForm) {
 };
 
 async function updateMissionList() {
-    const res = await fetch("/updateMissionList",// gets the current missions
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateMissionList");
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('mission-input');
@@ -95,14 +88,7 @@ async function updateMissionList() {
     };
 }
 async function updateChallengeList() {
-    const res = await fetch("/updateChallengeList",// gets the current challenges and their dates
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateChallengeList");
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
@@ -113,14 +99,7 @@ async function updateChallengeList() {
 };
 
 async function updateGroupList() {
-    const res = await fetch("/updateGroupList",// gets the groups that are available to join
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateGroupList");
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
@@ -131,14 +110,7 @@ async function updateGroupList() {
 };
 
 async function updateUserGroupsList() {
-    const res = await fetch("/updateUserGroupsList",// gets the groups that the user is currently in
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateUserGroupsList");
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-challenge-input');
@@ -156,27 +128,13 @@ async function showData(num, source) {// shows the total carbon saved by that in
 }
 
 async function updateIndi() {
-    const res = await fetch("/updateTotalIndi",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateTotalIndi");
     const data = await res.json();
     document.getElementById("indi-carbon").textContent = data.total + 'g';
 }
 
 async function updatePoints() {// gets the total number of points the individual has gained
-    const res = await fetch("/updatePointsIndi",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updatePointsIndi");
     const data = await res.json();
     document.getElementById("indi-points").textContent = data.total + ' points';
 }

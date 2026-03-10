@@ -3,27 +3,13 @@ updateTotal();
 populateTable('date');
 
 async function updateTotal() {// gets the total amount of carbon the group had saved
-    const res = await fetch("/updateTotalGroup",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updateTotalGroup");
     const data = await res.json();
     document.getElementById("group-carbon").textContent = data.total + 'g';
 }
 
 async function updatePoints() {// gets the total number of points the group has gained
-    const res = await fetch("/updatePointsGroup",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
+    const res = await fetch("/updatePointsGroup");
     const data = await res.json();
     document.getElementById("group-points").textContent = data.total + ' points';
 }
@@ -31,30 +17,12 @@ async function updatePoints() {// gets the total number of points the group has 
 async function populateTable(type){
     let res;
     if (type === 'indi'){        
-        res = await fetch("/updateTableIndi",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        res = await fetch("/updateTableIndi");
 
     }else if (type === 'date'){        
-        res = await fetch("/updateTableDate",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        res = await fetch("/updateTableDate");
     } else if (type === 'type'){
-        res = await fetch("/updateTableType",
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        });
+        res = await fetch("/updateTableType");
 
     } else{
         console.log('error');
