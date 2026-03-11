@@ -251,16 +251,6 @@ async function updateLog() {
             cardDiv.appendChild(evidenceDiv);
             submissionDiv.appendChild(cardDiv);
         });
-
-        submissionDiv.addEventListener('click', () => {
-            selectedSubmission = {
-                challenge_title: challengeName,
-                logs: grouped[challengeName]
-            };
-            document.getElementById('statusDeny-modal').style.display = 'block';
-            document.getElementById('backdrop').style.display = "block";
-        });
-
         submissions.appendChild(submissionDiv);
     });
 }

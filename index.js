@@ -709,9 +709,13 @@ app.get('/updateLog', function (req, res) {
     }
     // find user id
     db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
-      if (e || !user) {
-        console.log(e.message);
-        return res.status(400).json({ error: "no user found" });
+      if (e) {
+          console.log("DB error:", e.message);
+          return res.status(500).json({ error: "database error" });
+      }
+      if (!user) {
+          console.log("No user found for email:", req.session.email);
+          return res.status(400).json({ error: "no user found" });
       }
       if (user) {
         const user_id = user.user_id;
