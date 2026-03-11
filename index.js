@@ -715,7 +715,7 @@ app.get('/updateLog', function (req, res) {
       }
       if (user) {
         const user_id = user.user_id;
-        db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title, Submissions.status, ModerationDecisions.reason FROM Submissions LEFT JOIN ActionLogs ON Submissions.linked_action_log = ActionLogs.log_id JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id LEFT JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id WHERE Submissions.user_id = ?", [user_id], (e, rows) => {
+        db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title, Submissions.status, ModerationDecisions.reason FROM Submissions LEFT JOIN ActionLogs ON Submissions.linked_action_log = ActionLogs.log_id JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id LEFT JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id WHERE Submissions.user_id = ?", [user_id], (e, rows) => {
           if (e) {
             console.log(e.message);
             return res.status(500).json({ error: "database failure" });
@@ -723,7 +723,7 @@ app.get('/updateLog', function (req, res) {
 
           if (!rows || rows.length === 0) {
             console.log("No submissions exist");
-            return res.json({ title: [], id: [], evidance: [] });
+            return res.json({title : [], id: [], evidence: [], challenge_title: [], status: [], reason:[] });
           }
           // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
           const title = rows.map(r => r.name);

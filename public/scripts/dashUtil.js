@@ -16,7 +16,6 @@ if (form) {
         const quantity = document.getElementById("quantity-input").value;
         const challenge = document.getElementById("challenge-input").value;
         const group = document.getElementById("group-challenge-input").value;
-        const declaration = document.getElementById("declaration").checked;
 
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
@@ -74,6 +73,14 @@ if (joinForm) {
             document.getElementById('error-message').style.visibility = 'visible';
         } else {
             document.getElementById("join-modal").style.display = "none";
+            document.getElementById('backdrop').style.display = "none";
+            updateChallengeList();
+            updateMissionList();
+            updateGroupList();
+            updateUserGroupsList();
+            updateIndi();
+            updatePoints();
+            updateLog();
         }
     });
 };
@@ -84,6 +91,7 @@ async function updateMissionList() {
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('mission-input');
+    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds each one to the drop down box
 
@@ -96,6 +104,7 @@ async function updateChallengeList() {
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
+    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds them to the drop down
 
@@ -108,6 +117,7 @@ async function updateGroupList() {
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
+    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds each one to the drop down box
 
@@ -120,6 +130,7 @@ async function updateUserGroupsList() {
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-challenge-input');
+    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds them to the drop down
 
