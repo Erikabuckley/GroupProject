@@ -1079,6 +1079,22 @@ app.post("/delete", (req,res) => {
   })
 })
 
+// addChallenge
+//TODO
+
+// edit a challenge route
+//TODO
+
+// get a listo f all the challenges returnigneverything aboutt them ONLY CURRENT ONES
+app.get('/updateModChallengeList', function (req, res) {
+  //make sure year is y-m-d
+    return res.json({ id : [1], name : ['challenge 1'], scope : ['Group'], rules: ['you must do this'], points: [100], start : ['2020-07-10'], end: ['2030-07-10'], evidence: [true]});
+});
+
+// delete a challenge given the challenge id
+app.post('/deleteChallenge', function (req, res) {})
+
+
 //add points to leaderbaord and orderby statement
 // update updateLog to get user challenge submissions only
 // update submissios list to check if a flag has been raised and return it
