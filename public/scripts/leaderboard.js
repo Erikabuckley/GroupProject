@@ -1,10 +1,17 @@
 getLeaderboard();
 
 async function getLeaderboard() {
-    const res = await fetch("/updateLeaderboard");
+    const res = await fetch("/updateLeaderboard",// gets the number of points per group
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }
+    );
     const data = await res.json();//gets challenge information
     var name = data.name;
-    //var points = data.points;
+    var points = data.total;
 
     var groups = document.getElementById("groups");
     groups.innerHTML = "";

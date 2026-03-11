@@ -166,18 +166,18 @@ def populate_action_logs(cursor):
         date = (today - timedelta(days=random.randint(0, 30)))
 
         # randomly choose whether evidence is required or not
-        evidence_required = random.choice([True, False])
+        evidence = random.choice([True, False])
 
         # calculated co2e = quantity * default factor id (from action type)
         # use default factor id once made action table
         calculated_co2e = random.randint(1, 100)
 
         action_logs.append((action_type_id, user_id, quantity,
-                           date, evidence_required, calculated_co2e))
+                           date, evidence, calculated_co2e))
 
     cursor.executemany(
         """ 
-        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, evidence_required, calculated_co2e)
+        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, evidence, calculated_co2e)
         VALUES(?, ?, ?, ?, ?, ?)
         """,
         action_logs
