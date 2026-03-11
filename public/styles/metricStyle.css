@@ -23,18 +23,54 @@ h1 {
 .graph-block {
     display: flex;
     justify-content: center;
-    background-color: var(--main);
+    background-color: rgb(210, 240, 220);
+    margin-left: 4rem;
+    margin-right: 4rem;
 }
 
 .graph {
-    padding: 2rem;
-    margin: 2rem;
-    background-color: rgb(140, 240, 165);
+    padding: 1rem;
+    align-items: center;
 }
 
 .table {
-    margin: 1rem;
-    background-color: rgb(140, 240, 165);
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-bottom: 1rem;
+}
+
+#data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#data-table th {
+    background-color: var(--main);
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+#data-table td {
+    padding: 10px;
+    border-bottom: 1px solid white;
+    text-align: center;
+}
+
+#data-table tr:nth-child(even) {
+    background-color: white;
+    align-items: center;
+}
+
+#data-table tr:hover {
+    background-color: var(--second);
+    transition: 0.2s;
 }
 
 .filters {
