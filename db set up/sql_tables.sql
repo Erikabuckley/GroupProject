@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS ActionLogs (
     user_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
     date TEXT NOT NULL,
-    evidence_required TEXT NOT NULL,
+    evidence TEXT NOT NULL,
     calculated_co2e INTEGER NOT NULL,
     FOREIGN KEY (action_type_id) REFERENCES ActionTypes(action_type_id),
     FOREIGN KEY (user_id) REFERENCES Participants(user_id)
@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS Challenges (
     rules TEXT NOT NULL,
     scoring INTEGER NOT NULL,
     start_date TEXT NOT NULL,
-    end_date TEXT NOT NULL
+    end_date TEXT NOT NULL,
+    evidence_required TEXT
 );
 CREATE TABLE IF NOT EXISTS Submissions (
     submission_id INTEGER NOT NULL,
