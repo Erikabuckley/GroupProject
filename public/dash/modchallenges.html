@@ -5,6 +5,7 @@
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
+    <link rel="stylesheet" href="../styles/modChallengesStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
     <script type="module" src="../scripts/modCheck.js" defer></script>
 
@@ -12,11 +13,73 @@
     <title>Modify challenges</title>
 </head>
 
-<body>
+<body>    
+    <div id="backdrop"></div>
     <div class="header-container"></div>
     <div>
         <h1> Edit a challenge</h1>
+        <p>Here you can edit a challenge</p>
+        <input type="button" id="new" value="Add new challenge" class="in-button">
+        <div id="challenge-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close-challenge">&times;</span>
+                <h2>Add a new challenge: </h2>
+                <form class="form" id="challengeForm">
+                    <span id="error" class="error"></span>
+                    <label for="name-input">What is the challenge title?</label>
+                    <input type="text" id="name-input" required placeholder="Enter the challenge name"><br>
+
+                    <label for="scope-input">What is the scope?</label>
+                    <select required name="Scope" id="scope-input">
+                        <option value="Personal">Personal</option>
+                        <option value="Group">Group</option>
+                    </select><br>    
+                    
+                    <label for="rules-input">What are the challenge rules?</label>
+                    <input type="text" id="rules-input" required placeholder="Enter some rules"><br>
+ 
+                    <label for="points-input">How many points is each challenge submission worth?</label>
+                    <input type="number" id="points-input" required placeholder="Enter the number of points this challenge is worth" min="1"><br>
+
+                    <label for="start-input">Challenge start date:</label>
+                    <input type="date" id="start-input" name="start"><br>                    
+                    
+                    <label for="end-input">Challenge end date:</label>
+                    <input type="date" id="end-input" name="end"><br>
+
+                    <label>Do these challenge submissions require evidence?</label><br>
+                    <label for="yes">Yes</label>
+                    <input type="radio" name="val" value="yes" id="yes" required>
+                    <label for="no">No</label>
+                    <input type="radio" name="val" value="no" id="no" required><br>
+                    
+                    <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
+                </form>
+            </div>
+        </div>
+
+        <script>
+            var s_modal = document.getElementById("challenge-modal");
+            var s_btn = document.getElementById("new");
+            var s_span = document.getElementById("close-challenge");
+            var backdrop = document.getElementById("backdrop");
+
+            s_btn.onclick = function () {
+                s_modal.style.display = "block";
+                backdrop.style.display = "block";
+            };
+            s_span.onclick = function () {
+                s_modal.style.display = "none";
+                backdrop.style.display = "none";
+            };
+            
+            backdrop.addEventListener('click', function  () {
+                s_modal.style.display = "none";
+                backdrop.style.display = "none";
+            });
+        </script>
     </div>
+    <div id="challenges"></div>
     <div class="footer-container"></div>
 </body>
 
