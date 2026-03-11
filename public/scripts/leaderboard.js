@@ -11,7 +11,7 @@ async function getLeaderboard() {
     );
     const data = await res.json();//gets challenge information
     var name = data.name;
-    //var points = data.points;
+    var points = data.total;
 
     var groups = document.getElementById("groups");
     groups.innerHTML = "";

@@ -22,7 +22,7 @@ if (form) {
             error = document.getElementById("error")
             error.textContent = "You must select a group if the action is for a challenge"
             error.style.visibility = "visible"
-        } else  if (declaration){
+        } else  if (!declaration){
             error = document.getElementById("error")
             error.textContent = "You must declare no sensitive information has been uploaded"
             error.style.visibility = "visible"

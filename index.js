@@ -198,7 +198,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
               if (user) {
                 if (req.body.challenge === 'No') {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], e => {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], e => {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
@@ -207,7 +207,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                     }
                   })
                 } else {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence_required, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], function (e) {
+                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], function (e) {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
@@ -219,7 +219,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                           return res.status(400).json({ error: "no challenge found" });
                         } 
                         
-                        if (evidence_required === true && evidencePath === 'no file'){
+                        if (challenge.evidence_required === true && evidencePath === 'no file'){
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
                         else if (challenge) {
@@ -678,7 +678,7 @@ app.get('/updateSubmissionsList', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
 
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending' AND Challenges.end_date < DATE('now')", [], (e, rows) => {
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending' ", [], (e, rows) => { //AND Challenges.end_date < DATE('now')
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -691,7 +691,7 @@ app.get('/updateSubmissionsList', function (req, res) {
       // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
-      const evidence = rows.map(r => r.evidence_required);
+      const evidence = rows.map(r => r.evidence);
       const challenge_title = rows.map(r => r.title);
       return res.json({ title, id, evidence, challenge_title, flag: 'hello this is a flag' });
 
@@ -708,7 +708,7 @@ app.get('/updateLog', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
 
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -721,7 +721,7 @@ app.get('/updateLog', function (req, res) {
       // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
-      const evidence = rows.map(r => r.evidence_required);
+      const evidence = rows.map(r => r.evidence);
       const challenge_title = rows.map(r => r.title);
       return res.json({ title, id, evidence, challenge_title, status: 'pending', reason: 'hello this is why it got approved or denied' });
 
@@ -1135,12 +1135,12 @@ app.post("/delete", (req,res) => {
         });
         // remove all evidence submitted
         const fs = require('fs');
-        db.each("SELECT evidence_required FROM ActionLogs WHERE user_id = ?", [user_id], (e, row) => {
+        db.each("SELECT evidence FROM ActionLogs WHERE user_id = ?", [user_id], (e, row) => {
           if (e) {
             console.log(e.message);
             return res.sendStatus(500);
           }
-          fs.unlink(row.evidence_required, (err) => {
+          fs.unlink(row.evidence, (err) => {
             if (e) {
               console.log(e.message);
               return res.sendStatus(500);
