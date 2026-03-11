@@ -707,25 +707,38 @@ app.get('/updateLog', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending'", [], (e, rows) => {
-      if (e) {
+    // find user id
+    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
+      if (e || !user) {
         console.log(e.message);
-        return res.status(500).json({ error: "database failure" });
+        return res.status(400).json({ error: "no user found" });
       }
+      if (user) {
+        const user_id = user.user_id;
+        db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence_required, Challenges.title, Submissions.status, ModerationDecisions.reason FROM Submissions LEFT JOIN ActionLogs ON Submissions.linked_action_log = ActionLogs.log_id JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id LEFT JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id WHERE Submissions.user_id = ?", [user_id], (e, rows) => {
+          if (e) {
+            console.log(e.message);
+            return res.status(500).json({ error: "database failure" });
+          }
 
-      if (!rows || rows.length === 0) {
-        console.log("No submissions exist");
-        return res.json({ title: [], id: [], evidance: [] });
+          if (!rows || rows.length === 0) {
+            console.log("No submissions exist");
+            return res.json({ title: [], id: [], evidance: [] });
+          }
+          // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
+          const title = rows.map(r => r.name);
+          const id = rows.map(r => r.submission_id);
+          const evidence = rows.map(r => r.evidence_required);
+          const challenge_title = rows.map(r => r.title);
+          const status = rows.map(r => r.status);
+          const reason = rows.map(r => r.reason);
+          return res.json({ title, id, evidence, challenge_title, status, reason });
+
+        }); // closes db.all
       }
-      // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
-      const title = rows.map(r => r.name);
-      const id = rows.map(r => r.submission_id);
-      const evidence = rows.map(r => r.evidence);
-      const challenge_title = rows.map(r => r.title);
-      return res.json({ title, id, evidence, challenge_title, status: 'pending', reason: 'hello this is why it got approved or denied' });
+    });
 
-    }); // closes db.all
+    
   }); // closes const db
 }); // closes app.get
 
