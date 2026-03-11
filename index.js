@@ -219,7 +219,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                           return res.status(400).json({ error: "no challenge found" });
                         } 
                         
-                        if (evidence_required === true && evidencePath === 'no file'){
+                        if (challenge.evidence_required === true && evidencePath === 'no file'){
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
                         else if (challenge) {
