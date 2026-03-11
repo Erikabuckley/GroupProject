@@ -23,13 +23,13 @@
         <h1> Group Metrics </h1>
         <div class="key-stats">
             <div class="total">
-                <h1>Total Carbon Saved:</h1>
-                <p id="group-carbon"></p>
+                <h3>Total Carbon Saved:</h3>
+                <h3 id="group-carbon"></h3>
             </div>
 
             <div class="total">
-                <h1>Total Points Earned:</h1>
-                <p id="group-points"></p>
+                <h3>Total Points Earned:</h3>
+                <h3 id="group-points"></h3>
             </div>
         </div>
 
@@ -65,7 +65,7 @@
                 labels = ["Points", "CO2 saved"]
                 values = [points, co2emissions]
 
-                fig, ax1 = plt.subplots()
+                fig, ax1 = plt.subplots(figsize=(4,3))
                 x1 = 0
                 x2 = 1
                 ax1.bar(x1, [points], width=0.4, color=(0.6, 0.8, 0.7))
@@ -77,7 +77,7 @@
 
                 plt.xticks([x1, x2], ["Points gained", "CO2 saved"])
 
-                plt.title("Total group points and carbon metrics")
+                plt.title("Total Group Points and Carbon Metrics")
 
                 display(fig, target="graph1", append=False)
 
@@ -96,12 +96,12 @@
 
             async def make_scatter():
                 dates, carbon = await get_co2_data()
-                fig, ax = plt.subplots()
+                fig, ax = plt.subplots(figsize=(4,3))
                 ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
 
                 ax.set_xlabel("Date")
                 ax.set_ylabel("CO2 Saved (g)")
-                ax.set_title("Carbon Emissions Saved Over Time By Group")
+                ax.set_title("Carbon Emissions Saved By Group")
 
                 plt.xticks(rotation=45)
                 plt.tight_layout()
@@ -114,10 +114,10 @@
 
         <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> Carbon Saved Overtime </h1>
+                <h1> Total Metrics Graph </h1>
             </div>
             <div class="graph" id="graph2">
-                <h1> Points Earned Overtime </h1>
+                <h1> Carbon Saved Graph </h1>
             </div>
         </div>
 
@@ -128,11 +128,7 @@
         </div>
 
         <div class="table">
-            <h1>
-                Table
-            </h1>
-            <table id="data-table">
-            </table>
+            <table id="data-table"></table>
         </div>
     </div>
     <div class="footer-container"></div>

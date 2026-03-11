@@ -159,10 +159,11 @@ body {
     border-width: thick;
     min-width: 250px;
     margin: 1rem;
-    padding:1rem;
+    padding: 0.5rem;
     color: var(--main);
     font-size: 50px;
     font-weight: bold;
+    text-align: center;
 }
 
 #backdrop{

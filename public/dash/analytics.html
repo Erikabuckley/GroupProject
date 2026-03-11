@@ -24,12 +24,12 @@
         <h1> View Participant Analytics</h1>
         <div class="key-stats">
             <div class="total">
-                <h2> Number of Members: </h2>
-                <p id="members"></p>
+                <h3> Number of Members: </h3>
+                <h3 id="members"></h3>
             </div>
             <div class="total">
-               <h2> Total Points Earned: </h2>
-                <p id="points"></p>
+               <h3> Total Points Earned: </h3>
+               <h3 id="points"></h3>
             </div>
 
 
@@ -61,7 +61,7 @@
 
         async def make_submissions_scatter():
             dates, submissions = await get_submission_data()
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(4,3))
             ax.scatter(dates, submissions, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
@@ -89,7 +89,7 @@
 
         async def make_points_scatter():
             dates, points = await get_points_data()
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(4,3))
             ax.scatter(dates, points, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
@@ -117,7 +117,7 @@
         async def make_groups_chart():
             num_users, group_names = await get_groups_data()
 
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(4,3))
             ax.bar(group_names, num_users, color=(0.6, 0.8, 0.7))
             ax.set_xlabel("Groups")
             ax.set_ylabel("Number of users")
