@@ -34,7 +34,7 @@ function makeWindow() {
 
        <div id="upload-modal" style="display:block"></div>
        <div id="data-modal" style="display:none"></div>
-       <div id="ammount"></div>
+       <div id="amount"></div>
        <a id="source"></a>
 
        <div id="error" style="visibility:hidden"></div>
@@ -216,7 +216,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
 
   assert.equal(window.document.getElementById("upload-modal").style.display, "none");
   assert.equal(window.document.getElementById("data-modal").style.display, "block");
-  assert.equal(window.document.getElementById("ammount").innerText, "7g");
+  assert.equal(window.document.getElementById("amount").innerText, "7g");
   assert.equal(window.document.getElementById("source").innerText, "Test source");
 });
 

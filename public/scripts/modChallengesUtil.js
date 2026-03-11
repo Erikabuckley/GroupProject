@@ -1,7 +1,7 @@
 getChallenges();
 
 const newChallenge = document.getElementById("challengeForm");
-newChallenge.addEventListener('submit', async (e) => { //wait till form has been submitted
+newChallenge.addEventListener('submit', async (e) => {
     e.preventDefault(); // stop page reload
     const name = document.getElementById("name-input").value;
     const scope = document.getElementById("scope-input").value;
@@ -14,23 +14,24 @@ newChallenge.addEventListener('submit', async (e) => { //wait till form has been
     const res = await fetch("/addChallenge", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json" //tells server how data is formatted
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name, scope, rules, points, start, end, selectedValue } //turn to json
+        body: JSON.stringify({ name, scope, rules, points, start, end, selectedValue }
         )
     });
     const data = await res.json();
     getChallenges();
 
+    // if there is an error then the error message will be displayed
     if (res.status === 400) {
         document.getElementById('error').textContent = data.error;
-        document.getElementById('error').style.visibility = 'visible';  // if there is an error then the error message will be displayed
+        document.getElementById('error').style.visibility = 'visible';
     }
     document.getElementById("challenge-modal").style.display = "none";
 });
 
 const editChallenge = document.getElementById("editForm");
-editChallenge.addEventListener('submit', async (e) => { //wait till form has been submitted
+editChallenge.addEventListener('submit', async (e) => {
     e.preventDefault(); // stop page reload
     const id = document.getElementById("editForm").dataset.id;
     const name = document.getElementById("edit-name-input").value;
@@ -44,21 +45,22 @@ editChallenge.addEventListener('submit', async (e) => { //wait till form has bee
     const res = await fetch("/editChallenge", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json" //tells server how data is formatted
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({ id, name, scope, rules, points, start, end, selectedValue } //turn to json
         )
     });
     const data = await res.json();
 
+    // if there is an error then the error message will be displayed
     if (res.status === 400) {
         document.getElementById('error').textContent = data.error;
-        document.getElementById('error').style.visibility = 'visible';  // if there is an error then the error message will be displayed
+        document.getElementById('error').style.visibility = 'visible';
     }
     document.getElementById("update-modal").style.display = "none";
 });
 
-
+// populates the challenge list with the current challenges
 async function getChallenges() {
     try {
         const res = await fetch("/updateModChallengeList");
@@ -80,17 +82,16 @@ async function getChallenges() {
             const challengeDiv = document.createElement("div");
             const titleDiv = document.createElement("div");
             const rulesDiv = document.createElement("div");
-            const pointsDiv = document.createElement("div");            
+            const pointsDiv = document.createElement("div");
             const dateDiv = document.createElement("div");
             const deleteImg = document.createElement("img");
 
             const textDiv = document.createElement("div");
 
-
             challengeDiv.className = "challenge";
             titleDiv.className = "title";
             rulesDiv.className = "rules";
-            pointsDiv.className = "points";            
+            pointsDiv.className = "points";
             dateDiv.className = "date";
             deleteImg.className = "delete"
 
@@ -111,30 +112,31 @@ async function getChallenges() {
             challengeDiv.appendChild(textDiv);
             challengeDiv.appendChild(deleteImg);
 
-            deleteImg.addEventListener('click', async (e) => {// checks if a challenge is being deleted
+            // checks if a challenge is being deleted
+            deleteImg.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                if(confirm("Are you sure you want to delete")){
+                if (confirm("Are you sure you want to delete")) {
                     await fetch("/deleteChallenge", {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json" //tells server how data is formatted
+                            "Content-Type": "application/json"
                         },
-                        body: JSON.stringify({ id : challengeDiv.dataset.id} //turn to json
+                        body: JSON.stringify({ id: challengeDiv.dataset.id } //turn to json
                         )
                     });
                     getChallenges();
                 }
 
             });
-
-            challengeDiv.addEventListener('click', () => {// checks if a challenge is being modified
+            // checks if a challenge is being modified
+            challengeDiv.addEventListener('click', () => {
                 document.getElementById("edit-name-input").value = name[i];
                 document.getElementById("edit-scope-input").value = scope[i];
                 document.getElementById("edit-rules-input").value = rules[i];
                 document.getElementById("edit-points-input").value = points[i];
                 document.getElementById("edit-start-input").value = start[i];
                 document.getElementById("edit-end-input").value = end[i];
-                
+
                 const evidenceRadios = document.querySelectorAll('input[name="edit-val"]');
 
                 evidenceRadios.forEach(radio => {
@@ -146,7 +148,8 @@ async function getChallenges() {
                 document.getElementById('update-modal').style.display = 'block';
                 document.getElementById('backdrop').style.display = "block";
             });
-            challenges.appendChild(challengeDiv);// adds each card to the submission div
+            // adds each card to the submission div
+            challenges.appendChild(challengeDiv);
         };
     } catch (err) {
         console.error("updatePoints error:", err);

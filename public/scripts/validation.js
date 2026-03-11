@@ -24,18 +24,18 @@ if (form) {
             }
             else {
                 await fetch("/setSession", // send data to backend
-                {
-                    method: "POST", //sending data to the server
-                    headers: {
-                        "Content-Type": "application/json" //tells server how data is formatted
-                    },
-                    body: JSON.stringify({ email, password } //turn to json
-                    )
-                });
-                if (data.type === 'moderator'){
+                    {
+                        method: "POST", //sending data to the server
+                        headers: {
+                            "Content-Type": "application/json" //tells server how data is formatted
+                        },
+                        body: JSON.stringify({ email, password } //turn to json
+                        )
+                    });
+                if (data.type === 'moderator') {
                     window.location.href = "../dash/analytics.html";//redirect   
-                } else{
-                window.location.href = "../dash/dashboard.html";//redirect   
+                } else {
+                    window.location.href = "../dash/dashboard.html";//redirect   
                 }
             }
         }
