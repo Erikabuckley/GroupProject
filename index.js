@@ -732,7 +732,7 @@ app.get('/updateLog', function (req, res) {
           // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
           const title = rows.map(r => r.name);
           const id = rows.map(r => r.submission_id);
-          const evidence = rows.map(r => r.evidence_required);
+          const evidence = rows.map(r => r.evidence);
           const challenge_title = rows.map(r => r.title);
           const status = rows.map(r => r.status);
           const reason = rows.map(r => r.reason);
@@ -1047,7 +1047,7 @@ app.get('/updateLeaderboard', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups JOIN Submissions ON Submissions.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
+    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -1057,6 +1057,11 @@ app.get('/updateLeaderboard', function (req, res) {
         console.log("No groups exist");
         return res.json({ name: [], total : []});
       }
+
+      // replace null totals with 0
+      rows.forEach(r => {
+        if (r.total === null) r.total = 0;
+      });
       const names = rows.map(r => r.name);
       const totals = rows.map(r => r.total);
       res.json({ name: names, total: totals });
