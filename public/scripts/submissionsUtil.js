@@ -4,44 +4,45 @@ async function getSubmissions() {
     try {
         const res = await fetch("/updateSubmissionsList");
         const data = await res.json();
+        var title = data.title;
         var id = data.id;
         var evidence = data.evidence;
         var challenge_title = data.challenge_title;
         var flag = data.flag;
-        var title = data.title;
 
 
         var submissions = document.getElementById("submissions-container");
         submissions.innerHTML = "";
 
         const grouped = {};
-        // groups submissions by their submission id 
+        // groups submissions by their challenge title
         for (let i = 0; i < id.length; i++) {
-            if (!grouped[id[i]]) {
-                grouped[id[i]] = [];
+            if (!grouped[challenge_title[i]]) {
+                grouped[challenge_title[i]] = [];
             }
 
-            grouped[id[i]].push({
+            grouped[challenge_title[i]].push({
                 title: title[i],
                 id: id[i],
                 evidence: evidence[i],
                 challenge_title: challenge_title[i],
+                // add flag id here
                 index: i
             });
         }
         Object.keys(grouped).forEach(groupId => {
 
             // Group container
-            const submissionDiv = document.createElement("div");
+            const challengeDiv = document.createElement("div");
             const challengeTitleDiv = document.createElement("div");
 
-            submissionDiv.className = "submission";
+            challengeDiv.className = "challenge";
             challengeTitleDiv.className = "challenge_title"
 
-            challengeTitleDiv.textContent = grouped[groupId][0].challenge_title;
-            submissionDiv.dataset.id = groupId;
+            challengeTitleDiv.textContent = groupId;            
+            challengeDiv.dataset.id = groupId;
 
-            submissionDiv.appendChild(challengeTitleDiv);
+            challengeDiv.appendChild(challengeTitleDiv);
 
 
             grouped[groupId].forEach(item => {
@@ -60,7 +61,7 @@ async function getSubmissions() {
                 titleDiv.textContent = item.title;
 
                 if (flag != null){
-                    flagDiv.textContent = flag; //change to itteration no. flag
+                    flagDiv.textContent = flag; //change to iteration no. flag
                 } else{
                     flagDiv.textContent = "";
                 }
@@ -79,22 +80,20 @@ async function getSubmissions() {
                 cardDiv.appendChild(evidenceDiv);
                 cardDiv.appendChild(flagDiv);
 
+                cardDiv.addEventListener('click', () => {// checks if a submission has been clicked on and pop up will show
+                    selectedSubmission = {
+                        id: item.id,
+                        challenge_title: item.challenge_title
+                    };
+                    document.getElementById('approveDeny-modal').style.display = 'block';
+                    document.getElementById('backdrop').style.display = "block";
 
-                submissionDiv.appendChild(cardDiv);// adds each card to the submission div
+                });
+
+                challengeDiv.appendChild(cardDiv);// adds each card to the submission div
             });
 
-            submissionDiv.addEventListener('click', () => {// checks if a submission has been clicked on and pop up will show
-                selectedSubmission = {
-                    id: groupId,
-                    challenge_title: grouped[groupId][0].challenge_title,
-                    logs: grouped[groupId]
-                };
-                document.getElementById('approveDeny-modal').style.display = 'block';
-                document.getElementById('backdrop').style.display = "block";
-
-            });
-
-            submissions.appendChild(submissionDiv);
+            submissions.appendChild(challengeDiv);
         });
     } catch (err) {
         console.error("updatePoints error:", err);
@@ -104,14 +103,14 @@ async function getSubmissions() {
 
 getSubmissions();
 
-async function approveDeny(outcome, reason, id,challenge_name) {// sends the moderators decision to backend which updates the database
+async function approveDeny(outcome, reason, id) {// sends the moderators decision to backend which updates the database
     await fetch("/approveDeny",
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ outcome, reason, id, challenge_name}
+            body: JSON.stringify({ outcome, reason, id}
             )
         }
 
@@ -123,7 +122,7 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     e.preventDefault(); // stop page reload
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
-    await approveDeny(decision, reason, selectedSubmission.id, selectedSubmission.challenge_title);  //calls function to subbmit information to database
+    await approveDeny(decision, reason, selectedSubmission.id);  //calls function to subbmit information to database
     form.reset();
     document.getElementById('approveDeny-modal').style.display = 'none';
 

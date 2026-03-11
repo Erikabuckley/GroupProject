@@ -28,8 +28,7 @@ function makeWindow() {
        <select id="challenge-input"></select>
        <select id="group-input"></select>
        <select id="group-challenge-input"></select>
-       <select id="declaration"></select>
-
+       <input id="declaration" type="checkbox" />
        <div id="indi-carbon"></div>
        <div id="indi-points"></div>
 
@@ -188,7 +187,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
   window.document.getElementById("challenge-input").value = "C1";
   window.document.getElementById("group-challenge-input").value = "UG1";
   window.document.getElementById("quantity-input").value = "3";
-  window.document.getElementById("declaration").value = true;
+  window.document.getElementById("declaration").checked = true;
 
   const uploadEl = window.document.getElementById("upload-input");
   const fakeFile = new window.File(["dummy"], "proof.png", { type: "image/png" });
