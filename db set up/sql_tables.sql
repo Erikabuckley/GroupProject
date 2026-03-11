@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS Submissions (
     group_id INTEGER NOT NULL,
     points INTEGER NOT NULL,
     status TEXT NOT NULL,
-    PRIMARY KEY (submission_id, linked_action_log),
+    PRIMARY KEY (submission_id),
     FOREIGN KEY (linked_action_log) REFERENCES ActionLogs(log_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
     FOREIGN KEY (user_id) REFERENCES Participants(user_id),
