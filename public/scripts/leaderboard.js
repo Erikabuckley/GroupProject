@@ -1,15 +1,11 @@
 getLeaderboard();
 
+// gets the number of points per group
 async function getLeaderboard() {
-    const res = await fetch("/updateLeaderboard",// gets the number of points per group
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }
-    );
-    const data = await res.json();//gets challenge information
+    const res = await fetch("/updateLeaderboard");
+
+    //gets challenge information
+    const data = await res.json();
     var name = data.name;
     var points = data.total;
 
@@ -25,10 +21,10 @@ async function getLeaderboard() {
         pointsDiv.className = "text";
 
         groupDiv.innerHTML = name[i];
-        pointsDiv.innerHTML = 0; //points[i]
+        pointsDiv.innerHTML = points[i]
         cardDiv.appendChild(groupDiv);
         cardDiv.appendChild(pointsDiv);
-
-        groups.appendChild(cardDiv);//adds each challenge to a card and adds them the the main div
+        //adds each challenge to a card and adds them the the main div
+        groups.appendChild(cardDiv);
     }
 }

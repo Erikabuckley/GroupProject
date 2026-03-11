@@ -2,29 +2,32 @@ updatePoints();
 updateTotal();
 populateTable('date');
 
-async function updateTotal() {// gets the total amount of carbon the group had saved
+// gets the total amount of carbon the group had saved
+async function updateTotal() {
     const res = await fetch("/updateTotalGroup");
     const data = await res.json();
     document.getElementById("group-carbon").textContent = data.total + 'g';
 }
 
-async function updatePoints() {// gets the total number of points the group has gained
+// gets the total number of points the group has gained
+async function updatePoints() {
     const res = await fetch("/updatePointsGroup");
     const data = await res.json();
     document.getElementById("group-points").textContent = data.total + ' points';
 }
 
-async function populateTable(type){
+// populates the table with submissions from users
+async function populateTable(type) {
     let res;
-    if (type === 'indi'){        
+    if (type === 'indi') {
         res = await fetch("/updateTableIndi");
 
-    }else if (type === 'date'){        
+    } else if (type === 'date') {
         res = await fetch("/updateTableDate");
-    } else if (type === 'type'){
+    } else if (type === 'type') {
         res = await fetch("/updateTableType");
 
-    } else{
+    } else {
         console.log('error');
     }
     const data = await res.json();
@@ -48,7 +51,7 @@ async function populateTable(type){
     row.appendChild(th3);
     row.appendChild(th4);
 
-    for (let x=0; x<= data.date.length; x++){
+    for (let x = 0; x <= data.date.length; x++) {
         var row = table.insertRow();
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -77,14 +80,15 @@ function setActiveFilter(activeElement, type) {
     populateTable(type);
 }
 
-indiFilter.addEventListener('click', () => 
+// checks if any of the filters have been clicked
+indiFilter.addEventListener('click', () =>
     setActiveFilter(indiFilter, 'indi')
 );
 
-dateFilter.addEventListener('click', () => 
+dateFilter.addEventListener('click', () =>
     setActiveFilter(dateFilter, 'date')
 );
 
-typeFilter.addEventListener('click', () => 
+typeFilter.addEventListener('click', () =>
     setActiveFilter(typeFilter, 'type')
 );

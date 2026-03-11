@@ -1,11 +1,15 @@
+// calls the 2 functions to populate the page with challenges and missions
 getChallenges();
+console.log("Added challenges")
 getMissions();
+console.log("Added missions")
 
+// gets the list of current challenges that a user can take part in
 async function getChallenges() {
-    try{
+    try {
         const res = await fetch("/updateChallengeList");
         const data = await res.json();
-        
+
         var title = data.title;
         var date = data.date;
         var evidence = data.evidence;
@@ -13,6 +17,7 @@ async function getChallenges() {
         var challenges = document.getElementById("challenges");
         challenges.innerHTML = "";
 
+        // for every challenge we create a div and add information to it
         for (let i = 0; i < title.length; i++) {
             let cardDiv = document.createElement("div")
             let titleDiv = document.createElement("div");
@@ -20,8 +25,9 @@ async function getChallenges() {
             let evidenceDiv = document.createElement("div");
             let img = document.createElement("img");
 
-            if (evidence[i]){
-                img.src= "../images/image.png"
+            // adds a camera icon if evidence is required
+            if (evidence[i] === 'true') {
+                img.src = "../images/camera.png"
             }
 
             cardDiv.className = "card";
@@ -30,13 +36,14 @@ async function getChallenges() {
             evidenceDiv.className = "evidence";
 
             titleDiv.innerHTML = title[i];
-            dateDiv.innerHTML = "End date: "+ date[i];
+            dateDiv.innerHTML = "End date: " + date[i];
             evidenceDiv.appendChild(img);
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(dateDiv);
             cardDiv.appendChild(evidenceDiv)
 
-            challenges.appendChild(cardDiv);//adds each challenge to a card and adds them the the main div
+            //adds each challenge to a card and adds them the the main div
+            challenges.appendChild(cardDiv);
         }
     } catch (err) {
         console.error("getMembers error:", err);
@@ -44,15 +51,16 @@ async function getChallenges() {
     }
 }
 
+// gets the list of current missions that a user can take part in
 async function getMissions() {
     try {
         const res = await fetch("/updateMissionList");
-        const data = await res.json();// gets all mission information
+        const data = await res.json();
         var title = data.title;
 
         var missions = document.getElementById("missions");
         missions.innerHTML = "";
-
+        // creates a div for every mission and adds the information to it
         for (let i = 0; i < title.length; i++) {
             let cardDiv = document.createElement("div")
             let titleDiv = document.createElement("div");
@@ -62,7 +70,8 @@ async function getMissions() {
             titleDiv.innerHTML = title[i];
             cardDiv.appendChild(titleDiv);
 
-            missions.appendChild(cardDiv);//adds each mission to a card then adds this to the main div
+            //adds each mission to a card then adds this to the main div
+            missions.appendChild(cardDiv);
         }
     } catch (err) {
         console.error("updatePoints error:", err);

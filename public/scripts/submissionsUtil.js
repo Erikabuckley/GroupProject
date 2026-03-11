@@ -1,5 +1,6 @@
 let selectedSubmission = null;
 
+// gets the past submissions
 async function getSubmissions() {
     try {
         const res = await fetch("/updateSubmissionsList");

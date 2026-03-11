@@ -82,14 +82,10 @@
 }
 
 .submission{
-    background-color: var(--main);
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;
-}
-
-.submission:hover{
-    background-color: var(--second);
+    box-shadow: 0 0 50px rgb(191, 190, 190);
 }
 
 .title{
@@ -97,13 +93,12 @@
 }
 
 .challenge_title{
-    color: white;
+    color: black;
     font-size : 20px;
     padding:1rem;
 }
 
 .card{
-    background-color: white;
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;

@@ -1,26 +1,30 @@
 updatePoints()
 updateTotal()
 populateTable('date')
-async function updateTotal() {// gets the total number of g of  c02 the person has saved
+
+// gets the total number of g of  c02 the person has saved
+async function updateTotal() {
     const res = await fetch("/updateTotalIndi");
     const data = await res.json();
     document.getElementById("indi-carbon").textContent = data.total + 'g';
 }
 
-async function updatePoints() {// gets the total number of points the individual has gained
+// gets the total number of points the individual has gained
+async function updatePoints() {
     const res = await fetch("/updatePointsIndi");
     const data = await res.json();
     document.getElementById("indi-points").textContent = data.total + ' points';
 }
 
-async function populateTable(type){
+// fills the table with the submissions by the user
+async function populateTable(type) {
     let res;
-    if (type === 'date'){        
+    if (type === 'date') {
         res = await fetch("/updateTableDateIndi");
-    } else if (type === 'type'){
+    } else if (type === 'type') {
         res = await fetch("/updateTableTypeIndi");
 
-    } else{
+    } else {
         console.log('error');
     }
     const data = await res.json();
@@ -44,7 +48,7 @@ async function populateTable(type){
     row.appendChild(th3);
     row.appendChild(th4);
 
-    for (let x=0; x<= data.date.length; x++){
+    for (let x = 0; x <= data.date.length; x++) {
         var row = table.insertRow();
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -72,11 +76,11 @@ function setActiveFilter(activeElement, type) {
     populateTable(type);
 }
 
-
-dateFilter.addEventListener('click', () => 
+// checks if any of the filters have been clicked
+dateFilter.addEventListener('click', () =>
     setActiveFilter(dateFilter, 'date')
 );
 
-typeFilter.addEventListener('click', () => 
+typeFilter.addEventListener('click', () =>
     setActiveFilter(typeFilter, 'type')
 );

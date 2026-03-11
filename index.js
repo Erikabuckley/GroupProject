@@ -767,34 +767,6 @@ app.get('/checkPerm', function (req, res) {
   });
 });
 
-//get groups and points
-app.get('/updateLeaderboard', function (req, res) {
-  console.log("Group list update"); //log that it has been done sucessfully
-
-  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
-    if (e) {
-      console.log(e.message);
-      return res.status(500).json({ error: "database failure" });
-    }
-
-    db.all("SELECT name FROM Groups", [], (e, rows) => {
-      if (e) {
-        console.log(e.message);
-        return res.status(500).json({ error: "database failure" });
-      }
-
-      if (!rows || rows.length === 0) {
-        console.log("No groups exist");
-        return res.json({ groups: [] });
-      }
-
-      const name = rows.map(r => r.name);
-      return res.json({ name });
-
-    }); // closes db.all
-  }); // closes const db
-}); // closes app.get
-
 // gets the total number of g of  c02 the person has saved
 app.get('/updateTotalIndi', function (req, res) {
   console.log("Total co2e saved by user"); 
@@ -1051,7 +1023,7 @@ app.get('/updateGroupNumbers', function (req, res) {
   });
 });
 
-app.get('/getLeaderboard', function (req, res) {
+app.get('/updateLeaderboard', function (req, res) {
   console.log("Number of points per group"); 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
@@ -1061,8 +1033,16 @@ app.get('/getLeaderboard', function (req, res) {
     db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups JOIN Submissions ON Submissions.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
       if (e) {
         console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
       }
-      return res.json(rows);
+      
+      if (!rows || rows.length === 0) {
+        console.log("No groups exist");
+        return res.json({ name: [], total : []});
+      }
+      const names = rows.map(r => r.name);
+      const totals = rows.map(r => r.total);
+      res.json({ name: names, total: totals });
     });
   });
 });
@@ -1085,16 +1065,6 @@ app.get('/getLeaderboard', function (req, res) {
 // // moderation decisions timestamp vs action logs date -> SUBMISSIONS
 //   // join based on linked action logs/log id
 //   // where users.role = moderator
-
-// Define a route for GET requests to the root URL
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
 
 // delete user information
 app.post("/delete", (req,res) => {
