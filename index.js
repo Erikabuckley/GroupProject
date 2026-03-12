@@ -958,7 +958,7 @@ app.get('/updateActionTypesIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT ActionTypes.category, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+    db.all("SELECT ActionTypes.category, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email = ? GROUP BY ActionTypes.category", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
@@ -978,7 +978,7 @@ app.get('/updateActionTypesGroup', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT ActionTypes.category, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, row) => {
+    db.all("SELECT ActionTypes.category, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) GROUP BY ActionTypes.category", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }

@@ -94,7 +94,7 @@
 
                 return dates, carbon
 
-            async def make_scatter():
+            async def make_co2_scatter():
                 dates, carbon = await get_co2_data()
                 fig, ax = plt.subplots(figsize=(4,3))
                 ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
@@ -108,8 +108,30 @@
 
                 display(fig, target="graph2", append=False)
 
-            asyncio.ensure_future(make_scatter())
+             # retrieve action type data
+            async def get_action_type_data():
+                res = await fetch("/updateActionTypesGroup")
+                data = (await res.json()).to_py()
+
+                emissions = data["carbon"]
+                action_types = data["category"]
+
+                return emissions, action_types
+            
+            async def make_action_type_pie():
+                emissions, action_types = await get_action_type_data()
+
+                my_colours = [(0.6, 0.8, 0.7), (0.4, 0.6, 0.7), (0.6, 0.7, 0.6)]
+
+                fig, ax = plt.subplots(figsize=(4,3))
+                ax.pie(emissions, labels = action_types, colors = my_colours)
+                ax.set_title("Carbon Emissions Saved Per Action Type")
+                
+                display(fig, target="graph3", append=False)
+
+            asyncio.ensure_future(make_co2_scatter())
             asyncio.ensure_future(make_chart())
+            asyncio.ensure_future(make_action_type_pie())
         </py-script>
 
         <div class="graph-block">
@@ -118,6 +140,9 @@
             </div>
             <div class="graph" id="graph2">
                 <h1> Carbon Saved Graph </h1>
+            </div>
+            <div class="graph" id="graph3">
+                <h1> Carbon Saved Per Action Type Graph </h1>
             </div>
         </div>
 
