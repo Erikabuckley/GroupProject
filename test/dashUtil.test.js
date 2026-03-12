@@ -41,7 +41,7 @@ function makeWindow() {
        <div id="error-message" style="visibility:hidden"></div>
 
        <div id="log"></div>
-       <div id="statusDeny-modal" style="display:none"></div>
+       <div id="join-modal" style="display:none"></div>
        <div id="backdrop" style="display:none"></div>
 
        <form id="evidanceForm">

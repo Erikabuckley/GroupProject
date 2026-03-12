@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../styles/metricStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
     <script type="text/javascript" src="../scripts/groupUtil.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
@@ -35,101 +36,101 @@
 
     </div>
     <py-script>
-            import matplotlib.pyplot as plt
-            import numpy as np
-            from js import fetch
-            from pyscript import display
-            import js
-            import json
-            import asyncio
-            from datetime import datetime
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from js import fetch
+        from pyscript import display
+        import js
+        import json
+        import asyncio
+        from datetime import datetime
 
-            # retrieving data
-            async def get_data():
-                
-                # getting points
-                res1 = await fetch("/updatePointsGroup")
-                data1 = (await res1.json()).to_py()
-                points = data1["total"]
+        # retrieving data
+        async def get_data():
+            
+            # getting points
+            res1 = await fetch("/updatePointsGroup")
+            data1 = (await res1.json()).to_py()
+            points = data1["total"]
 
-                # getting c02 emissions
-                res2 = await fetch("/updateTotalGroup")
-                data2 = (await res2.json()).to_py()
-                co2emissions = data2["total"]
+            # getting c02 emissions
+            res2 = await fetch("/updateTotalGroup")
+            data2 = (await res2.json()).to_py()
+            co2emissions = data2["total"]
 
-                return points, co2emissions
+            return points, co2emissions
 
-            async def make_chart():
-                points, co2emissions = await get_data() 
+        async def make_chart():
+            points, co2emissions = await get_data() 
 
-                labels = ["Points", "CO2 saved"]
-                values = [points, co2emissions]
+            labels = ["Points", "CO2 saved"]
+            values = [points, co2emissions]
 
-                fig, ax1 = plt.subplots(figsize=(4,3))
-                x1 = 0
-                x2 = 1
-                ax1.bar(x1, [points], width=0.4, color=(0.6, 0.8, 0.7))
-                ax1.set_ylabel("Number of points")
+            fig, ax1 = plt.subplots(figsize=(4,3))
+            x1 = 0
+            x2 = 1
+            ax1.bar(x1, [points], width=0.4, color=(0.6, 0.8, 0.7))
+            ax1.set_ylabel("Number of points")
 
-                ax2 = ax1.twinx()
-                ax2.bar(x2, [co2emissions], width=0.4, color=(0.6, 0.8, 0.7))
-                ax2.set_ylabel("Carbon emissions (g)")
+            ax2 = ax1.twinx()
+            ax2.bar(x2, [co2emissions], width=0.4, color=(0.6, 0.8, 0.7))
+            ax2.set_ylabel("Carbon emissions (g)")
 
-                plt.xticks([x1, x2], ["Points gained", "CO2 saved"])
+            plt.xticks([x1, x2], ["Points gained", "CO2 saved"])
 
-                plt.title("Total Group Points and Carbon Metrics")
+            plt.title("Total Group Points and Carbon Metrics")
 
-                display(fig, target="graph1", append=False)
+            display(fig, target="graph1", append=False)
 
-            async def get_co2_data():
-                res = await fetch("/updateActionDatesGroup")
-                data = (await res.json()).to_py()
+        async def get_co2_data():
+            res = await fetch("/updateActionDatesGroup")
+            data = (await res.json()).to_py()
 
-                dates = [] 
-                carbon = []
+            dates = [] 
+            carbon = []
 
-                for row in data:
-                    dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
-                    carbon.append(row["calculated_co2e"])
+            for row in data:
+                dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+                carbon.append(row["calculated_co2e"])
 
-                return dates, carbon
+            return dates, carbon
 
-            async def make_scatter():
-                dates, carbon = await get_co2_data()
-                fig, ax = plt.subplots(figsize=(4,3))
-                ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
+        async def make_scatter():
+            dates, carbon = await get_co2_data()
+            fig, ax = plt.subplots(figsize=(4,3))
+            ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
 
-                ax.set_xlabel("Date")
-                ax.set_ylabel("CO2 Saved (g)")
-                ax.set_title("Carbon Emissions Saved By Group")
+            ax.set_xlabel("Date")
+            ax.set_ylabel("CO2 Saved (g)")
+            ax.set_title("Carbon Emissions Saved By Group")
 
-                plt.xticks(rotation=45)
-                plt.tight_layout()
+            plt.xticks(rotation=45)
+            plt.tight_layout()
 
-                display(fig, target="graph2", append=False)
+            display(fig, target="graph2", append=False)
 
-            asyncio.ensure_future(make_scatter())
-            asyncio.ensure_future(make_chart())
-        </py-script>
+        asyncio.ensure_future(make_scatter())
+        asyncio.ensure_future(make_chart())
+    </py-script>
 
-        <div class="graph-block">
-            <div class="graph" id="graph1">
-                <h1> Total Metrics Graph </h1>
-            </div>
-            <div class="graph" id="graph2">
-                <h1> Carbon Saved Graph </h1>
-            </div>
+    <div class="graph-block">
+        <div class="graph" id="graph1">
+            <h1> Total Metrics Graph </h1>
         </div>
-
-        <div class="filters">
-            <button type="button" class="in-button" id="filter-one">My Contributions</button>
-            <button type="button" class="in-button" id="filter-two">Sort By: Date Submitted</button>
-            <button type="button" class="in-button" id="filter-three">Sort By: Action Type</button>
+        <div class="graph" id="graph2">
+            <h1> Carbon Saved Graph </h1>
         </div>
+    </div>
 
-        <div class="table">
-            <table id="data-table"></table>
-        </div>
+    <div class="filters">
+        <button type="button" class="in-button" id="filter-one">My Contributions</button>
+        <button type="button" class="in-button" id="filter-two">Sort By: Date Submitted</button>
+        <button type="button" class="in-button" id="filter-three">Sort By: Action Type</button>
+    </div>
+
+    <div class="table">
+        <table id="data-table"></table>
+        <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
     </div>
     <div class="footer-container"></div>
 </body>

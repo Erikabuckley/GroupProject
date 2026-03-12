@@ -749,19 +749,19 @@ app.get('/updateLog', function (req, res) {
 
 //gets information for the table
 app.get('/updateTableIndi', function (req, res) {
-    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [100,100,100], cat : ['food', 'food', 'food']});
+    return res.json({id: [1,2,3], date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [100,100,100], cat : ['food', 'food', 'food'], userId :1});
 });
 app.get('/updateTableDate', function (req, res) {
-    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
+    return res.json({id: [1,2,3] ,date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food'], userId : 1});
 });
 app.get('/updateTableType', function (req, res) {
-    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
+    return res.json({id: [1,2,3], date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
 });
 app.get('/updateTableDateIndi', function (req, res) {
-    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
+    return res.json({ date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
 });
 app.get('/updateTableTypeIndi', function (req, res) {
-    return res.json({ date: ['10/20', '10/20', '20/20'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
+    return res.json({ date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
 });
 
 app.get('/checkPerm', function (req, res) {
