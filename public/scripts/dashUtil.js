@@ -218,7 +218,7 @@ async function updateLog() {
 
             titleDiv.textContent = item.title;
 
-            if (item.evidence && item.evidence !== "no file") {
+            if (item.evidence) {
                 const img = document.createElement("img");
                 img.src = item.evidence;
                 img.alt = "Submission evidence";

@@ -67,7 +67,7 @@ async function getSubmissions() {
                     flagDiv.textContent = "";
                 }
 
-                if (item.evidence && item.evidence !== "no file") {
+                if (item.evidence) {
                     const img = document.createElement("img");
                     img.src = item.evidence; // this should be the full URL from backend
                     img.alt = "Submission evidence";

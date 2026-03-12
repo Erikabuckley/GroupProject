@@ -16,6 +16,9 @@ cursor.execute("DELETE FROM Groups")
 cursor.execute("DELETE FROM Challenges")
 cursor.execute("DELETE FROM ActionLogs")
 
+# reset ids
+cursor.execute("DELETE FROM sqlite_sequence")
+
 # insert users into db
 
 def populate_users(cursor):
@@ -153,12 +156,12 @@ def populate_challenges(cursor):
 
     for c in challenges_info:
         challenges.append((c["title"], c["scope"], c["rules"],
-                          c["scoring"], start_date, end_date))
+                          c["scoring"], start_date, end_date,'yes'))
 
     cursor.executemany(
         """
-        INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required)
+        VALUES (?, ?, ?, ?, ?, ?,?)
         """,
         challenges
     )
@@ -186,20 +189,18 @@ def populate_action_logs(cursor):
         # randomly choose a date in the last 30 days
         date = (today - timedelta(days=random.randint(0, 30)))
 
-        # randomly choose whether evidence is required or not
-        evidence = random.choice([True, False])
 
         # calculated co2e = quantity * default factor id (from action type)
         # use default factor id once made action table
         calculated_co2e = random.randint(1, 100)
 
         action_logs.append((action_type_id, user_id, quantity,
-                           date, evidence, calculated_co2e))
+                           date, calculated_co2e))
 
     cursor.executemany(
         """ 
-        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, evidence, calculated_co2e)
-        VALUES(?, ?, ?, ?, ?, ?)
+        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, calculated_co2e)
+        VALUES(?, ?, ?, ?, ?)
         """,
         action_logs
     )
