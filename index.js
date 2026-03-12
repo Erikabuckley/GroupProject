@@ -1,11 +1,11 @@
 const express = require('express'); //imports express ie framework we are using
 const session = require("express-session");
-const cors = require("cors"); //imports the cors ie lets us actually sned data to github wihtout blocking it
+const cors = require("cors"); //imports the cors ie lets us actually send data to github without blocking it
 const path = require('path');
 const multer = require("multer");
 const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
-const port = 8080; //specifys the port number
+const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
 const { brotliDecompress } = require('zlib');
 const app = express();
@@ -29,7 +29,7 @@ app.use(
 
 // route to set session data
 app.post("/setSession", (req,res) => {
-  console.log("Checked user permissions"); //log that it has been done sucessfully
+  console.log("Checked user permissions"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -88,7 +88,7 @@ const upload = multer({ storage });
 
 // get data from the login
 app.post('/login', async (req, res) => {
-  console.log("Login request received"); // log that it has been done sucessfully
+  console.log("Login request received"); // log that it has been done successfully
   console.log(req.body.email);
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
@@ -105,13 +105,13 @@ app.post('/login', async (req, res) => {
         console.log("user exists"); // log that user exists
         if (passwordMatches) {
           res.json({ type: row.role }); // if valid return role
-          console.log("User sign in sucessful"); // log that user has been signed in
+          console.log("User sign in successful"); // log that user has been signed in
         } else {
-          console.log("Incorrect password enterd");
+          console.log("Incorrect password entered");
           return res.status(401).json({ error: "Incorrect password, please try again" }); // return error
         }
       } else {
-        console.log("user does not exist"); // log that user doesnt exist
+        console.log("user does not exist"); // log that user doesn't exist
         return res.status(401).json({ error: "No user with that email, please try again" });
       }
     })
@@ -120,7 +120,7 @@ app.post('/login', async (req, res) => {
 
 // get data from the sign up
 app.post('/signUp', async (req, res) => {
-  console.log("Sign up request received"); // log that it has been done sucessfully
+  console.log("Sign up request received"); // log that it has been done successfully
   console.log(req.body.email);
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
@@ -154,7 +154,7 @@ app.post('/signUp', async (req, res) => {
 
 // get data from the  action
 app.post('/addAction', upload.single('upload'), function (req, res) {
-  console.log("Action request received"); // log that it has been done sucessfully
+  console.log("Action request received"); // log that it has been done successfully
 
   let uploadedFilePath = null;
   if (req.file) {
@@ -363,7 +363,7 @@ app.post('/upgrade', function (req, res) {
         console.log(e.message);
       }
       if (row) {
-        console.log("Upgrade sucessfull")
+        console.log("Upgrade successful")
         return
       }
       return res.status(404).json({ error: "user not found" })
@@ -373,7 +373,7 @@ app.post('/upgrade', function (req, res) {
 
 // approve or deny a submission
 app.post('/approveDeny', function (req, res) {
-  console.log("Approve deny request received"); //log that it has been done sucessfully
+  console.log("Approve deny request received"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -395,13 +395,13 @@ app.post('/approveDeny', function (req, res) {
                 if (e) {
                   console.log(e.message);
                 }
-                console.log("Retreived points sucesfully");
+                console.log("Retrieved points sucesfully");
                 if (row){
                   db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
                     if (e) {
                       console.log(e.message);
                     }
-                    console.log("Submission aprove sucessfull");
+                    console.log("Submission approve successful");
                     res.end();
                   });
                 }
@@ -411,7 +411,7 @@ app.post('/approveDeny', function (req, res) {
                 if (e) {
                   console.log(e.message);
                 }
-                console.log("Submission deny sucessfull");
+                console.log("Submission deny successful");
                 res.end();
               });
             }
@@ -437,7 +437,7 @@ app.get('/updateTotal', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Total update sucessfull");
+      console.log("Total update successful");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -456,7 +456,7 @@ app.get('/updatePoints', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Total update sucessfull");
+      console.log("Total update successful");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -475,7 +475,7 @@ app.get('/updateTotalIndi', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Individual total update sucessfull");
+      console.log("Individual total update successful");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -483,7 +483,7 @@ app.get('/updateTotalIndi', function (req, res) {
 
 // update total carbon saved by individual
 app.get('/updatePointsIndi', function (req, res) {
-  console.log("Total individual update request recieved");
+  console.log("Total individual update request received");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -494,7 +494,7 @@ app.get('/updatePointsIndi', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Individual points update sucessfull");
+      console.log("Individual points update successful");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -502,7 +502,7 @@ app.get('/updatePointsIndi', function (req, res) {
 
 // update total carbon saved by group
 app.get('/updateTotalGroup', function (req, res) {
-  console.log("Total individual update request recieved");
+  console.log("Total individual update request received");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -513,7 +513,7 @@ app.get('/updateTotalGroup', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Individual total update sucessfull");
+      console.log("Individual total update successful");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -521,7 +521,7 @@ app.get('/updateTotalGroup', function (req, res) {
 
 // update total carbon saved by group
 app.get('/updatePointsGroup', function (req, res) {
-  console.log("Total individual update request recieved");
+  console.log("Total individual update request received");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -532,7 +532,7 @@ app.get('/updatePointsGroup', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Individual points update sucessfull");
+      console.log("Individual points update successful");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -551,7 +551,7 @@ app.get('/getMembers', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log("Sucesful memebr update");
+      console.log("Successful member update");
       return res.json({ total: row.total + 0 })
     });
   });
@@ -560,7 +560,7 @@ app.get('/getMembers', function (req, res) {
 
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
-  console.log("Challenge list update"); //log that it has been done sucessfully
+  console.log("Challenge list update"); //log that it has been done successfully
 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
@@ -591,7 +591,7 @@ app.get('/updateChallengeList', function (req, res) {
 
 //get missions
 app.get('/updateMissionList', function (req, res) {
-  console.log("Mission list update"); //log that it has been done sucessfully
+  console.log("Mission list update"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
       console.log(e.message);
@@ -616,7 +616,7 @@ app.get('/updateMissionList', function (req, res) {
 
 //get groups
 app.get('/updateGroupList', function (req, res) {
-  console.log("Group list update"); //log that it has been done sucessfully
+  console.log("Group list update"); //log that it has been done successfully
 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
@@ -643,7 +643,7 @@ app.get('/updateGroupList', function (req, res) {
 }); // closes app.get
 
 app.get('/updateUserGroupsList', function (req, res) {
-  console.log("User group list update"); //log that it has been done sucessfully
+  console.log("User group list update"); //log that it has been done successfully
 
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
@@ -671,7 +671,7 @@ app.get('/updateUserGroupsList', function (req, res) {
 
 //get submissions
 app.get('/updateSubmissionsList', function (req, res) {
-  console.log("Submissions list update"); //log that it has been done sucessfully
+  console.log("Submissions list update"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
       console.log(e.message);
@@ -686,7 +686,7 @@ app.get('/updateSubmissionsList', function (req, res) {
 
       if (!rows || rows.length === 0) {
         console.log("No submissions exist");
-        return res.json({ title: [], id: [], evidance: [] });
+        return res.json({ title: [], id: [], evidence: [] });
       }
       // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
       const title = rows.map(r => r.name);
@@ -701,7 +701,7 @@ app.get('/updateSubmissionsList', function (req, res) {
 
 //get log
 app.get('/updateLog', function (req, res) {
-  console.log("Submissions list update"); //log that it has been done sucessfully
+  console.log("Submissions list update"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
     if (e) {
       console.log(e.message);
@@ -765,7 +765,7 @@ app.get('/updateTableTypeIndi', function (req, res) {
 });
 
 app.get('/checkPerm', function (req, res) {
-  console.log("Checked user permissions"); //log that it has been done sucessfully
+  console.log("Checked user permissions"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -811,7 +811,7 @@ app.get('/updatePointsIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissons.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -1173,7 +1173,7 @@ app.post("/delete", (req,res) => {
 // edit a challenge route
 //TODO
 
-// get a listo f all the challenges returnigneverything aboutt them ONLY CURRENT ONES
+// get a list of all the challenges returning everything about them ONLY CURRENT ONES
 app.get('/updateModChallengeList', function (req, res) {
   //make sure year is y-m-d
     return res.json({ id : [1], name : ['challenge 1'], scope : ['Group'], rules: ['you must do this'], points: [100], start : ['2020-07-10'], end: ['2030-07-10'], evidence: [true]});
@@ -1183,13 +1183,13 @@ app.get('/updateModChallengeList', function (req, res) {
 app.post('/deleteChallenge', function (req, res) {})
 
 
-//add points to leaderbaord and orderby statement
+//add points to leaderboard and orderby statement
 // update updateLog to get user challenge submissions only
-// update submissios list to check if a flag has been raised and return it
+// update submissions list to check if a flag has been raised and return it
 // add flagging route
 // add updatetotalgroup and updatepointsgroup to do group not individual x
-// updatepoints needs to be points i just copid from updatetotal x
-// getMembers needs addiing body to it x
+// updatepoints needs to be points i just copied from updatetotal x
+// getMembers needs adding body to it x
 // 5 updateTable routes  needs correcting
 
 
