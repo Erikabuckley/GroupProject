@@ -18,27 +18,17 @@ async function updatePoints() {
 
 // populates the table with submissions from users
 async function populateTable(type) {
-    let res;
-    var data;
-        if (type === 'indi') {
-        res = await fetch("/updateTableIndi");
-        data = await res.json();
+    const res = await fetch(`/updateTableGroup?type=${type}`);
+    const data = await res.json();
 
-    } if (type === 'date') {
-        res = await fetch("/updateTableDateIndi");
-        data = await res.json();
+    if (type === 'date') {
         plotPi(type, data.date);
-
     } else if (type === 'type') {
-        res = await fetch("/updateTableTypeIndi");
-        data = await res.json();
         plotPi(type, data.cat);
-    } else {
-        console.log('error');
     }
-    table = document.getElementById("data-table");
-    table.innerHTML = "";
 
+    const table = document.getElementById("data-table");
+    table.innerHTML = "";
     var row = table.insertRow();
 
     var th1 = document.createElement("th");
