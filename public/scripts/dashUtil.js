@@ -20,7 +20,7 @@ if (form) {
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
         // checks that the challenge submission is for a group
-        if (challenge != 'No' && group === 'Individual challenge') {
+        if (challenge != 'No' && group === '') {
             error = document.getElementById("error")
             error.textContent = "You must select a group if the action is for a challenge"
             error.style.visibility = "visible"
@@ -51,10 +51,15 @@ if (form) {
                 button.addEventListener('click', () =>{
                     document.getElementById("no-evidence").close()
                 });
-            }
-            document.getElementById("upload-modal").style.display = "none";
-            // shows the carbon saved by the action to the user
-            showData(String(data.carbon), String(data.source));
+                document.getElementById("upload-modal").style.display = "none";
+                // shows the carbon saved by the action to the user
+                showData(String(data.carbon), String(data.source));
+
+            }else{
+                document.getElementById("upload-modal").style.display = "none";
+                // shows the carbon saved by the action to the user
+                showData(String(data.carbon), String(data.source));
+            }            
         }
     });
 };
