@@ -29,6 +29,13 @@
             Click here to delete your account!
         </p>
         <button type="button" class="in-button" id="delete-account">Delete</button>
+        <dialog id="delete" class="dialog">
+            <label for="password">Please type "delete" to delete your password</label><br>
+            <span class="error" id="delete-error"></span><br>
+            <input type="text" required id="password" placeholder="delete">
+            <button type="button" id="confirm">Confirm</button>
+            <button type="button" id="close">Close</button>
+        </dialog>
     </section>
 
     <div class="footer-container"></div>

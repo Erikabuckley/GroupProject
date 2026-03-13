@@ -42,6 +42,12 @@ if (form) {
             if (res.status === 400) {
                 document.getElementById('error').textContent = data.error;
                 document.getElementById('error').style.visibility = 'visible';
+            } else if(res.status === 202){
+                document.getElementById("no-evidence").showModal();
+                const button = document.getElementById("close-no-evidence");
+                button.addEventListener('click', () =>{
+                    document.getElementById("no-evidence").close()
+                });
             }
             document.getElementById("upload-modal").style.display = "none";
             // shows the carbon saved by the action to the user

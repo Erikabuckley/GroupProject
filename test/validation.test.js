@@ -70,7 +70,7 @@ function submitForm(dom, buttonId) {
 test("LOGIN: status 401 shows #error-message", async () => {
   const dom = makeDom();
 
-  dom.window.document.getElementById("email-input").value = "a@a.com";
+  dom.window.document.getElementById("email-input").value = "a@exeter.ac.uk";
   dom.window.document.getElementById("password-input").value = "wrong";
 
   let called = null;
