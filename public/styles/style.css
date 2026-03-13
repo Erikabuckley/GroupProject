@@ -135,10 +135,11 @@ body {
 }
 
 .in-button {
-    padding:1rem;
+    padding: 1rem;
+    margin: 0.5rem;
     background-color: var(--second);
     color: white;
-    font-size: medium;
+    font-size: large;
     font-weight: bold;
     border: 0;
     border-radius: 2rem;
@@ -147,6 +148,23 @@ body {
 
 .in-button:hover{
     background-color: var(--main);
+}
+
+.header-button {
+    padding: 1rem;
+    margin: 1rem;
+    background-color: var(--second);
+    color: white;
+    font-size: 1.75rem;
+    font-weight: bold;
+    border: 0;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+.header-button:hover{
+    background-color: white;
+    color: var(--main);
 }
 
 .error{
