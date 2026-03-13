@@ -124,3 +124,9 @@
     font-style: italic;
     color:black;
 }
+
+.box {
+    justify-content: center;
+    display: flex;
+    gap: 1rem;
+}
