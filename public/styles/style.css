@@ -129,6 +129,15 @@ body {
     margin-bottom:5rem;
 }
 
+.indent {
+    margin-right: 15rem;
+    margin-left: 15rem;
+}
+
+.spacer {
+    margin-bottom: 5rem;
+}
+
 #logo{
     max-height: 100px;
     padding-left: 1rem;

@@ -28,12 +28,12 @@
     margin-left: 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    left :0;
+    left: 0;
 }
 
 .ribon-heading a {
     font-weight: bold;
-    font-size: 170%;
+    font-size: 130%;
     color: white;
     text-decoration: none;
 }
