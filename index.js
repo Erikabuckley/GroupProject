@@ -160,8 +160,8 @@ async function check_file(file_path) {
   try {
     await sharp(file_path).metadata();
     return true; // returns true for a valid image
-  } catch {
-    console.log("File corrupted:", uploadedFilePath);
+  } catch (e) {
+    console.log("File corrupted:", file_path);
     console.log(e.message);
     return false; // returns false for a corrupted image
   }
@@ -275,12 +275,13 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                   console.log(e.message);
                                   return res.status(500).json({ error: "Failed to create submission" });
                                 } else {
+                                  const id = this.lastID;
                                   // ANTI GAMING FLAGS HERE
                                   // flag for file integrity
                                   if (req.file) {
                                     const isValid = await check_file(uploadedFilePath);
                                     if (!isValid) { // if corrpted
-                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [submission.submission_id], e => {
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
                                         if (e) {
                                           console.log(e.message);
                                           return res.status(500).json({ error: "Failed to flag" });
