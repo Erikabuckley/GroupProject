@@ -153,135 +153,130 @@ app.post('/signUp', async (req, res) => {
   });
 });
 
-// get data from the  action
 app.post('/addAction', upload.single('upload'), function (req, res) {
-  console.log("Action request received"); // log that it has been done successfully
+  console.log("Action request received");
 
+  // Handle uploaded file
   let uploadedFilePath = null;
   if (req.file) {
-    uploadedFilePath = `/uploads/${req.file.filename}`; // public path for frontend
+    uploadedFilePath = `/uploads/${req.file.filename}`;
     console.log("File saved to:", uploadedFilePath);
   }
+
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    // generate current date
+
     const date = new Date().toISOString();
-    // calculate co2 saved
-    db.get("SELECT action_type_id, default_factor_id FROM ActionTypes WHERE name = ?", [req.body.mission], async (e, actionType) => {
-      if (e) {
-        console.log(e.message);
-        return res.status(400).json({ error: "database error" });
-      }
-      if (!actionType) {
-        return res.status(400).json({ error: "no action type found" });
-      }
-      if (actionType) {
+
+    // Get action type
+    db.get(
+      "SELECT action_type_id, default_factor_id FROM ActionTypes WHERE name = ?",
+      [req.body.mission],
+      async (e, actionType) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(400).json({ error: "database error" });
+        }
+        if (!actionType) return res.status(400).json({ error: "no action type found" });
+
         const type_id = actionType.action_type_id;
         const factor_id = actionType.default_factor_id;
-        db.get("SELECT source, value FROM ConversionFactors WHERE factor_id = ?", [factor_id], async (e, factor) => {
-          if (e || !factor) {
-            console.log(e.message);
-            return res.status(400).json({ error: "no conversion factor found" });
-          }
-          const evidencePath = uploadedFilePath || 'no file';
-          if (factor) {
+
+        // Get conversion factor
+        db.get(
+          "SELECT source, value FROM ConversionFactors WHERE factor_id = ?",
+          [factor_id],
+          async (e, factor) => {
+            if (e || !factor) {
+              console.log(e?.message);
+              return res.status(400).json({ error: "no conversion factor found" });
+            }
+
+            const evidencePath = uploadedFilePath;
             const co2_saved = factor.value * req.body.quantity;
             const source_url = factor.source;
-            // get relevant user id from email
-            db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
-              if (e || !user) {
-                console.log(e.message);
-                return res.status(400).json({ error: "no user found" });
-              }
 
-              if (user) {
-                if (req.body.challenge === 'No') {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], e => {
+            // Get user
+            db.get(
+              "SELECT user_id FROM Users WHERE email = ?",
+              [req.session.email],
+              async (e, user) => {
+                if (e || !user) {
+                  console.log(e?.message);
+                  return res.status(400).json({ error: "no user found" });
+                }
+
+                // Insert into ActionLogs
+                db.run(
+                  "INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)",
+                  [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved],
+                  function (e) {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "Failed to create action log" });
-                    } else {
-                      return res.json({ carbon: co2_saved, source: source_url }); // return the amount of carbon saved and conversion source
                     }
-                  })
-                } else {
-                  db.run("INSERT INTO ActionLogs (action_type_id, user_id, quantity, date, evidence, calculated_co2e) VALUES (?, ?, ?, ?, ?, ?)", [type_id, user.user_id, req.body.quantity, date, evidencePath, co2_saved], function (e) {
-                    if (e) {
-                      console.log(e.message);
-                      return res.status(500).json({ error: "Failed to create action log" });
-                    } else {
-                      const log_id = this.lastID;
-                      db.get("SELECT challenge_id, evidence_required FROM Challenges WHERE title = ?", [req.body.challenge], async (e, challenge) => {
+
+                    const log_id = this.lastID;
+
+                    // If no challenge, return immediately
+                    if (req.body.challenge === 'No') {
+                      return res.json({ carbon: co2_saved, source: source_url });
+                    }
+
+                    // Get challenge info
+                    db.get(
+                      "SELECT challenge_id, evidence_required FROM Challenges WHERE title = ?",
+                      [req.body.challenge],
+                      async (e, challenge) => {
                         if (e || !challenge) {
-                          console.log(e.message);
+                          console.log(e?.message);
                           return res.status(400).json({ error: "no challenge found" });
-                        } 
-                        
-                        if (challenge.evidence_required === true && evidencePath === 'no file'){
+                        }
+
+                        // Check evidence requirement
+                        if (challenge.evidence_required && !evidencePath) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
-                        else if (challenge) {
-                          db.get("SELECT group_id FROM Groups WHERE name = ?", [req.body.group], async (e, group) => {
+
+                        // Get group info
+                        db.get(
+                          "SELECT group_id FROM Groups WHERE name = ?",
+                          [req.body.group],
+                          async (e, group) => {
                             if (e || !group) {
-                              console.log(e.message);
-                              return res.status(400).json({ error: "no group found found" });
+                              console.log(e?.message || "Group not found");
+                              return res.status(400).json({ error: "no group found" });
                             }
-                            // get all submissions for this group submission -challenge and group
-                            db.get("SELECT submission_id FROM Submissions WHERE challenge_id = ? AND group_id = ?", [challenge.challenge_id, group.group_id], async (e, submission) => {
-                              // if no rows then find highest submission id and increment
-                              if (e) {
-                                console.log(e.message);
-                                return res.status(400).json({ error: "database error" });
+
+                            // Insert into Submissions
+                            db.run(
+                              "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
+                              [challenge.challenge_id, user.user_id, group.group_id, log_id],
+                              e => {
+                                if (e) {
+                                  console.log(e.message);
+                                  return res.status(500).json({ error: "Failed to create submission" });
+                                } else {
+                                  return res.json({ carbon: co2_saved, source: source_url });
+                                }
                               }
-                              // if rows then save submission id
-                              if (submission) {
-                                db.run("INSERT INTO Submissions (submission_id, challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, ?, 0, 'Pending')", [submission.submission_id, challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
-                                  if (e) {
-                                    console.log(e.message);
-                                    return res.status(500).json({ error: "Failed to create submission" });
-                                  } else {
-                                    return res.json({ carbon: co2_saved, source: source_url }); // return the amount of carbon saved and conversion source
-                                  }
-                                })
-                              } else {
-                                db.get("SELECT MAX(submission_id) AS max_id FROM Submissions", [], async (e, row) => {
-                                  if (e) {
-                                    console.log(e.message);
-                                    return res.status(400).json({ error: "no group found found" });
-                                  }
-                                  var sub_id;
-                                  if (row) {
-                                    sub_id = row.max_id + 1;
-                                  } else {
-                                    sub_id = 1;
-                                  }
-                                  db.run("INSERT INTO Submissions (submission_id, challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, ?, 0, 'Pending')", [sub_id, challenge.challenge_id, user.user_id, group.group_id, log_id], e => {
-                                    if (e) {
-                                      console.log(e.message);
-                                      return res.status(500).json({ error: "Failed to create submission" });
-                                    } else {
-                                      return res.json({ carbon: co2_saved, source: source_url }); // return the amount of carbon saved and conversion source
-                                    }
-                                  })
-                                })
-                              }
-                            })
-                          })
-                        }
-                      })
-                    }
-                  })
-                }
+                            );
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
               }
-            })
+            );
           }
-        })
+        );
       }
-    })
-  })
+    );
+  });
 });
 
 // add user to a group

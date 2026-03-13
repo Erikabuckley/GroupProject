@@ -36,6 +36,7 @@ function makeWindow() {
        <input id="reason-input" value="" />
        <input type="radio" name="val" value="approve" />
        <input type="radio" name="val" value="deny" />
+       <input type="checkbox" id="identifying-info" />
        <button type="submit">Submit</button>
      </form>`,
     { url: "https://example.com/mod.html", runScripts: "dangerously" }
@@ -178,6 +179,8 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   // Fill form inputs
   window.document.getElementById("reason-input").value = "Looks good";
   window.document.querySelector('input[name="val"][value="approve"]').checked = true;
+  window.document.getElementById("identifying-info").checked = false;
+
 
   // Mock fetch again so we can capture POST /approveDeny payload
   let lastRequest = null;
@@ -204,7 +207,8 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   assert.deepEqual(payload, {
     outcome: "approve",
     reason: "Looks good",
-    id: "A"
+    id: "A",
+    info : false
   });
 
   // Assert modal/backdrop closed

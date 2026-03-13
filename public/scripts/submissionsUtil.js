@@ -104,14 +104,14 @@ async function getSubmissions() {
 
 getSubmissions();
 
-async function approveDeny(outcome, reason, id) {// sends the moderators decision to backend which updates the database
+async function approveDeny(outcome, reason, id, info) {// sends the moderators decision to backend which updates the database
     await fetch("/approveDeny",
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ outcome, reason, id}
+            body: JSON.stringify({ outcome, reason, id, info}
             )
         }
 
@@ -123,7 +123,12 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     e.preventDefault(); // stop page reload
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
-    await approveDeny(decision, reason, selectedSubmission.id);  //calls function to subbmit information to database
+    const info = document.getElementById("identifying-info").checked;
+    if(decision === 'approve' && info){
+        document.getElementById("approval-error").textContent = "You must deny submissions with identifying information";
+        document.getElementById("approval-error").style.visibility = 'visible'
+    }
+    await approveDeny(decision, reason, selectedSubmission.id, info);  //calls function to subbmit information to database
     form.reset();
     document.getElementById('approveDeny-modal').style.display = 'none';
 
