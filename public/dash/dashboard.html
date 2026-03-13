@@ -39,9 +39,9 @@
                         <option value="No">No</option>
                     </select><br>
                     <label for="group-challenge-input">Which group is your challenge submission for?</label>
-                    <select required name="Group" id="group-challenge-input">
+                    <select name="Group" id="group-challenge-input">
                         <option value="" selected disabled hidden>Select an group</option>
-                        <option value="None">None</option>
+                        <option value="Individual">Individual challenge</option>
                     </select><br>
                     <label for="upload-input">Please upload evidence for the challenge sumission if required:</label>
                     <input type="file" name="upload" id="upload-input"
@@ -156,7 +156,12 @@
         <h1>Challenge Submission History:</h1>
         <div id="log"></div>
     </div>
-
+    <dialog id="no-evidence" class="dialog">
+        <div class="dialog-content">
+            <p>No evidence if required for this submission so your image has not been stored</p>
+            <button type="button" id="close-no-evidence">Close</button>
+        </div>
+    </dialog>
     <div class="footer-container"></div>
 </body>
 

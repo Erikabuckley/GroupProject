@@ -20,7 +20,7 @@ if (form) {
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
         // checks that the challenge submission is for a group
-        if (challenge != 'No' && group === 'None') {
+        if (challenge != 'No' && group === '') {
             error = document.getElementById("error")
             error.textContent = "You must select a group if the action is for a challenge"
             error.style.visibility = "visible"
@@ -42,10 +42,24 @@ if (form) {
             if (res.status === 400) {
                 document.getElementById('error').textContent = data.error;
                 document.getElementById('error').style.visibility = 'visible';
-            }
-            document.getElementById("upload-modal").style.display = "none";
-            // shows the carbon saved by the action to the user
-            showData(String(data.carbon), String(data.source));
+            } else if (res.status === 403) {
+                document.getElementById('error').textContent = 'This challenge is is a group challenge, please select a group';
+                document.getElementById('error').style.visibility = 'visible';
+            } else if(res.status === 202){
+                document.getElementById("no-evidence").showModal();
+                const button = document.getElementById("close-no-evidence");
+                button.addEventListener('click', () =>{
+                    document.getElementById("no-evidence").close()
+                });
+                document.getElementById("upload-modal").style.display = "none";
+                // shows the carbon saved by the action to the user
+                showData(String(data.carbon), String(data.source));
+
+            }else{
+                document.getElementById("upload-modal").style.display = "none";
+                // shows the carbon saved by the action to the user
+                showData(String(data.carbon), String(data.source));
+            }            
         }
     });
 };
