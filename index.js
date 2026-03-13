@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express'); //imports express ie framework we are using
 const session = require("express-session");
 const cors = require("cors"); //imports the cors ie lets us actually send data to github without blocking it
@@ -7,14 +9,13 @@ const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
-const { brotliDecompress } = require('zlib');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
 app.use(
   session({
-    secret: "mySecretKey",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -22,7 +23,7 @@ app.use(
       // Prevent client-side access to cookies
       sameSite: 'strict',
       // Mitigate CSRF attacks
-      maxAge: 60000
+      maxAge: 10000 * 60 * 60
     }
   })
 );
