@@ -9,25 +9,15 @@ CREATE TABLE IF NOT EXISTS Users (
     email TEXT NOT NULL,
     password TEXT NOT NULL
 );
-CREATE TABLE IF NOT EXISTS Participants (
-    user_id INTEGER PRIMARY KEY,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
-);
+
 CREATE TABLE IF NOT EXISTS ParticipantGroups (
     user_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, group_id),
-    FOREIGN KEY (user_id) REFERENCES Participants(user_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
 );
-CREATE TABLE IF NOT EXISTS Moderators (
-    user_id INTEGER PRIMARY KEY,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
-);
-CREATE TABLE IF NOT EXISTS Maintainers (
-    user_id INTEGER PRIMARY KEY,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
-);
+
 CREATE TABLE IF NOT EXISTS ConversionFactors (
     factor_id INTEGER PRIMARY KEY AUTOINCREMENT,
     source TEXT NOT NULL,
@@ -51,10 +41,10 @@ CREATE TABLE IF NOT EXISTS ActionLogs (
     user_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
     date TEXT NOT NULL,
-    evidence TEXT NOT NULL,
+    evidence TEXT,
     calculated_co2e INTEGER NOT NULL,
     FOREIGN KEY (action_type_id) REFERENCES ActionTypes(action_type_id),
-    FOREIGN KEY (user_id) REFERENCES Participants(user_id)
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 CREATE TABLE IF NOT EXISTS Challenges (
     challenge_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -77,7 +67,7 @@ CREATE TABLE IF NOT EXISTS Submissions (
     PRIMARY KEY (submission_id),
     FOREIGN KEY (linked_action_log) REFERENCES ActionLogs(log_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
-    FOREIGN KEY (user_id) REFERENCES Participants(user_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (group_id) REFERENCES Groups(group_id)
 );
 CREATE TABLE IF NOT EXISTS ModerationDecisions (

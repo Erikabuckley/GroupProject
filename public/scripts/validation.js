@@ -46,7 +46,10 @@ if (form) {
             const priv = document.getElementById("priv").checked;
             const tandc = document.getElementById("tandc").checked;
 
-            if (priv && tandc) {
+            if (!/^[A-Za-z0-9._%+-]+@exeter\.ac\.uk$/.test(email)){
+                document.getElementById('error-message').textContent = "Email does not end in exeter.ac.uk";
+                document.getElementById('error-message').style.visibility = 'visible';
+            }else if (priv && tandc) {
                 const res = await fetch("/signUp",
                     {
                         method: "POST",

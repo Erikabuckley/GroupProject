@@ -1,8 +1,6 @@
 // calls the 2 functions to populate the page with challenges and missions
 getChallenges();
-console.log("Added challenges")
 getMissions();
-console.log("Added missions")
 
 // gets the list of current challenges that a user can take part in
 async function getChallenges() {

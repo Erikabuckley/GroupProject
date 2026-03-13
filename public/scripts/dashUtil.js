@@ -20,7 +20,7 @@ if (form) {
         const uploadInput = document.getElementById("upload-input");
         const file = uploadInput.files[0];
         // checks that the challenge submission is for a group
-        if (challenge != 'No' && group === 'None') {
+        if (challenge != 'No' && group === '') {
             error = document.getElementById("error")
             error.textContent = "You must select a group if the action is for a challenge"
             error.style.visibility = "visible"
@@ -42,10 +42,24 @@ if (form) {
             if (res.status === 400) {
                 document.getElementById('error').textContent = data.error;
                 document.getElementById('error').style.visibility = 'visible';
-            }
-            document.getElementById("upload-modal").style.display = "none";
-            // shows the carbon saved by the action to the user
-            showData(String(data.carbon), String(data.source));
+            } else if (res.status === 403) {
+                document.getElementById('error').textContent = 'This challenge is is a group challenge, please select a group';
+                document.getElementById('error').style.visibility = 'visible';
+            } else if(res.status === 202){
+                document.getElementById("no-evidence").showModal();
+                const button = document.getElementById("close-no-evidence");
+                button.addEventListener('click', () =>{
+                    document.getElementById("no-evidence").close()
+                });
+                document.getElementById("upload-modal").style.display = "none";
+                // shows the carbon saved by the action to the user
+                showData(String(data.carbon), String(data.source));
+
+            }else{
+                document.getElementById("upload-modal").style.display = "none";
+                // shows the carbon saved by the action to the user
+                showData(String(data.carbon), String(data.source));
+            }            
         }
     });
 };
@@ -74,13 +88,7 @@ if (joinForm) {
         } else {
             document.getElementById("join-modal").style.display = "none";
             document.getElementById('backdrop').style.display = "none";
-            updateChallengeList();
-            updateMissionList();
-            updateGroupList();
-            updateUserGroupsList();
-            updateIndi();
-            updatePoints();
-            updateLog();
+            window.location.href = "dashboard.html"
         }
     });
 };
@@ -91,7 +99,6 @@ async function updateMissionList() {
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('mission-input');
-    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds each one to the drop down box
 
@@ -104,7 +111,6 @@ async function updateChallengeList() {
     const data = await res.json();
     var vals = data.title;
     var selectElement = document.getElementById('challenge-input');
-    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds them to the drop down
 
@@ -117,7 +123,6 @@ async function updateGroupList() {
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-input');
-    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds each one to the drop down box
 
@@ -130,7 +135,6 @@ async function updateUserGroupsList() {
     const data = await res.json();
     var vals = data.groups;
     var selectElement = document.getElementById('group-challenge-input');
-    selectElement.innerHTML = "";  
     for (let v of vals) {
         selectElement.appendChild(new Option(v, v));// adds them to the drop down
 
@@ -228,7 +232,7 @@ async function updateLog() {
 
             titleDiv.textContent = item.title;
 
-            if (item.evidence && item.evidence !== "no file") {
+            if (item.evidence) {
                 const img = document.createElement("img");
                 img.src = item.evidence;
                 img.alt = "Submission evidence";

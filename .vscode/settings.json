@@ -9,7 +9,4 @@
         }
     ],
     "sqltools.useNodeRuntime": true,
-    "livePreview.defaultPreviewPath": "/dash/user/groupmetrics.html",
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.defaultPackageManager": "ms-python.python:pip"
 }
