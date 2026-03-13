@@ -15,7 +15,7 @@
     <div id="backdrop"></div>
     <div class="header-container"></div>
 
-    <div style="margin-left:15rem; margin-right:15rem;">
+    <div class="indent">
 
         <h1>Reduce your emissions today! </h1><br>
         <input type="button" id="upload" value="Submit action" class="in-button">
@@ -142,17 +142,19 @@
             });
     </script>
 
-    <div class="total" style="margin-left:15rem; margin-right:15rem;">
-        <h1>Total Carbon Saved To-date</h1>
-        <p id="indi-carbon"></p>
+    <div class="box">
+        <div class="total indent">
+            <h1>Total Carbon Saved To-date</h1>
+            <p id="indi-carbon"></p>
+        </div>
+
+        <div class="total indent">
+            <h1>Total Points Earned  To-date</h1>
+            <p id="indi-points"></p>
+        </div>
     </div>
 
-    <div class="total" style="margin-left:15rem; margin-right:15rem;">
-        <h1>Total Points Earned  To-date</h1>
-        <p id="indi-points"></p>
-    </div>
-
-    <div id="log history" style="margin-left:15rem; margin-right:15rem; margin-bottom: 5rem;">
+    <div id="log history" class="indent spacer">
         <h1>Challenge Submission History:</h1>
         <div id="log"></div>
     </div>
