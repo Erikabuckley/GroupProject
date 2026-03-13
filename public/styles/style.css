@@ -136,10 +136,10 @@ body {
 
 .in-button {
     padding: 1rem;
-    margin: 1rem;
+    margin: 0.5rem;
     background-color: var(--second);
     color: white;
-    font-size: medium;
+    font-size: large;
     font-weight: bold;
     border: 0;
     border-radius: 2rem;
