@@ -270,11 +270,25 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                             db.run(
                               "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
                               [challenge.challenge_id, user.user_id, group.group_id, log_id],
-                              e => {
+                              async (e) => {
                                 if (e) {
                                   console.log(e.message);
                                   return res.status(500).json({ error: "Failed to create submission" });
                                 } else {
+                                  // ANTI GAMING FLAGS HERE
+                                  // flag for file integrity
+                                  if (req.file) {
+                                    const isValid = await check_file(uploadedFilePath);
+                                    if (!isValid) { // if corrpted
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [submission.submission_id], e => {
+                                        if (e) {
+                                          console.log(e.message);
+                                          return res.status(500).json({ error: "Failed to flag" });
+                                        }
+                                      })
+                                    }
+                                  }
+
                                   return res.json({ carbon: co2_saved, source: source_url });
                                 }
                               }
