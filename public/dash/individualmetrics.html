@@ -43,39 +43,37 @@
         import asyncio
         from datetime import datetime
 
-        # retrieving data
-        async def get_data():
-            
-            # getting points
-            res1 = await fetch("/updatePointsIndi")
-            data1 = (await res1.json()).to_py()
-            points = data1["total"]
 
-            # getting c02 emissions
-            res2 = await fetch("/updateTotalIndi")
-            data2 = (await res2.json()).to_py()
-            co2emissions = data2["total"]
+        <!-- # retrieve points data 
+        async def get_points_data():
+            res = await fetch("/updatePointsDate"). -- change function name
+            data = (await res.json()).to_py()
 
-            return points, co2emissions
+            dates = []
+            points = []
 
-        async def make_chart():
-            points, co2emissions = await get_data() 
+            for row in data:
+                dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+                points.append(row["total"])
 
-            fig, ax1 = plt.subplots(figsize=(4,3))
-            x1 = 0
-            x2 = 1
-            ax1.bar(x1, [points], width=0.4, color=(0.6, 0.8, 0.7))
-            ax1.set_ylabel("Number of points")
+            return dates, points
 
-            ax2 = ax1.twinx()
-            ax2.bar(x2, [co2emissions], width=0.4, color=(0.6, 0.8, 0.7))
-            ax2.set_ylabel("Carbon emissions (g)")
+        # make points bar chart 
+        async def make_points_chart():
+            dates, points = await get_points_data()
 
-            plt.xticks([x1, x2], ["Points gained", "CO2 saved"])
+            fig, ax = plt.subplots(figsize=(4,3))
+            ax.bar(dates, points, color=(0.6, 0.8, 0.7))
+            ax.set_ylim(bottom=0)
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Number of points earned")
+            ax.set_title("Points Earned Over Time")
 
-            plt.title("Total points and carbon metrics")
+            plt.xticks(rotation=45)
+            plt.tight_layout()
 
-            display(fig, target="graph1", append=False)
+            display(fig, target="graph1", append=False) -->
+    
 
         async def get_co2_data():
             res = await fetch("/updateActionDatesIndi")
@@ -92,8 +90,10 @@
 
         async def make_co2_scatter():
             dates, carbon = await get_co2_data()
+            cumulative_carbon = np.cumsum(carbon)
+
             fig, ax = plt.subplots(figsize=(4,3))
-            ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
+            ax.scatter(dates, cumulative_carbon, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
             ax.set_ylabel("CO2 Saved (g)")
@@ -127,14 +127,14 @@
 
 
         asyncio.ensure_future(make_co2_scatter())
-        asyncio.ensure_future(make_chart()) 
+        asyncio.ensure_future(make_points_chart()) 
         asyncio.ensure_future(make_action_type_pie())
         
     </py-script>
 
     <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> Total points and carbon metrics </h1>
+                <h1> Points Earned Over Time </h1>
             </div>
             <div class="graph" id="graph2">
                 <h1> Carbon emissions saved over time </h1>

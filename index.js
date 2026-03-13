@@ -534,25 +534,6 @@ app.get('/updatePointsGroup', function (req, res) {
   });
 });
 
-// gets the total number of users
-app.get('/getMembers', function (req, res) {
-  console.log("Request for members");
-  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-    if (e) {
-      console.log(e.message);
-      return res.status(500).json({ error: "database failure" });
-    }
-    // check if user exists
-    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved' AND Users.email = ?", [req.session.email], (e, row) => {
-      if (e) {
-        console.log(e.message);
-      }
-      console.log("Successful member update");
-      return res.json({ total: row.total + 0 })
-    });
-  });
-});
-
 
 // get challenges
 app.get('/updateChallengeList', function (req, res) {
@@ -890,7 +871,7 @@ app.get('/updateActionDatesIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT date(ActionLogs.date) AS date, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, rows) => {
+    db.all("SELECT date(ActionLogs.date) AS date, SUM(ActionLogs.calculated_co2e) AS calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ? GROUP BY date(ActionLogs.date) ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
@@ -908,7 +889,7 @@ app.get('/updateActionDatesGroup', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT date(ActionLogs.date) AS date, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, rows) => {
+    db.all("SELECT date(ActionLogs.date) AS date, SUM(ActionLogs.calculated_co2e) AS calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) GROUP BY date(ActionLogs.date) ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
