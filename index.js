@@ -1163,24 +1163,41 @@ app.get('/updateLeaderboard', function (req, res) {
   });
 });
 
-// app.get('/getApprovalTimes', function (req, res) {
-//   console.log("Length of time between submission logged and approved/denied"); 
-//   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-//     if (e) {
-//       console.log(e.message);
-//       return res.status(500).json({ error: "database failure" });
-//     }
-//     db.all("SELECT date(ModerationDecisions.timestamp) AS decision, date(ActionLogs.date) AS submit FROM ActionLogs JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id JOIN Submissions ON Submissions.linked_action_logs = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.timestamp = ActionLogs.date WHERE Users.role = ?", [req.session.email], (e, rows) => {
-//       if (e) {
-//         console.log(e.message);
-//       }
-//       return res.json(rows);
-//     });
-//   });
-// });
-// // moderation decisions timestamp vs action logs date -> SUBMISSIONS
-//   // join based on linked action logs/log id
-//   // where users.role = moderator
+app.get('/updateSubmissionsCount', function (req, res) {
+  console.log("Total number of submissions"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT COUNT(submission_id)FROM Submissions", (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json(rows);
+    });
+  });
+});
+
+app.get('/getApprovalTimes', function (req, res) {
+  console.log("Length of time between submission logged and approved/denied"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.all("SELECT date(ModerationDecisions.timestamp) AS decision, date(ActionLogs.date) AS submission FROM ActionLogs JOIN Submissions.linked_action_logs = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id", (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ decision, submission });
+    });
+  });
+});
+// moderation decisions timestamp vs action logs date -> SUBMISSIONS
+  // join based on linked action logs/log id
+  // where users.role = moderator
 
 // delete user information
 app.post("/delete", (req,res) => {
