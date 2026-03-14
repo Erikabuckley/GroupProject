@@ -44,9 +44,9 @@
         from datetime import datetime
 
 
-        <!-- # retrieve points data 
+        # retrieve points data 
         async def get_points_data():
-            res = await fetch("/updatePointsDate"). -- change function name
+            res = await fetch("/updatePointsDateIndi")
             data = (await res.json()).to_py()
 
             dates = []
@@ -72,7 +72,7 @@
             plt.xticks(rotation=45)
             plt.tight_layout()
 
-            display(fig, target="graph1", append=False) -->
+            display(fig, target="graph1", append=False)
     
 
         async def get_co2_data():
