@@ -129,6 +129,13 @@ body {
     margin-bottom:5rem;
 }
 
+.errorpage {
+    margin-left:15rem;
+    margin-right:15rem;
+    margin-top:5rem;
+    margin-bottom:5rem;
+}
+
 #logo{
     max-height: 100px;
     padding-left: 1rem;
