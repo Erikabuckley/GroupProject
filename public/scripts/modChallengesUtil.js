@@ -115,18 +115,27 @@ async function getChallenges() {
             // checks if a challenge is being deleted
             deleteImg.addEventListener('click', async (e) => {
                 e.stopPropagation();
-                if (confirm("Are you sure you want to delete")) {
-                    await fetch("/deleteChallenge", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ id: challengeDiv.dataset.id } //turn to json
-                        )
-                    });
-                    getChallenges();
-                }
-
+                document.getElementById("delete").showModal();
+                const closebutton = document.getElementById("close");
+                closebutton.addEventListener('click', () =>
+                    document.getElementById("delete").close()
+                );
+                const confirmbutton = document.getElementById("confirm");
+                confirmbutton.addEventListener('click', async () => {
+                    const text = document.getElementById("password").value;
+                    if (text === 'delete challenge'){
+                        document.getElementById("delete").close()
+                        await fetch("/deleteChallenge", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ id: challengeDiv.dataset.id } //turn to json
+                            )
+                        });
+                        getChallenges();
+                    }
+                })
             });
             // checks if a challenge is being modified
             challengeDiv.addEventListener('click', () => {
