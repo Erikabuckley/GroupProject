@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const { generateSitemap } = require("./sitemap");
 const express = require('express'); //imports express ie framework we are using
 const session = require("express-session");
 const cors = require("cors"); //imports the cors ie lets us actually send data to github without blocking it
@@ -10,7 +10,6 @@ const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
-const { title } = require('process');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -29,6 +28,7 @@ app.use(
     }
   })
 );
+generateSitemap();
 
 // route to set session data
 app.post("/setSession", (req,res) => {

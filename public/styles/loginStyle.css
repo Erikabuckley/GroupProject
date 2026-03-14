@@ -37,11 +37,6 @@ body {
 
 }
 
-p a{
-    text-decoration: none;
-    color: var(--second);
-}
-
 .TandC{
     display:flex;
     flex-direction: row;
