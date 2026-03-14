@@ -6,10 +6,14 @@ const cors = require("cors"); //imports the cors ie lets us actually send data t
 const path = require('path');
 const multer = require("multer");
 const sharp = require("sharp"); // image processing for file integrity
+const phash = require('sharp-phash'); // image hashing for duplicate uploads
+const distance = require('sharp-phash/distance'); // compares hashes for duplicate uploads
 const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
+const fs = require('fs/promises');
+const { fileURLToPath } = require('url');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -159,6 +163,8 @@ app.post('/signUp', async (req, res) => {
 // FILE INTEGRITY FLAG
 async function check_file(file_path) {
   try {
+    // const fs = require("fs");
+    // console.log("File exists in function:", fs.existsSync(file_path));
     await sharp(file_path).metadata();
     return true; // returns true for a valid image
   } catch (e) {
@@ -166,6 +172,48 @@ async function check_file(file_path) {
     console.log(e.message);
     return false; // returns false for a corrupted image
   }
+}
+
+// DUPLICATE UPLOAD FLAG
+// function to compare two hashes - false if found
+async function compareImages(newImageHash, oldImageFullPath) {
+  // read old image
+  const oldImage = await fs.readFile(oldImageFullPath);
+  // generate old image hash
+  const oldImageHash = await phash(oldImage);
+  // calculate hamming distance
+  const hammingDistance = distance(newImageHash, oldImageHash);
+  // determine originality
+  if (hammingDistance <= 5) {
+    // images are very similar (likely duplicates)
+    return false; // returns false as likely not original
+  } else {
+    // images are different
+    return true; // returns true as likely to be original
+  }
+}
+
+// function to check originality of new image
+async function check_originality(newImagePath) {
+  // read new image
+  const newImage = await fs.readFile(newImagePath);
+  // generate new image hash
+  const newImageHash = await phash(newImage);
+
+  // read old images
+  const dirPath = path.join(__dirname, 'public', 'uploads');
+  const images = await fs.readdir(dirPath);
+  for (const oldImagePath of images) {
+    const oldImageFullPath = path.join(__dirname, 'public', 'uploads', oldImagePath);
+    if (oldImageFullPath === newImagePath) {
+      continue;
+    }
+    const original = await compareImages(newImageHash, oldImageFullPath);
+    if (!original) {
+      return false; // returns false if duplicate found
+    }
+  }
+  return true; // returns true if original image
 }
 
 // get data from the  action
@@ -278,11 +326,22 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 } else {
                                   const id = this.lastID;
                                   // ANTI GAMING FLAGS HERE
-                                  // flag for file integrity
                                   if (req.file) {
+                                    const uploadedFilePath = req.file.path;
+                                    // flag for file integrity
                                     const isValid = await check_file(uploadedFilePath);
                                     if (!isValid) { // if corrpted
                                       db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
+                                        if (e) {
+                                          console.log(e.message);
+                                          return res.status(500).json({ error: "Failed to flag" });
+                                        }
+                                      })
+                                    }
+                                    // flag for duplicate uploads
+                                    const original = await check_originality(uploadedFilePath);
+                                    if (!original) { 
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '2', 'Rule 2: Duplicate Upload', 'PENDING')", [id], e => {
                                         if (e) {
                                           console.log(e.message);
                                           return res.status(500).json({ error: "Failed to flag" });
@@ -1161,19 +1220,19 @@ app.post("/delete", (req,res) => {
           }
         });
         // remove all evidence submitted
-        const fs = require('fs');
-        db.each("SELECT evidence FROM ActionLogs WHERE user_id = ?", [user_id], (e, row) => {
+        // const fs = require('fs');
+        db.each("SELECT evidence FROM ActionLogs WHERE user_id = ?", [user_id], async (e, row) => {
           if (e) {
             console.log(e.message);
             return res.sendStatus(500);
           }
-          fs.unlink(row.evidence, (err) => {
-            if (e) {
-              console.log(e.message);
-              return res.sendStatus(500);
-            }
+          try {
+            await fs.unlink(row.evidence);
             console.log("File removed successfully");
-          });
+          } catch (e) {
+            console.log(e.message);
+            return res.sendStatus(500);
+          }
         });
         // delete action logs
         db.run("DELETE FROM ActionLogs WHERE user_id = ?", [user_id], e => {
