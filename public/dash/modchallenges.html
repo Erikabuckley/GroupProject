@@ -86,7 +86,7 @@
             });
         </script>
     </div>
-    <div style="margin-left: 15rem; margin-right: 15rem;">
+    <div class="indent spacer">
         <h1>Edit current challenges here:</h1>
         <div id="challenge-container"></div>
             <div id="update-modal" class="modal">
@@ -144,6 +144,15 @@
             </script>
         </div>
     </div>
+    <dialog id="delete" class="dialog">
+        <div class="dialog-content">
+            <label for="password">Please type "delete challenge" to delete this challenge</label><br>
+            <span class="error" id="delete-error"></span><br>
+            <input type="text" required id="password" placeholder="delete challenge"><br>
+            <button type="button" id="confirm" class="in-button">Confirm</button><br>
+            <button type="button" id="close" class="in-button">Close</button>
+        </div>
+    </dialog>
     <div class="footer-container"></div>
 </body>
 

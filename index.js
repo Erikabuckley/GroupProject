@@ -5,6 +5,7 @@ const session = require("express-session");
 const cors = require("cors"); //imports the cors ie lets us actually send data to github without blocking it
 const path = require('path');
 const multer = require("multer");
+const sharp = require("sharp"); // image processing for file integrity
 const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
@@ -153,6 +154,20 @@ app.post('/signUp', async (req, res) => {
   });
 });
 
+// ANTI GAMING FLAG FUNCTIONS
+// FILE INTEGRITY FLAG
+async function check_file(file_path) {
+  try {
+    await sharp(file_path).metadata();
+    return true; // returns true for a valid image
+  } catch (e) {
+    console.log("File corrupted:", file_path);
+    console.log(e.message);
+    return false; // returns false for a corrupted image
+  }
+}
+
+// get data from the  action
 app.post('/addAction', upload.single('upload'), function (req, res) {
   console.log("Action request received");
 
@@ -255,11 +270,26 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                             db.run(
                               "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
                               [challenge.challenge_id, user.user_id, group.group_id, log_id],
-                              e => {
+                              async (e) => {
                                 if (e) {
                                   console.log(e.message);
                                   return res.status(500).json({ error: "Failed to create submission" });
                                 } else {
+                                  const id = this.lastID;
+                                  // ANTI GAMING FLAGS HERE
+                                  // flag for file integrity
+                                  if (req.file) {
+                                    const isValid = await check_file(uploadedFilePath);
+                                    if (!isValid) { // if corrpted
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
+                                        if (e) {
+                                          console.log(e.message);
+                                          return res.status(500).json({ error: "Failed to flag" });
+                                        }
+                                      })
+                                    }
+                                  }
+
                                   return res.json({ carbon: co2_saved, source: source_url });
                                 }
                               }
@@ -1157,13 +1187,14 @@ app.post("/delete", (req,res) => {
 // edit a challenge route
 //TODO
 
-// get a list of all the challenges returning everything about them ONLY CURRENT ONES
+// get a list of all the challenges returning everything about them - ONLY CURRENT ONES
 app.get('/updateModChallengeList', function (req, res) {
   //make sure year is y-m-d
     return res.json({ id : [1], name : ['challenge 1'], scope : ['Group'], rules: ['you must do this'], points: [100], start : ['2020-07-10'], end: ['2030-07-10'], evidence: [true]});
 });
 
 // delete a challenge given the challenge id
+// including submissions and decisions not actions or evidence
 app.post('/deleteChallenge', function (req, res) {})
 
 
