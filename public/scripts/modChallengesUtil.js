@@ -27,6 +27,7 @@ newChallenge.addEventListener('submit', async (e) => {
         document.getElementById('error').textContent = data.error;
         document.getElementById('error').style.visibility = 'visible';
     }
+    newChallenge.reset();
     document.getElementById("challenge-modal").style.display = "none";
 });
 
