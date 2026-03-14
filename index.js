@@ -10,6 +10,7 @@ const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
+const { title } = require('process');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -776,26 +777,120 @@ app.get('/updateLog', function (req, res) {
 //gets information for the table
 app.get('/updateTableIndi', function (req, res) {
   const type = req.query.type;
-  if(type === 'date'){
+  if (type === 'date'){
     // odored by date
-    return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
-  }else if (type === 'type'){
-    // ordered by cat
-    return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=? ORDER BY date(ActionLogs.date)", [req.session.email], (e,rows) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(500).json({ error: "database failure" });
+        }
+        const date = rows.map(r => r.date);
+        const title = rows.map(r => r.name);
+        const co2 = rows.map(r => r.carbon);
+        const cat = rows.map(r => r.types);
+        
+        return res.json({ date, title, co2, cat });
+      });
+    });
+  } else if (type === 'type'){
+
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=? ORDER BY types", [req.session.email], (e,rows) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(500).json({ error: "database failure" });
+        }
+        const date = rows.map(r => r.date);
+        const title = rows.map(r => r.name);
+        const co2 = rows.map(r => r.carbon);
+        const cat = rows.map(r => r.types);
+        
+        return res.json({ date, title, co2, cat });
+      });
+    });
   }
 });
 
 app.get('/updateTableGroup', function (req, res) {
   const type = req.query.type;
   if (type === 'indi'){
+
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      db.all("SELECT ParticipantGroups.group_id AS group_id, date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types, ParticipantGroups.user_id AS user FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=?", [req.session.email], (e,rows) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(500).json({ error: "database failure" });
+        }
+        const id = rows.map(r => r.group_id);
+        const date = rows.map(r => r.date);
+        const title = rows.map(r => r.name);
+        const co2 = rows.map(r => r.carbon);
+        const cat = rows.map(r => r.types);
+        // const userId = rows.map(r => r.user);
+        const userId = rows.length > 0 ? rows[0].user : null;
+        
+        return res.json({ id, date, title, co2, cat, userId });
+      });
+    });
     // all does not matter about order but the ids too
-    return res.json({id: [1,2,3], date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [100,100,100], cat : ['food', 'food', 'food'], userId :1});
+    // return res.json({id: [1,2,3], date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [100,100,100], cat : ['food', 'food', 'food'], userId :1});
   } else if(type === 'date'){
     // odored by date
-    return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
+
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) ORDER BY date(ActionLogs.date)", [req.session.email], (e,rows) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(500).json({ error: "database failure" });
+        }
+        const date = rows.map(r => r.date);
+        const title = rows.map(r => r.name);
+        const co2 = rows.map(r => r.carbon);
+        const cat = rows.map(r => r.types);
+        
+        return res.json({ date, title, co2, cat });
+      });
+    });
+    // return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
   }else if (type === 'type'){
+
+    const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email=?) ORDER BY types", [req.session.email], (e,rows) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(500).json({ error: "database failure" });
+        }
+        const date = rows.map(r => r.date);
+        const title = rows.map(r => r.name);
+        const co2 = rows.map(r => r.carbon);
+        const cat = rows.map(r => r.types);
+        
+        return res.json({ date, title, co2, cat });
+      });
+    });
     // ordered by type
-    return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
+    // return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [10,10,10], cat : ['food', 'food', 'food']});
   }
 });
 
