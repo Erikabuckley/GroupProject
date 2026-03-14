@@ -129,6 +129,15 @@ body {
     margin-bottom:5rem;
 }
 
+.indent {
+    margin-right: 15rem;
+    margin-left: 15rem;
+}
+
+.spacer {
+    margin-bottom: 5rem;
+}
+
 #logo{
     max-height: 100px;
     padding-left: 1rem;
@@ -173,15 +182,17 @@ body {
 }
 
 .total {
-    border: 2px groove var(--second);
-    border-width: thick;
+    width: fit-content;
+    border: 2px solid var(--second);
+    border-radius: 12px;
     min-width: 250px;
     margin: 1rem;
-    padding: 0.5rem;
+    padding: 0.75rem;
     color: var(--main);
     font-size: 50px;
     font-weight: bold;
     text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 #backdrop{
