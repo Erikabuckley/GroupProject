@@ -159,8 +159,8 @@ body {
     padding: 1rem;
     margin: 0.5rem;
     background-color: white;
-    color: var(--main);
-    border: 2px solid var(--second) !important;
+    color: var(--second);
+    border: 2px solid var(--second);
     font-size: large;
     font-weight: bold;
     border: 0;
@@ -176,11 +176,6 @@ body {
 
 .in-button:hover{
     background-color: var(--main);
-}
-
-.second-button:hover{
-    background-color: var(--second);
-    color: white;
 }
 
 .header-button {
