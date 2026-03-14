@@ -243,9 +243,9 @@ async function updateLog() {
             }
 
             const itemStatus = status[item.index]; // get this submission's status
-            if (itemStatus === 'denied') {
+            if (itemStatus === 'Denied') {
                 cardDiv.style.backgroundColor = "#D9544D";
-            } else if (itemStatus === 'pending') {
+            } else if (itemStatus === 'Pending') {
                 cardDiv.style.backgroundColor = "#686b6c";
             } else { // approved/accepted
                 cardDiv.style.backgroundColor = "#93ef90";
