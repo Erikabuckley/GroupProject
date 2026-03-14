@@ -10,6 +10,7 @@ const { OPEN_READWRITE } = require('sqlite3');
 const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
+const { fileURLToPath } = require('url');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -158,6 +159,8 @@ app.post('/signUp', async (req, res) => {
 // FILE INTEGRITY FLAG
 async function check_file(file_path) {
   try {
+    const fs = require("fs");
+    console.log("File exists in function:", fs.existsSync(file_path));
     await sharp(file_path).metadata();
     return true; // returns true for a valid image
   } catch (e) {
@@ -279,6 +282,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                   // ANTI GAMING FLAGS HERE
                                   // flag for file integrity
                                   if (req.file) {
+                                    const uploadedFilePath = req.file.path
                                     const isValid = await check_file(uploadedFilePath);
                                     if (!isValid) { // if corrpted
                                       db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
