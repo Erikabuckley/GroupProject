@@ -1264,7 +1264,7 @@ app.post("/delete", (req,res) => {
 // addChallenge
 app.post('/addChallenge', function (req, res) {
   console.log("New challenge request received");
-  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
@@ -1283,12 +1283,30 @@ app.post('/addChallenge', function (req, res) {
 });
 
 // edit a challenge route
-//TODO
+app.post('/editChallenge', function (req, res) {
+  console.log("Edit challenge request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.run("UPDATE Challenges SET title = ?, scope = ?, rules = ?, scoring = ?, start_date = ?, end_date = ?, evidence_required = ? WHERE challenge_id = ?", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue, req.body.id], e => {
+      db.close();
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "Failed to update challenge" });
+      } else {
+        console.log('Challenge updated sucessfully')
+        return res.status(201).json({ message: "Challenge updated" });
+      }
+    });
+  });
+});
 
 // get a list of all the challenges returning everything about them - ONLY CURRENT/ future ONES
 app.get('/updateModChallengeList', function (req, res) {
   console.log("Update challenge list - mod page request received");
-  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
