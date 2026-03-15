@@ -1,7 +1,7 @@
 import sqlite3
 import random
 import bcrypt
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 # Connect to database
 con = sqlite3.connect("CarbonChallenge.db")
@@ -16,6 +16,8 @@ cursor.execute("DELETE FROM Groups")
 cursor.execute("DELETE FROM Challenges")
 cursor.execute("DELETE FROM ActionLogs")
 cursor.execute("DELETE FROM ParticipantGroups")
+cursor.execute("DELETE FROM Submissions")
+cursor.execute("DELETE FROM ModerationDecisions")
 
 # reset ids
 cursor.execute("DELETE FROM sqlite_sequence")
@@ -230,55 +232,84 @@ def populate_participant_groups(cursor):
 
 # insert 200 challenge submissions into db
 
-# def populate_submissions(cursor):
-#     submissions = []
-#     for i in range(1, 201):
+def populate_submissions(cursor):
+    submissions = []
+    for i in range(1, 201):
 
-#         # get linked_action_log ids
-#         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups)")
-#         log_ids = [row[0] for row in cursor.fetchall()]
-#         log_id = random.choice(log_ids)
+        # get linked_action_log ids
+        cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups)")
+        log_ids = [row[0] for row in cursor.fetchall()]
+        log_id = random.choice(log_ids)
 
-#         # get challenge_ids
-#         cursor.execute("SELECT challenge_id FROM Challenges")
-#         challenge_ids = [row[0] for row in cursor.fetchall()]
-#         challenge_id = random.choice(challenge_ids)
+        # get challenge_ids
+        cursor.execute("SELECT challenge_id FROM Challenges")
+        challenge_ids = [row[0] for row in cursor.fetchall()]
+        challenge_id = random.choice(challenge_ids)
 
-#         # get user_ids
-#         cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
-#         user_id = cursor.fetchone()[0]
+        # get user_ids
+        cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
+        user_id = cursor.fetchone()[0]
         
-#         # get group_ids 
-#         cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
-#         group_id = cursor.fetchone()[0]
+        # get group_ids 
+        cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
+        group_id = cursor.fetchone()[0]
 
-#         # get random number for points 
-#         points = random.randint(5, 20)
+        # get random number for points 
+        points = random.randint(5, 20)
 
-#         # use placeholder text for status 
-#         status = "submitted"
+        # use placeholder text for status 
+        status = "submitted"
 
-#         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
+        submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
-#     cursor.executemany(
-#         """
-#         INSERT INTO Submissions(log_id, challenge_id, user_id, group_id, points, status)
-#         VALUES(?, ?, ?, ?, ?, ?)
-#         """,
-#         submissions
-#     )
+    cursor.executemany(
+        """
+        INSERT INTO Submissions(linked_action_log, challenge_id, user_id, group_id, points, status)
+        VALUES(?, ?, ?, ?, ?, ?)
+        """,
+        submissions
+    )
 
     # insert 40 moderation decisions into db
 
-# def populate_moderation_decisions(cursor):
-    # decisions = []
-    # get submission_ids 
-    # cursor.execute("SELECT submission_id FROM Submissions")
+def populate_moderation_decisions(cursor):
+    decisions = []
+    for i in range(1, 41):
 
-    # get moderator_ids
-    # decision - randomly choose between approved and denied
-    # reason - use placeholder text
-    # timestamp - choose randomly from time of submission to now 
+        # get submission_ids 
+        cursor.execute("SELECT submission_id FROM Submissions")
+        submission_ids = [row[0] for row in cursor.fetchall()]
+        submission_id = random.choice(submission_ids)
+
+        # get moderator_ids
+        cursor.execute("SELECT user_id FROM Users WHERE Users.role = 'moderator'")
+        moderator_ids = [row[0] for row in cursor.fetchall()]
+        moderator_id = random.choice(moderator_ids)
+
+        # decision - randomly choose between approved and denied
+        decision = random.choice(["approved", "denied"])
+
+        # reason - use placeholder text
+        reason = "explanation"
+
+        # timestamp - choose randomly from time of submission to now 
+        cursor.execute("SELECT date FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.submission_id = ?", (submission_id,))
+        submission_date = datetime.strptime(cursor.fetchone()[0], "%Y-%m-%d").date()
+        days = (today - submission_date).days
+        if days > 0:
+            days_to_add = random.randrange(days)
+        else:
+            days_to_add = 0
+        timestamp = submission_date + timedelta(days = days_to_add)
+
+        decisions.append((submission_id, moderator_id, decision, reason, timestamp))
+
+    cursor.executemany(
+        """
+        INSERT INTO ModerationDecisions(submission_id, moderator_id, decision, reason, timestamp)
+        VALUES(?, ?, ?, ?, ?)
+        """, 
+        decisions)
 
 
 populate_users(cursor)
@@ -288,7 +319,8 @@ populate_challenges(cursor)
 populate_action_logs(cursor)
 populate_action_conversion_factors(cursor)
 populate_participant_groups(cursor)
-# populate_submissions(cursor)
+populate_submissions(cursor)
+populate_moderation_decisions(cursor)
 
 # check that the above have been added to the database
 
@@ -310,8 +342,11 @@ print("Conversion factors:", cursor.fetchone()[0])
 cursor.execute("SELECT COUNT(*) FROM ParticipantGroups")
 print("ParticipantGroups:", cursor.fetchone()[0])
 
-# cursor.execute("SELECT COUNT(*) FROM Submissions")
-# print("Submisions:", cursor.fetchone()[0])
+cursor.execute("SELECT COUNT(*) FROM Submissions")
+print("Submisions:", cursor.fetchone()[0])
+
+cursor.execute("SELECT COUNT(*) FROM ModerationDecisions")
+print("ModerationDecisions:", cursor.fetchone()[0])
 
 
 # save and close the connection
