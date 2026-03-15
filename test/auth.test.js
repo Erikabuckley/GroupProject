@@ -36,7 +36,7 @@ test("AUTH: checkAuth returns auth false and null role when unauthenticated", as
     fetchCalled = true;
 
     assert.equal(url, "/getSession");
-    assert.equal(opts.method, "GET");
+    assert.ok(!opts || !opts.method || opts.method === "GET");
 
     return {
       ok: true,

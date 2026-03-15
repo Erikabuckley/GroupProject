@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../styles/metricStyle.css">
     <script type="module" src="../scripts/template.js" defer></script>
     <script type="text/javascript" src="../scripts/indiUtil.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
@@ -22,18 +23,16 @@
     <h1> Individual Metrics </h1>
     <div class="key-stats">
         <div class="total">
-            <h1>Total Carbon Saved:</h1>
-            <p id="indi-carbon"></p>
+            <h3>Total Carbon Saved:</h3>
+            <h3 id="indi-carbon"></h3>
         </div>
 
         <div class="total">
-            <h1>Total Points Earned:</h1>
-            <p id="indi-points"></p>
+            <h3>Total Points Earned:</h3>
+            <h3 id="indi-points"></h3>
         </div>
 
     </div>
-    <div id="show-graph1"></div>
-    <div id="show-graph2"></div>
     <py-script>
         import matplotlib.pyplot as plt
         import numpy as np
@@ -62,7 +61,7 @@
         async def make_chart():
             points, co2emissions = await get_data() 
 
-            fig, ax1 = plt.subplots()
+            fig, ax1 = plt.subplots(figsize=(4,3))
             x1 = 0
             x2 = 1
             ax1.bar(x1, [points], width=0.4, color=(0.6, 0.8, 0.7))
@@ -91,9 +90,9 @@
 
             return dates, carbon
 
-        async def make_scatter():
+        async def make_co2_scatter():
             dates, carbon = await get_co2_data()
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(4,3))
             ax.scatter(dates, carbon, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
@@ -105,8 +104,32 @@
 
             display(fig, target="graph2", append=False)
 
-        asyncio.ensure_future(make_scatter())
+        # retrieve action type data
+        async def get_action_type_data():
+            res = await fetch("/updateActionTypesIndi")
+            data = (await res.json()).to_py()
+
+            emissions = data["carbon"]
+            action_types = data["category"]
+
+            return emissions, action_types
+        
+        async def make_action_type_pie():
+            emissions, action_types = await get_action_type_data()
+
+            my_colours = [(0.6, 0.8, 0.7), (0.4, 0.6, 0.7), (0.6, 0.7, 0.6)]
+
+            fig, ax = plt.subplots(figsize=(4,3))
+            ax.pie(emissions, labels = action_types, colors = my_colours)
+            ax.set_title("Carbon Emissions Saved Per Action Type")
+            
+            display(fig, target="graph3", append=False)
+
+
+        asyncio.ensure_future(make_co2_scatter())
         asyncio.ensure_future(make_chart()) 
+        asyncio.ensure_future(make_action_type_pie())
+        
     </py-script>
 
     <div class="graph-block">
@@ -115,6 +138,9 @@
             </div>
             <div class="graph" id="graph2">
                 <h1> Carbon emissions saved over time </h1>
+            </div>
+            <div class="graph" id="graph3">
+                <h1> Carbon emissions saved per action type </h1>
             </div>
     </div>
     
@@ -125,10 +151,8 @@
     </div>
 
     <div class="table">
-        <h1>
-            Table
-        </h1>
         <table id="data-table"></table>
+        <canvas id="myChart" class="pi"></canvas>
     </div>
 
     <div class="footer-container"></div>

@@ -1,12 +1,14 @@
 import sqlite3
 import random
-import string
-import hashlib
+import bcrypt
 from datetime import date, timedelta
 
 # Connect to database
 con = sqlite3.connect("CarbonChallenge.db")
 cursor = con.cursor()
+
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+print("Tables:", cursor.fetchall())
 
 # ensure the database tables are empty before populating them
 cursor.execute("DELETE FROM Users")
@@ -14,59 +16,81 @@ cursor.execute("DELETE FROM Groups")
 cursor.execute("DELETE FROM Challenges")
 cursor.execute("DELETE FROM ActionLogs")
 
-# randomly generate a password and hash it
-
-
-def hashed_password():
-    password = ""
-    for i in range(1, 5):
-        password += string.ascii_letters
-    for i in range(1, 3):
-        password += string.digits
-    for i in range(1, 2):
-        password += string.punctuation
-    return hashlib.sha256(password.encode()).hexdigest()
+# reset ids
+cursor.execute("DELETE FROM sqlite_sequence")
 
 # insert users into db
 
-
 def populate_users(cursor):
-    users = []
+    participants = []
+    moderators = []
     for i in range(1, 61):
         display_name = f"user_{i}"
-        # default role is participant
         role = "participant"
         email = f"user{i}@exeter.ac.uk"
-        # store hashed password
-        password = hashed_password()
+        # create basic password
+        plain_password = f"user{i}123"
+        # create hashed password and decode to string
+        hashed_password =  bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt(rounds=10)).decode('utf-8')
 
-        users.append((display_name, role, email, password))
+        participants.append((display_name, role, email, hashed_password))
+
+    for i in range(1, 6):
+        display_name = f"moderator{i}"
+        role = "moderator"
+        email = f"moderator{i}@exeter.ac.uk"
+        # create basic password
+        plain_password = f"moderator{i}123"
+        # create hashed password and decode to string
+        hashed_password =  bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt(rounds=10)).decode('utf-8')
+
+        moderators.append((display_name, role, email, hashed_password))
+
 
     cursor.executemany(
         """ 
         INSERT INTO Users (display_name, role, email, password)
         VALUES (?, ?, ?, ?)
         """,
-        users
+        participants
     )
+    cursor.executemany(
+        """ 
+        INSERT INTO Users (display_name, role, email, password)
+        VALUES (?, ?, ?, ?)
+        """,
+        moderators
+    )
+
+def seed_users():
+    users = [
+        ('user', 'user', 'user@exeter.ac.uk', 'user123'),
+        ('moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
+    ]
+
+    for display_name, role, email, plain_password in users:
+        # Hash password and decode to string
+        hashed_password = bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt(rounds=10)).decode('utf-8')
+        cursor.execute(
+            "INSERT INTO Users (display_name, role, email, password) VALUES (?,?,?,?)",
+            (display_name, role, email, hashed_password)
+        )
+    print("Seeded users successfully!")
+
 
 # insert groups into db
 
-
 def populate_groups(cursor):
-    groups = []
-    for i in range(1, 11):
-        name = f"group_{i}"
+    groups = ["Lafrowda", "East Park", "Birks", "Rowe House", "Duryard", "St David's", "Point Exe", "Mardon Hall", "Lopes Hall", "Nash Grove"]
 
-        groups.append((name,))
-
-    cursor.executemany(
-        """ 
-        INSERT INTO Groups (name)
-        VALUES (?)
-        """,
-        groups
-    )
+    for name in groups: 
+        cursor.execute(
+            """ 
+            INSERT INTO Groups (name)
+            VALUES (?)
+            """,
+            (name,)
+        )
 
 
 today = date.today()
@@ -79,49 +103,49 @@ end_date = today + timedelta(days=365)
 def populate_challenges(cursor):
     challenges_info = [
         {
-            "title": "Litter picking",
+            "title": "LITTER PICKING",
             "scope": "Personal",
             "rules": "Pick up ten pieces of litter in a day",
             "scoring": 5
         },
         {
-            "title": "Make a journey by foot",
+            "title": "MAKE A JOURNEY BY FOOT",
             "scope": "Personal",
             "rules": "Switch a journey made by a vehicle to one by foot",
             "scoring": 5
         },
         {
-            "title": "Take public transport",
+            "title": "TAKE PUBLIC TRANSPORT",
             "scope": "Personal",
             "rules": "Make a singular journey by public transport",
             "scoring": 5
         },
         {
-            "title": "Vegeterian for 5 days",
+            "title": "VEGETERIAN FRO 5 DAYS",
             "scope": "Personal",
             "rules": "Eat 5 vegetarian meals in a week",
             "scoring": 10
         },
         {
-            "title": "Vegan for 3 days",
+            "title": "VEGAN FOR 3 DAYS",
             "scope": "Personal",
             "rules": "Eat 3 vegan meals in a week",
             "scoring": 10
         },
         {
-            "title": "100km cycle",
+            "title": "100KM CYCLE",
             "scope": "Group",
             "rules": "Complete a 100km cycle between the group over 1 month",
             "scoring": 30
         },
         {
-            "title": "Saving CO2",
+            "title": "SAVING CO2",
             "scope": "Group",
             "rules": "Save 500kg CO2 between the group in a month)",
             "scoring": 40
         },
         {
-            "title": "Recycle",
+            "title": "RECYCLE",
             "scope": "Personal",
             "rules": "Take 50kg of recycling to a recycling point",
             "scoring": 30
@@ -132,12 +156,12 @@ def populate_challenges(cursor):
 
     for c in challenges_info:
         challenges.append((c["title"], c["scope"], c["rules"],
-                          c["scoring"], start_date, end_date))
+                          c["scoring"], start_date, end_date,'yes'))
 
     cursor.executemany(
         """
-        INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required)
+        VALUES (?, ?, ?, ?, ?, ?,?)
         """,
         challenges
     )
@@ -165,20 +189,18 @@ def populate_action_logs(cursor):
         # randomly choose a date in the last 30 days
         date = (today - timedelta(days=random.randint(0, 30)))
 
-        # randomly choose whether evidence is required or not
-        evidence_required = random.choice([True, False])
 
         # calculated co2e = quantity * default factor id (from action type)
         # use default factor id once made action table
         calculated_co2e = random.randint(1, 100)
 
         action_logs.append((action_type_id, user_id, quantity,
-                           date, evidence_required, calculated_co2e))
+                           date, calculated_co2e))
 
     cursor.executemany(
         """ 
-        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, evidence_required, calculated_co2e)
-        VALUES(?, ?, ?, ?, ?, ?)
+        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, calculated_co2e)
+        VALUES(?, ?, ?, ?, ?)
         """,
         action_logs
     )
@@ -192,6 +214,7 @@ def populate_action_conversion_factors(cursor):
 
 
 populate_users(cursor)
+seed_users()
 populate_groups(cursor)
 populate_challenges(cursor)
 populate_action_logs(cursor)
@@ -213,6 +236,7 @@ print("Action logs:", cursor.fetchone()[0])
 
 cursor.execute("SELECT COUNT(*) FROM ConversionFactors")
 print("Conversion factors:", cursor.fetchone()[0])
+
 
 # save and close the connection
 con.commit()

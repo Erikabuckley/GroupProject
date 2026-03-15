@@ -70,7 +70,7 @@ function submitForm(dom, buttonId) {
 test("LOGIN: status 401 shows #error-message", async () => {
   const dom = makeDom();
 
-  dom.window.document.getElementById("email-input").value = "a@a.com";
+  dom.window.document.getElementById("email-input").value = "a@exeter.ac.uk";
   dom.window.document.getElementById("password-input").value = "wrong";
 
   let called = null;
@@ -103,7 +103,7 @@ test("LOGIN: status 401 shows #error-message", async () => {
 test("LOGIN: success calls /login then /setSession (redirect not asserted in jsdom)", async () => {
   const dom = makeDom();
 
-  dom.window.document.getElementById("email-input").value = "user@test.com";
+  dom.window.document.getElementById("email-input").value = "user@exeter.ac.uk";
   dom.window.document.getElementById("password-input").value = "pass";
 
   let loginCalled = null;
@@ -142,7 +142,7 @@ test("LOGIN: success calls /login then /setSession (redirect not asserted in jsd
 test("SIGN UP: if priv/tandc not checked, it should NOT call fetch", async () => {
   const dom = makeDom();
 
-  dom.window.document.getElementById("email-input").value = "new@test.com";
+  dom.window.document.getElementById("email-input").value = "new@exeter.ac.uk";
   dom.window.document.getElementById("password-input").value = "pw";
   dom.window.document.getElementById("firstname-input").value = "Nehir";
 
@@ -162,7 +162,7 @@ test("SIGN UP: if priv/tandc not checked, it should NOT call fetch", async () =>
 test("SIGN UP: status 401 shows #error-message (when checkboxes ticked)", async () => {
   const dom = makeDom();
 
-  dom.window.document.getElementById("email-input").value = "new@test.com";
+  dom.window.document.getElementById("email-input").value = "new@exeter.ac.uk";
   dom.window.document.getElementById("password-input").value = "pw";
   dom.window.document.getElementById("firstname-input").value = "Nehir";
   dom.window.document.getElementById("priv").checked = true;
@@ -189,7 +189,7 @@ test("SIGN UP: status 401 shows #error-message (when checkboxes ticked)", async 
 test("SIGN UP: success calls /signUp (redirect not asserted in jsdom)", async () => {
   const dom = makeDom();
 
-  dom.window.document.getElementById("email-input").value = "new@test.com";
+  dom.window.document.getElementById("email-input").value = "new@exeter.ac.uk";
   dom.window.document.getElementById("password-input").value = "pw";
   dom.window.document.getElementById("firstname-input").value = "Nehir";
   dom.window.document.getElementById("priv").checked = true;
@@ -214,7 +214,7 @@ test("SIGN UP: success calls /signUp (redirect not asserted in jsdom)", async ()
   // Payload shape check (matches JSON.stringify({ email, password, name }))
   const payload = JSON.parse(called.options.body);
   assert.deepEqual(payload, {
-    email: "new@test.com",
+    email: "new@exeter.ac.uk",
     password: "pw",
     name: "Nehir",
   });

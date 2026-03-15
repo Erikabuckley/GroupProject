@@ -1,3 +1,4 @@
+// sends a request to find if: the user is logged in and the users account type
 export async function checkAuth() {
     try {
         const res = await fetch("/getSession");

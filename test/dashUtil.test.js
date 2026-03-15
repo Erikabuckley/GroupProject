@@ -28,21 +28,20 @@ function makeWindow() {
        <select id="challenge-input"></select>
        <select id="group-input"></select>
        <select id="group-challenge-input"></select>
-       <select id="declaration"></select>
-
+       <input id="declaration" type="checkbox" />
        <div id="indi-carbon"></div>
        <div id="indi-points"></div>
 
        <div id="upload-modal" style="display:block"></div>
        <div id="data-modal" style="display:none"></div>
-       <div id="ammount"></div>
+       <div id="amount"></div>
        <a id="source"></a>
 
        <div id="error" style="visibility:hidden"></div>
        <div id="error-message" style="visibility:hidden"></div>
 
        <div id="log"></div>
-       <div id="statusDeny-modal" style="display:none"></div>
+       <div id="join-modal" style="display:none"></div>
        <div id="backdrop" style="display:none"></div>
 
        <form id="evidanceForm">
@@ -188,7 +187,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
   window.document.getElementById("challenge-input").value = "C1";
   window.document.getElementById("group-challenge-input").value = "UG1";
   window.document.getElementById("quantity-input").value = "3";
-  window.document.getElementById("declaration").value = true;
+  window.document.getElementById("declaration").checked = true;
 
   const uploadEl = window.document.getElementById("upload-input");
   const fakeFile = new window.File(["dummy"], "proof.png", { type: "image/png" });
@@ -217,7 +216,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
 
   assert.equal(window.document.getElementById("upload-modal").style.display, "none");
   assert.equal(window.document.getElementById("data-modal").style.display, "block");
-  assert.equal(window.document.getElementById("ammount").innerText, "7g");
+  assert.equal(window.document.getElementById("amount").innerText, "7g");
   assert.equal(window.document.getElementById("source").innerText, "Test source");
 });
 

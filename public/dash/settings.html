@@ -14,12 +14,12 @@
 <body>
     <div class="header-container"></div>
 
-    <section>
+    <section class="indent spacer">
         <h1>Change permissions:</h1>
         <span class="error" id="error-message"> That is not allowed, you do not have permission to do that</span>
-        <p>
+        <h2>
             Would you like to be able to moderate submissions and review challenges?
-        </p>
+        </h2>
         <p>
             Click here to upgrade your account!
         </p>
@@ -28,7 +28,18 @@
         <p>
             Click here to delete your account!
         </p>
-        <button type="button" class="in-button" id="delete-account">Delete account</button>
+        <button type="button" class="in-button" id="delete-account">Delete</button>
+        <dialog id="delete" class="dialog">
+            <div class="dialog-content">
+                <label for="password">Please type "delete" to delete your password</label><br>
+                <span class="error" id="delete-error"></span><br>
+                <input type="text" required id="password" placeholder="delete"><br>
+                <div class="button-row">
+                    <button type="button" id="close" class="second-button">Close</button>
+                    <button type="button" id="confirm" class="in-button">Confirm</button><br>
+                </div>
+            </div>
+        </dialog>
     </section>
 
     <div class="footer-container"></div>
