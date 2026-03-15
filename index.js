@@ -319,7 +319,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                             db.run(
                               "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
                               [challenge.challenge_id, user.user_id, group.group_id, log_id],
-                              async (e) => {
+                              async function (e) {
                                 if (e) {
                                   console.log(e.message);
                                   return res.status(500).json({ error: "Failed to create submission" });
@@ -745,8 +745,34 @@ app.get('/updateSubmissionsList', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
+    db.all(`
+    SELECT 
+  ActionTypes.name,
+  Submissions.submission_id,
+  ActionLogs.evidence,
+  Challenges.title,
+  Flags.flags
+FROM Submissions
+JOIN ActionLogs 
+  ON ActionLogs.log_id = Submissions.linked_action_log
+JOIN ActionTypes 
+  ON ActionLogs.action_type_id = ActionTypes.action_type_id
+JOIN Challenges 
+  ON Challenges.challenge_id = Submissions.challenge_id
+LEFT JOIN (
+    SELECT 
+        submission_id,
+        GROUP_CONCAT(rule_triggered, ', ') AS flags
+    FROM AntiGamingFlags
+    GROUP BY submission_id
+) Flags
+ON Flags.submission_id = Submissions.submission_id
+WHERE Submissions.status = 'Pending';
+    `, [], (err, rows) => {
+      console.log(rows);
+    });
 
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending' ", [], (e, rows) => { //AND Challenges.end_date < DATE('now')
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title, Flags.flags FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id LEFT JOIN (SELECT submission_id, GROUP_CONCAT(rule_triggered, ', ') AS flags FROM AntiGamingFlags GROUP BY submission_id) AS Flags ON Flags.submission_id = Submissions.submission_id WHERE Submissions.status = 'Pending' ", [], (e, rows) => { //AND Challenges.end_date < DATE('now')
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -754,14 +780,16 @@ app.get('/updateSubmissionsList', function (req, res) {
 
       if (!rows || rows.length === 0) {
         console.log("No submissions exist");
-        return res.json({ title: [], id: [], evidence: [] });
+        return res.json({ title: [], id: [], evidence: [], challenge_title: [], flag: [] });
       }
-      // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
+      
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
       const evidence = rows.map(r => r.evidence);
       const challenge_title = rows.map(r => r.title);
-      return res.json({ title, id, evidence, challenge_title, flag: 'hello this is a flag' });
+      const flag = rows.map(r => r.flags ? r.flags : "No automatic flags triggered");
+      return res.json({ title, id, evidence, challenge_title, flag});
+      
 
     }); // closes db.all
   }); // closes const db
