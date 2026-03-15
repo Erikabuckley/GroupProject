@@ -147,20 +147,7 @@
             
             decision_times = np.array(decision_times)
 
-            # find median 
-            median = np.median(decision_times)
-
-            # find interquartile range
-            q1 = np.percentile(decision_times, 25)
-            q3 = np.percentile(decision_times, 75)
-            iq_range = q3 - q1
-
-            # find overall range 
-            range = max(decision_times) - min(decision_times)
-            
-            d = np.random.normal(median, iq_range, range)
-
-            ax.boxplot(d)
+            ax.boxplot(decision_times)
             ax.set_title("Moderation Decision Times")
 
             display(fig, target="graph4", append=False)
