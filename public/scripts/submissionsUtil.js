@@ -27,7 +27,7 @@ async function getSubmissions() {
                 id: id[i],
                 evidence: evidence[i],
                 challenge_title: challenge_title[i],
-                // add flag id here
+                flag : flag[i],
                 index: i
             });
         }
@@ -61,8 +61,8 @@ async function getSubmissions() {
 
                 titleDiv.textContent = item.title;
 
-                if (flag != null){
-                    flagDiv.textContent = flag; //change to iteration no. flag
+                if (flag != "No automatic flags triggered"){
+                    flagDiv.textContent = item.flag; //change to iteration no. flag
                 } else{
                     flagDiv.textContent = "";
                 }
