@@ -474,18 +474,21 @@ app.post('/approveDeny', function (req, res) {
         db.run("INSERT INTO ModerationDecisions (submission_id, moderator_id, decision, reason, timestamp)VALUES (?, ?, ?, ?, ?) ", [req.body.id, id, req.body.outcome, req.body.reason, timestamp], (e) => {
           if (e) {
             console.log(e.message);
+            return res.status(500).json({ error: "database failure" });
           } else {
             console.log("Request added to db");
             if (req.body.outcome === 'approve') {
-              db.get("SELECT scoring AS score FROM Challenges WHERE title = ? ", [req.body.challenge_name], (e, row) => {
+              db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [req.body.id], (e, row) => {
                 if (e) {
                   console.log(e.message);
+                  return res.status(500).json({ error: "database failure" });
                 }
                 console.log("Retrieved points sucesfully");
                 if (row){
                   db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
                     if (e) {
                       console.log(e.message);
+                      return res.status(500).json({ error: "database failure" });
                     }
                     console.log("Submission approve successful");
                     res.end();
