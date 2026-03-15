@@ -127,6 +127,7 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     if(decision === 'approve' && info){
         document.getElementById("approval-error").textContent = "You must deny submissions with identifying information";
         document.getElementById("approval-error").style.visibility = 'visible'
+        return;
     }
     await approveDeny(decision, reason, selectedSubmission.id, info);  //calls function to subbmit information to database
     form.reset();
