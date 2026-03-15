@@ -1224,14 +1224,14 @@ app.post("/delete", (req,res) => {
         db.each("SELECT evidence FROM ActionLogs WHERE user_id = ?", [user_id], async (e, row) => {
           if (e) {
             console.log(e.message);
-            return res.sendStatus(500);
-          }
-          try {
-            await fs.unlink(row.evidence);
-            console.log("File removed successfully");
-          } catch (e) {
-            console.log(e.message);
-            return res.sendStatus(500);
+            return;
+          }if (row.evidence) {
+            try {
+              await fs.unlink(row.evidence);
+              console.log("File removed successfully");
+            } catch (e) {
+              console.log(e.message);
+            }
           }
         });
         // delete action logs
@@ -1255,7 +1255,7 @@ app.post("/delete", (req,res) => {
             return res.sendStatus(500);
           }
         });
-        res.sendStatus(200);
+        return res.json({ message: "Account deleted" });
       }
     });
   })
@@ -1274,7 +1274,8 @@ app.post('/addChallenge', function (req, res) {
         console.log(e.message);
         return res.status(500).json({ error: "Failed to create challenge" });
       } else {
-        return res.sendStatus(201);
+        console.log('Challenge added sucessfully')
+        return res.status(201).json({ message: "Challenge created" });
       }
     })
   })
@@ -1283,7 +1284,7 @@ app.post('/addChallenge', function (req, res) {
 // edit a challenge route
 //TODO
 
-// get a list of all the challenges returning everything about them - ONLY CURRENT ONES
+// get a list of all the challenges returning everything about them - ONLY CURRENT/ future ONES
 app.get('/updateModChallengeList', function (req, res) {
   //make sure year is y-m-d
     return res.json({ id : [1], name : ['challenge 1'], scope : ['Group'], rules: ['you must do this'], points: [100], start : ['2020-07-10'], end: ['2030-07-10'], evidence: [true]});

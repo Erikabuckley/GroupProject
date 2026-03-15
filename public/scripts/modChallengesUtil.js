@@ -29,6 +29,7 @@ newChallenge.addEventListener('submit', async (e) => {
     }
     newChallenge.reset();
     document.getElementById("challenge-modal").style.display = "none";
+    document.getElementById("backdrop").style.display = "none";
 });
 
 const editChallenge = document.getElementById("editForm");
@@ -59,6 +60,7 @@ editChallenge.addEventListener('submit', async (e) => {
         document.getElementById('error').style.visibility = 'visible';
     }
     document.getElementById("update-modal").style.display = "none";
+    document.getElementById("backdrop").style.display = "none";
 });
 
 // populates the challenge list with the current challenges

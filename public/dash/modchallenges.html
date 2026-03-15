@@ -33,25 +33,25 @@
                 <h2>Add a new challenge: </h2>
                 <form class="form" id="challengeForm">
                     <span id="error" class="error"></span>
-                    <label for="name-input">What is the challenge title?</label>
+                    <label for="name-input">What is the challenge title?</label><br>
                     <input type="text" id="name-input" required placeholder="Enter the challenge name"><br>
 
-                    <label for="scope-input">What is the scope?</label>
+                    <label for="scope-input">What is the scope?</label><br>
                     <select required name="Scope" id="scope-input">
                         <option value="Personal">Personal</option>
                         <option value="Group">Group</option>
                     </select><br>    
                     
-                    <label for="rules-input">What are the challenge rules?</label>
+                    <label for="rules-input">What are the challenge rules?</label><br>
                     <input type="text" id="rules-input" required placeholder="Enter some rules"><br>
  
-                    <label for="points-input">How many points is each challenge submission worth?</label>
+                    <label for="points-input">How many points is each challenge submission worth?</label><br>
                     <input type="number" id="points-input" required placeholder="Enter the number of points this challenge is worth" min="1"><br>
 
-                    <label for="start-input">Challenge start date:</label>
+                    <label for="start-input">Challenge start date:</label><br>
                     <input type="date" id="start-input" name="start"><br>                    
                     
-                    <label for="end-input">Challenge end date:</label>
+                    <label for="end-input">Challenge end date:</label><br>
                     <input type="date" id="end-input" name="end"><br>
 
                     <label>Do these challenge submissions require evidence?</label><br>
@@ -66,22 +66,22 @@
         </div>
 
         <script>
-            var s_modal = document.getElementById("challenge-modal");
-            var s_btn = document.getElementById("new");
-            var s_span = document.getElementById("close-challenge");
+            var new_modal = document.getElementById("challenge-modal");
+            var new_btn = document.getElementById("new");
+            var new_span = document.getElementById("close-challenge");
             var backdrop = document.getElementById("backdrop");
 
-            s_btn.onclick = function () {
-                s_modal.style.display = "block";
+            new_btn.onclick = function () {
+                new_modal.style.display = "block";
                 backdrop.style.display = "block";
             };
-            s_span.onclick = function () {
-                s_modal.style.display = "none";
+            new_span.onclick = function () {
+                new_modal.style.display = "none";
                 backdrop.style.display = "none";
             };
             
             backdrop.addEventListener('click', function  () {
-                s_modal.style.display = "none";
+                new_modal.style.display = "none";
                 backdrop.style.display = "none";
             });
         </script>
@@ -95,31 +95,31 @@
                     <h2>Update challenge: </h2>
                     <form class="form" id="editForm">
                         <span id="error" class="error"></span>
-                        <label for="edit-name-input">What is the challenge title?</label>
+                        <label for="edit-name-input">What is the challenge title?</label><br>
                         <input type="text" id="edit-name-input" required placeholder="Enter the challenge name"><br>
 
-                        <label for="edit-scope-input">What is the scope?</label>
+                        <label for="edit-scope-input">What is the scope?</label><br>
                         <select required name="Scope" id="edit-scope-input">
                             <option value="Personal">Personal</option>
                             <option value="Group">Group</option>
                         </select><br>    
                         
-                        <label for="edit-rules-input">What are the challenge rules?</label>
+                        <label for="edit-rules-input">What are the challenge rules?</label><br>
                         <input type="text" id="edit-rules-input" required placeholder="Enter some rules"><br>
     
-                        <label for="edit-points-input">How many points is each challenge submission worth?</label>
+                        <label for="edit-points-input">How many points is each challenge submission worth?</label><br>
                         <input type="number" id="edit-points-input" required placeholder="Enter the number of points this challenge is worth" min="1"><br>
 
-                        <label for="edit-start-input">Challenge start date:</label>
+                        <label for="edit-start-input">Challenge start date:</label><br>
                         <input type="date" id="edit-start-input" name="start"><br>                    
                         
-                        <label for="edit-end-input">Challenge end date:</label>
+                        <label for="edit-end-input">Challenge end date:</label><br>
                         <input type="date" id="edit-end-input" name="end"><br>
 
                         <label>Do these challenge submissions require evidence?</label><br>
                         <label for="edit-yes">Yes</label>
                         <input type="radio" name="edit-val" value="yes" id="edit-yes" required>
-                        <label for="edi-tno">No</label>
+                        <label for="edit-no">No</label>
                         <input type="radio" name="edit-val" value="no" id="edit-no" required><br>
                         
                         <input type="submit" value="Confirm" name="confirm" id="edit-confirm" class="in-button">
@@ -128,17 +128,17 @@
             </div>
 
             <script>
-                var s_modal = document.getElementById("update-modal");
-                var s_span = document.getElementById("close-update");
+                var edit_modal = document.getElementById("update-modal");
+                var edit_span = document.getElementById("close-update");
                 var backdrop = document.getElementById("backdrop");
 
-                s_span.onclick = function () {
-                    s_modal.style.display = "none";
+                edit_span.onclick = function () {
+                    edit_modal.style.display = "none";
                     backdrop.style.display = "none";
                 };
                 
                 backdrop.addEventListener('click', function  () {
-                    s_modal.style.display = "none";
+                    edit_modal.style.display = "none";
                     backdrop.style.display = "none";
                 });
             </script>
