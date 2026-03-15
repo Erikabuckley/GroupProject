@@ -1295,6 +1295,7 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
+module.exports = app;// Added by Nehir for back end testing.
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
