@@ -1270,6 +1270,7 @@ app.post('/addChallenge', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     db.run("INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required) VALUES (?,?,?,?,?,?,?)", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue], e => {
+      db.close();
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "Failed to create challenge" });
@@ -1277,9 +1278,9 @@ app.post('/addChallenge', function (req, res) {
         console.log('Challenge added sucessfully')
         return res.status(201).json({ message: "Challenge created" });
       }
-    })
-  })
-})
+    });
+  });
+});
 
 // edit a challenge route
 //TODO
