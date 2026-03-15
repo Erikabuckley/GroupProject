@@ -24,19 +24,114 @@
         <h1> View Participant Analytics</h1>
         <div class="key-stats">
             <div class="total">
-                <h2> Number of Members: </h2>
-                <p id="members"></p>
+                <h3> Number of Members: </h3>
+                <h3 id="members"></h3>
             </div>
             <div class="total">
-               <h2> Total Points Earned: </h2>
-                <p id="points"></p>
+               <h3> Total Points Earned: </h3>
+               <h3 id="points"></h3>
             </div>
 
 
         </div>
         <py-script>
-        <!-- Insert Python code to show graph -->
-        <!-- display(fig, target="show-graph1", append=False) -->
+
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from js import fetch
+        from pyscript import display
+        import js
+        import json
+        import asyncio
+        from datetime import datetime
+
+        # retrieve submission data 
+        async def get_submission_data():
+            res = await fetch("/updateSubmissions")
+            data = (await res.json()).to_py()
+            
+            dates = []
+            submissions = []
+
+            for row in data:
+                submissions.append(row["submission_id"])
+                dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+
+            return dates, submissions
+
+        async def make_submissions_scatter():
+            dates, submissions = await get_submission_data()
+            fig, ax = plt.subplots(figsize=(4,3))
+            ax.scatter(dates, submissions, color=(0.6, 0.8, 0.7))
+
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Submissions Made")
+            ax.set_title("Submissions Made Over Time")
+
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            display(fig, target="graph1", append=False)
+
+        # retrieve points over time data
+        async def get_points_data():
+            res = await fetch("/updatePointsDate")
+            data = (await res.json()).to_py()
+
+            dates = []
+            points = []
+
+            for row in data:
+                dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+                points.append(row["total"])
+
+            return dates, points
+
+        async def make_points_scatter():
+            dates, points = await get_points_data()
+            fig, ax = plt.subplots(figsize=(4,3))
+            ax.scatter(dates, points, color=(0.6, 0.8, 0.7))
+
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Points Earned")
+            ax.set_title("Points Earned Over Time")
+
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            display(fig, target="graph2", append=False)
+
+        async def get_groups_data():
+            res = await fetch("/updateGroupNumbers")
+            data = (await res.json()).to_py()
+
+            num_users = []
+            group_names = []
+
+            for row in data:
+                num_users.append(row["total"])
+                group_names.append(row["name"])
+
+            return num_users, group_names
+            
+        async def make_groups_chart():
+            num_users, group_names = await get_groups_data()
+
+            fig, ax = plt.subplots(figsize=(4,3))
+            ax.bar(group_names, num_users, color=(0.6, 0.8, 0.7))
+            ax.set_xlabel("Groups")
+            ax.set_ylabel("Number of users")
+            ax.set_title("Number Of Users Per Group")
+
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+
+            display(fig, target="graph3", append=False)
+            
+
+        asyncio.ensure_future(make_submissions_scatter())
+        asyncio.ensure_future(make_points_scatter())
+        asyncio.ensure_future(make_groups_chart())
         </py-script>
 
         <div class="graph-block">
@@ -45,6 +140,9 @@
             </div>
             <div class="graph" id="graph2">
                 <h1> Points Earned Overtime </h1>
+            </div>
+            <div class="graph" id="graph3">
+                <h1> Number Of Users Per Group </h1>
             </div>
         </div>
 

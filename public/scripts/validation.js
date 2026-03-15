@@ -24,18 +24,18 @@ if (form) {
             }
             else {
                 await fetch("/setSession", // send data to backend
-                {
-                    method: "POST", //sending data to the server
-                    headers: {
-                        "Content-Type": "application/json" //tells server how data is formatted
-                    },
-                    body: JSON.stringify({ email, password } //turn to json
-                    )
-                });
-                if (data.type === 'moderator'){
+                    {
+                        method: "POST", //sending data to the server
+                        headers: {
+                            "Content-Type": "application/json" //tells server how data is formatted
+                        },
+                        body: JSON.stringify({ email, password } //turn to json
+                        )
+                    });
+                if (data.type === 'moderator') {
                     window.location.href = "../dash/analytics.html";//redirect   
-                } else{
-                window.location.href = "../dash/dashboard.html";//redirect   
+                } else {
+                    window.location.href = "../dash/dashboard.html";//redirect   
                 }
             }
         }
@@ -46,7 +46,10 @@ if (form) {
             const priv = document.getElementById("priv").checked;
             const tandc = document.getElementById("tandc").checked;
 
-            if (priv && tandc) {
+            if (!/^[A-Za-z0-9._%+-]+@exeter\.ac\.uk$/.test(email)){
+                document.getElementById('error-message').textContent = "Email does not end in exeter.ac.uk";
+                document.getElementById('error-message').style.visibility = 'visible';
+            }else if (priv && tandc) {
                 const res = await fetch("/signUp",
                     {
                         method: "POST",

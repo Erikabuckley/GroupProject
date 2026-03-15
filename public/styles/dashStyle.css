@@ -28,11 +28,12 @@
     margin-left: 1rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    left :0;
+    left: 0;
 }
 
 .ribon-heading a {
     font-weight: bold;
+    font-size: 130%;
     color: white;
     text-decoration: none;
 }
@@ -53,11 +54,11 @@
 }
 
 .modal{
-    display:none;
+    display: none;
     z-index: 2;
     position: fixed;
-    left:50%;
-    top:50%;
+    left: 50%;
+    top: 50%;
     padding: 2rem;
     width: max-content;
     height: max-content;
@@ -65,7 +66,7 @@
     border-radius: 8px;
     color: black;
     text-align: center;
-    padding:2rem;
+    padding: 2rem;
     transform: translate(-50%, -50%);
 }
 #evidanceForm {
@@ -74,36 +75,31 @@
     flex-direction: column;
 }
 
-#log{
+#log {
     width: 100%;
     display:flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.submission{
-    background-color: var(--main);
+.submission {
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;
+    box-shadow: 0 0 50px rgb(191, 190, 190);
 }
 
-.submission:hover{
-    background-color: var(--second);
-}
-
-.title{
+.title {
     font-weight: bold;
 }
 
-.challenge_title{
-    color: white;
+.challenge_title {
+    color: black;
     font-size : 20px;
     padding:1rem;
 }
 
-.card{
-    background-color: white;
+.card {
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;
@@ -111,20 +107,26 @@
     flex-direction: column;
 }
 
-#submissions-container{
+#submissions-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
 }
 
-.evidence-photo{
+.evidence-photo {
     max-height: 100px;
     max-width:100px;
     padding: 1rem;;
 }
 
-.feedback{
+.feedback {
     font-style: italic;
     color:black;
+}
+
+.box {
+    justify-content: center;
+    display: flex;
+    gap: 1rem;
 }

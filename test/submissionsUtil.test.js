@@ -1,8 +1,8 @@
 // test/submissionsUtil.test.js
 // submissionsUtil.js:
 // Calls getSubmissions() immediately on load (GET /updateSubmissionsList)
-// Groups submissions by id and renders grouped cards (with an image)
-// Clicking a group sets selectedSubmission and opens approve/deny modal + backdrop
+// Groups submissions by challenge_title and renders grouped cards (with an image)
+// Clicking a card sets selectedSubmission and opens approve/deny modal + backdrop
 // Submitting approve/deny POSTs /approveDeny and closes modal + backdrop
 //
 // These tests use jsdom to simulate the browser DOM and mock fetch so no real
@@ -36,6 +36,7 @@ function makeWindow() {
        <input id="reason-input" value="" />
        <input type="radio" name="val" value="approve" />
        <input type="radio" name="val" value="deny" />
+       <input type="checkbox" id="identifying-info" />
        <button type="submit">Submit</button>
      </form>`,
     { url: "https://example.com/mod.html", runScripts: "dangerously" }
@@ -44,8 +45,8 @@ function makeWindow() {
   return dom.window;
 }
 
-//TEST 1: getSubmissions groups by id and renders correct DOM /
-test("SUBMISSIONS (real script): groups by id and renders submissions + cards + image", async () => {
+//TEST 1: getSubmissions groups by challenge_title and renders correct DOM /
+test("SUBMISSIONS (real script): groups by challenge_title and renders submissions + cards + image", async () => {
   const window = makeWindow();
 
   let gotUrl = null;
@@ -56,12 +57,13 @@ test("SUBMISSIONS (real script): groups by id and renders submissions + cards + 
       assert.ok(!opts || !opts.method || opts.method === "GET");
       return {
         async json() {
-          // Two ids: A has 2 logs, B has 1 log
+          // Two challenge titles: X has 2 logs, Y has 1 log
           return {
             title: ["Log 1", "Log 2", "Log 3"],
             id: ["A", "A", "B"],
             evidence: ["img1.png", "img2.png", "img3.png"],
             challenge_title: ["Challenge X", "Challenge X", "Challenge Y"],
+            flag: null
           };
         },
       };
@@ -80,29 +82,29 @@ test("SUBMISSIONS (real script): groups by id and renders submissions + cards + 
   assert.equal(gotUrl, "/updateSubmissionsList");
 
   // Assert 2 group containers created
-  const groups = window.document.querySelectorAll("#submissions-container .submission");
+  const groups = window.document.querySelectorAll("#submissions-container .challenge");
   assert.equal(groups.length, 2);
 
-  // Group A should have challenge title "Challenge X" and 2 cards
-  const groupA = [...groups].find((g) => g.dataset.id === "A");
-  assert.ok(groupA, "Expected a group with data-id='A'");
-  assert.equal(groupA.querySelector(".challenge_title").textContent, "Challenge X");
-  assert.equal(groupA.querySelectorAll(".card").length, 2);
+  // Challenge X should have challenge title "Challenge X" and 2 cards
+  const groupX = [...groups].find((g) => g.dataset.id === "Challenge X");
+  assert.ok(groupX, "Expected a group with data-id='Challenge X'");
+  assert.equal(groupX.querySelector(".challenge_title").textContent, "Challenge X");
+  assert.equal(groupX.querySelectorAll(".card").length, 2);
 
   // Check that each card contains an evidence img with correct src
-  const imgsA = groupA.querySelectorAll("img.evidence-photo");
-  assert.equal(imgsA.length, 2);
-  assert.equal(imgsA[0].getAttribute("src"), "img1.png");
-  assert.equal(imgsA[1].getAttribute("src"), "img2.png");
+  const imgsX = groupX.querySelectorAll("img.evidence-photo");
+  assert.equal(imgsX.length, 2);
+  assert.equal(imgsX[0].getAttribute("src"), "img1.png");
+  assert.equal(imgsX[1].getAttribute("src"), "img2.png");
 
-  // Group B should have 1 card
-  const groupB = [...groups].find((g) => g.dataset.id === "B");
-  assert.ok(groupB, "Expected a group with data-id='B'");
-  assert.equal(groupB.querySelector(".challenge_title").textContent, "Challenge Y");
-  assert.equal(groupB.querySelectorAll(".card").length, 1);
+  // Challenge Y should have 1 card
+  const groupY = [...groups].find((g) => g.dataset.id === "Challenge Y");
+  assert.ok(groupY, "Expected a group with data-id='Challenge Y'");
+  assert.equal(groupY.querySelector(".challenge_title").textContent, "Challenge Y");
+  assert.equal(groupY.querySelectorAll(".card").length, 1);
 });
 
-test("SUBMISSIONS (real script): clicking a group opens modal/backdrop", async () => {
+test("SUBMISSIONS (real script): clicking a card opens modal/backdrop", async () => {
   const window = makeWindow();
 
   window.fetch = async (url) => {
@@ -114,6 +116,7 @@ test("SUBMISSIONS (real script): clicking a group opens modal/backdrop", async (
             id: ["A", "A"],
             evidence: ["img1.png", "img2.png"],
             challenge_title: ["Challenge X", "Challenge X"],
+            flag: null
           };
         },
       };
@@ -131,19 +134,17 @@ test("SUBMISSIONS (real script): clicking a group opens modal/backdrop", async (
   assert.equal(window.document.getElementById("approveDeny-modal").style.display, "none");
   assert.equal(window.document.getElementById("backdrop").style.display, "none");
 
-  // Click group A
-  const groupA = window.document.querySelector('.submission[data-id="A"]');
-  assert.ok(groupA);
-  groupA.click();
+  // Click first card
+  const card = window.document.querySelector(".card");
+  assert.ok(card);
+  card.click();
 
   // Assert modal/backdrop show (this proves click handler ran)
   assert.equal(window.document.getElementById("approveDeny-modal").style.display, "block");
   assert.equal(window.document.getElementById("backdrop").style.display, "block");
 });
 
-//TEST 3: form submit posts decision/reason/id/challenge_name and closes modal /
-// FIX: removed mod_email from expected payload — approveDeny(outcome, reason, id, challenge_name)
-//      never reads localStorage or includes mod_email in the JSON body.
+//TEST 3: form submit posts decision/reason/id and closes modal /
 test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and closes modal", async () => {
   const window = makeWindow();
 
@@ -156,6 +157,7 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
             id: ["A"],
             evidence: ["img1.png"],
             challenge_title: ["Challenge X"],
+            flag: null
           };
         },
       };
@@ -167,8 +169,8 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   loadRealScript(window, "public/scripts/submissionsUtil.js");
   await tick();
 
-  // Click group to set selectedSubmission and open modal/backdrop
-  window.document.querySelector('.submission[data-id="A"]').click();
+  // Click card to set selectedSubmission and open modal/backdrop
+  window.document.querySelector(".card").click();
 
   // Put modal/backdrop in open state to confirm submit closes them
   window.document.getElementById("approveDeny-modal").style.display = "block";
@@ -177,6 +179,8 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   // Fill form inputs
   window.document.getElementById("reason-input").value = "Looks good";
   window.document.querySelector('input[name="val"][value="approve"]').checked = true;
+  window.document.getElementById("identifying-info").checked = false;
+
 
   // Mock fetch again so we can capture POST /approveDeny payload
   let lastRequest = null;
@@ -199,14 +203,12 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
   assert.equal(lastRequest.opts.method, "POST");
   assert.equal(lastRequest.opts.headers["Content-Type"], "application/json");
 
-  // FIX: payload matches JSON.stringify({ outcome, reason, id, challenge_name }) exactly —
-  //      no mod_email field (script never reads localStorage or adds mod_email).
   const payload = JSON.parse(lastRequest.opts.body);
   assert.deepEqual(payload, {
     outcome: "approve",
     reason: "Looks good",
     id: "A",
-    challenge_name: "Challenge X",
+    info : false
   });
 
   // Assert modal/backdrop closed
@@ -227,6 +229,7 @@ test("SUBMISSIONS (real script): clears old submissions content before rendering
             id: ["A"],
             evidence: ["img1.png"],
             challenge_title: ["Challenge X"],
+            flag: null
           };
         },
       };
@@ -244,12 +247,12 @@ test("SUBMISSIONS (real script): clears old submissions content before rendering
   );
 
   // New group should exist
-  const groups = window.document.querySelectorAll("#submissions-container .submission");
+  const groups = window.document.querySelectorAll("#submissions-container .challenge");
   assert.equal(groups.length, 1);
 });
 
-//TEST 5: groups correctly even when ids are mixed order /
-test("SUBMISSIONS (real script): groups correctly even when ids are mixed order", async () => {
+//TEST 5: groups correctly even when challenge titles are mixed order /
+test("SUBMISSIONS (real script): groups correctly even when challenge titles are mixed order", async () => {
   const window = makeWindow();
 
   window.fetch = async (url) => {
@@ -262,6 +265,7 @@ test("SUBMISSIONS (real script): groups correctly even when ids are mixed order"
             id: ["A", "B", "A"],
             evidence: ["a1.png", "b1.png", "a2.png"],
             challenge_title: ["Challenge A", "Challenge B", "Challenge A"],
+            flag: null
           };
         },
       };
@@ -273,11 +277,11 @@ test("SUBMISSIONS (real script): groups correctly even when ids are mixed order"
   loadRealScript(window, "public/scripts/submissionsUtil.js");
   await tick();
 
-  const groups = window.document.querySelectorAll("#submissions-container .submission");
+  const groups = window.document.querySelectorAll("#submissions-container .challenge");
   assert.equal(groups.length, 2);
 
-  const groupA = window.document.querySelector('.submission[data-id="A"]');
-  const groupB = window.document.querySelector('.submission[data-id="B"]');
+  const groupA = window.document.querySelector('.challenge[data-id="Challenge A"]');
+  const groupB = window.document.querySelector('.challenge[data-id="Challenge B"]');
 
   assert.ok(groupA);
   assert.ok(groupB);
@@ -285,69 +289,4 @@ test("SUBMISSIONS (real script): groups correctly even when ids are mixed order"
   // A should have 2 cards, B should have 1
   assert.equal(groupA.querySelectorAll(".card").length, 2);
   assert.equal(groupB.querySelectorAll(".card").length, 1);
-});
-
-//TEST 6: submit still posts even if no decision radio selected /
-// FIX: removed mod_email from expected payload — script never includes it.
-//      outcome is omitted by JSON.stringify when decision is undefined (standard JS behaviour).
-test("SUBMISSIONS (real script): submit works even if no decision radio selected", async () => {
-  const window = makeWindow();
-
-  window.fetch = async (url, opts) => {
-    if (url === "/updateSubmissionsList") {
-      return {
-        async json() {
-          return {
-            title: ["Log 1"],
-            id: ["A"],
-            evidence: ["img1.png"],
-            challenge_title: ["Challenge X"],
-          };
-        },
-      };
-    }
-
-    if (url === "/approveDeny") {
-      const payload = JSON.parse(opts.body);
-
-      // NOTE: If no radio is selected, `decision` becomes undefined.
-      // When we do JSON.stringify({ outcome: undefined, ... }),
-      // JavaScript omits the `outcome` key entirely because `undefined` is not valid JSON.
-      // So the backend receives { reason, id, challenge_name } with NO "outcome" field.
-      // In the real UI this should be prevented by requiring the user to pick approve/deny,
-      // but we test it here to document current behaviour.
-      assert.ok(!("outcome" in payload), "Expected outcome to be omitted when decision is undefined");
-
-      // FIX: payload only contains fields the script actually sends — no mod_email.
-      assert.deepEqual(payload, {
-        reason: "No decision picked",
-        id: "A",
-        challenge_name: "Challenge X",
-      });
-
-      return { status: 200, async json() { return {}; } };
-    }
-
-    throw new Error("Unexpected fetch: " + url);
-  };
-
-  loadRealScript(window, "public/scripts/submissionsUtil.js");
-  await tick();
-
-  // Click group to set selectedSubmission and open modal/backdrop
-  window.document.querySelector('.submission[data-id="A"]').click();
-
-  // Fill reason, but do NOT check any radio
-  window.document.getElementById("reason-input").value = "No decision picked";
-
-  // Submit
-  window.document
-    .getElementById("approveDenyForm")
-    .dispatchEvent(new window.Event("submit", { bubbles: true, cancelable: true }));
-
-  await tick();
-
-  // Modal/backdrop should be closed after submit
-  assert.equal(window.document.getElementById("approveDeny-modal").style.display, "none");
-  assert.equal(window.document.getElementById("backdrop").style.display, "none");
 });

@@ -1,0 +1,39 @@
+.info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.text{
+    padding: 1rem;
+}
+
+#new{
+    margin: 2rem;
+}
+
+.challenge{
+    display: flex;
+    flex-direction: row;
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgb(191, 190, 190);
+    padding: 1rem;
+}
+
+.challenge:hover{
+    background-color: rgb(219, 218, 218);
+
+}
+.challenge-text{
+    display: flex;
+    flex-direction: column;
+}
+.delete{
+    margin-left: auto;
+    height: 50px;
+    width: 50px;
+}
+
+.delete:hover{
+    cursor: pointer;
+}

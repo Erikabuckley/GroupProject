@@ -1,13 +1,10 @@
-.submission{
+.challenge{
     background-color: var(--main);
     margin:1rem;
     padding:1rem;
     border-radius: 2rem;
 }
 
-.submission:hover{
-    background-color: var(--second);
-}
 .title{
     font-weight: bold;
 }
@@ -25,6 +22,10 @@
     border-radius: 2rem;
     display:flex;
     flex-direction: column;
+}
+
+.card:hover{
+    background-color: rgb(145, 142, 142);
 }
 
 #submissions-container{
@@ -102,9 +103,4 @@
 #stats {
     width: 80px;
     height: 80px;
-}
-
-p a{
-    color: var(--second);
-    text-decoration: none;
 }

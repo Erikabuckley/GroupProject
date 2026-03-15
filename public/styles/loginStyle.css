@@ -25,7 +25,7 @@ body {
 }
 
 .header-heading.header-1 {
-    font-size: 2rem;
+    font-size: 3rem;
     text-align: center;
     color: white;
 }
@@ -35,11 +35,6 @@ body {
     display: flex;
     flex-direction: column;
 
-}
-
-p a{
-    text-decoration: none;
-    color: var(--second);
 }
 
 .TandC{
