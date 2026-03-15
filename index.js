@@ -1287,8 +1287,32 @@ app.post('/addChallenge', function (req, res) {
 
 // get a list of all the challenges returning everything about them - ONLY CURRENT/ future ONES
 app.get('/updateModChallengeList', function (req, res) {
-  //make sure year is y-m-d
-    return res.json({ id : [1], name : ['challenge 1'], scope : ['Group'], rules: ['you must do this'], points: [100], start : ['2020-07-10'], end: ['2030-07-10'], evidence: [true]});
+  console.log("Update challenge list - mod page request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.all("SELECT * FROM Challenges WHERE end_date > DATE('now')", [], (e, rows) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      if (!rows || rows.length === 0) {
+        console.log("No challenges exist");
+        return res.json({ challenges: [] });
+      }
+      const id = rows.map(r => r.challenge_id);
+      const name = rows.map(r => r.title);
+      const scope = rows.map(r => r.scope);
+      const rules = rows.map(r => r.rules);
+      const points = rows.map(r => r.scoring);
+      const start = rows.map(r => r.start_date);
+      const end = rows.map(r => r.end_date);
+      const evidence = rows.map(r => r.evidence_required);
+      return res.json({ id, name, scope, rules, points, start, end, evidence});
+    });
+  });
 });
 
 // delete a challenge given the challenge id
