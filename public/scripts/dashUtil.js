@@ -21,7 +21,7 @@ if (form) {
         const file = uploadInput.files[0];
         // checks that the challenge submission is for a group
         if (challenge != 'No' && group === '') {
-            error = document.getElementById("error")
+            const error = document.getElementById("error")
             error.textContent = "You must select a group if the action is for a challenge"
             error.style.visibility = "visible"
         } else {
@@ -56,6 +56,7 @@ if (form) {
                 showData(String(data.carbon), String(data.source));
 
             }else{
+                form.reset()
                 document.getElementById("upload-modal").style.display = "none";
                 // shows the carbon saved by the action to the user
                 showData(String(data.carbon), String(data.source));

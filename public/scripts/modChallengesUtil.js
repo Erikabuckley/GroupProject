@@ -11,23 +11,31 @@ newChallenge.addEventListener('submit', async (e) => {
     const end = document.getElementById("end-input").value;
     const selectedValue = document.querySelector('input[name="val"]:checked').value;
 
-    const res = await fetch("/addChallenge", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, scope, rules, points, start, end, selectedValue }
-        )
-    });
-    const data = await res.json();
-    getChallenges();
+    if (end < start){
+        document.getElementById('new-challenge-error').style.visibility = 'visible';
+        document.getElementById('new-challenge-error').textContent = 'End date must be after start date';
+    } else{
 
-    // if there is an error then the error message will be displayed
-    if (res.status === 400) {
-        document.getElementById('error').textContent = data.error;
-        document.getElementById('error').style.visibility = 'visible';
+        const res = await fetch("/addChallenge", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, scope, rules, points, start, end, selectedValue }
+            )
+        });
+        const data = await res.json();
+        getChallenges();
+
+        // if there is an error then the error message will be displayed
+        if (res.status === 400) {
+            document.getElementById('error').textContent = data.error;
+            document.getElementById('error').style.visibility = 'visible';
+        }
+        newChallenge.reset();
+        document.getElementById("challenge-modal").style.display = "none";
+        document.getElementById("backdrop").style.display = "none";
     }
-    document.getElementById("challenge-modal").style.display = "none";
 });
 
 const editChallenge = document.getElementById("editForm");
@@ -58,6 +66,7 @@ editChallenge.addEventListener('submit', async (e) => {
         document.getElementById('error').style.visibility = 'visible';
     }
     document.getElementById("update-modal").style.display = "none";
+    document.getElementById("backdrop").style.display = "none";
 });
 
 // populates the challenge list with the current challenges

@@ -15,10 +15,6 @@
     display: flex;
 }
 
-.rank-text {
-    text-align: justify;
-}
-
 .award-screen {
     display: flex;
     align-items: center;
@@ -61,10 +57,9 @@
 }
 
 .info-section {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .info-block {

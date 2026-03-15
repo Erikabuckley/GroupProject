@@ -155,6 +155,25 @@ body {
     cursor: pointer;
 }
 
+.second-button {
+    padding: 1rem;
+    margin: 0.5rem;
+    background-color: white;
+    color: var(--second);
+    border: 2px solid var(--second);
+    font-size: large;
+    font-weight: bold;
+    border: 0;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .in-button:hover{
     background-color: var(--main);
 }
@@ -216,4 +235,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+a{
+    text-decoration: none;
+    color: var(--second);
 }
