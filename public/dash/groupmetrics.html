@@ -109,7 +109,7 @@
 
             display(fig, target="graph2", append=False)
 
-             # retrieve action type data
+        # retrieve action type data
         async def get_action_type_data():
             res = await fetch("/updateActionTypesGroup")
             data = (await res.json()).to_py()

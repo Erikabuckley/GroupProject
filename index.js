@@ -319,7 +319,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                             db.run(
                               "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
                               [challenge.challenge_id, user.user_id, group.group_id, log_id],
-                              async (e) => {
+                              async function (e) {
                                 if (e) {
                                   console.log(e.message);
                                   return res.status(500).json({ error: "Failed to create submission" });
@@ -474,18 +474,21 @@ app.post('/approveDeny', function (req, res) {
         db.run("INSERT INTO ModerationDecisions (submission_id, moderator_id, decision, reason, timestamp)VALUES (?, ?, ?, ?, ?) ", [req.body.id, id, req.body.outcome, req.body.reason, timestamp], (e) => {
           if (e) {
             console.log(e.message);
+            return res.status(500).json({ error: "database failure" });
           } else {
             console.log("Request added to db");
             if (req.body.outcome === 'approve') {
-              db.get("SELECT scoring AS score FROM Challenges WHERE title = ? ", [req.body.challenge_name], (e, row) => {
+              db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [req.body.id], (e, row) => {
                 if (e) {
                   console.log(e.message);
+                  return res.status(500).json({ error: "database failure" });
                 }
                 console.log("Retrieved points sucesfully");
                 if (row){
                   db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
                     if (e) {
                       console.log(e.message);
+                      return res.status(500).json({ error: "database failure" });
                     }
                     console.log("Submission approve successful");
                     res.end();
@@ -742,8 +745,34 @@ app.get('/updateSubmissionsList', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
+//     db.all(`
+//     SELECT 
+//   ActionTypes.name,
+//   Submissions.submission_id,
+//   ActionLogs.evidence,
+//   Challenges.title,
+//   Flags.flags
+// FROM Submissions
+// JOIN ActionLogs 
+//   ON ActionLogs.log_id = Submissions.linked_action_log
+// JOIN ActionTypes 
+//   ON ActionLogs.action_type_id = ActionTypes.action_type_id
+// JOIN Challenges 
+//   ON Challenges.challenge_id = Submissions.challenge_id
+// LEFT JOIN (
+//     SELECT 
+//         submission_id,
+//         GROUP_CONCAT(rule_triggered, ', ') AS flags
+//     FROM AntiGamingFlags
+//     GROUP BY submission_id
+// ) Flags
+// ON Flags.submission_id = Submissions.submission_id
+// WHERE Submissions.status = 'Pending';
+//     `, [], (err, rows) => {
+//       console.log(rows);
+//     });
 
-    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id WHERE Submissions.status = 'Pending' ", [], (e, rows) => { //AND Challenges.end_date < DATE('now')
+    db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title, Flags.flags FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id LEFT JOIN (SELECT submission_id, GROUP_CONCAT(rule_triggered, ', ') AS flags FROM AntiGamingFlags GROUP BY submission_id) AS Flags ON Flags.submission_id = Submissions.submission_id WHERE Submissions.status = 'Pending' ", [], (e, rows) => { //AND Challenges.end_date < DATE('now')
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -751,14 +780,16 @@ app.get('/updateSubmissionsList', function (req, res) {
 
       if (!rows || rows.length === 0) {
         console.log("No submissions exist");
-        return res.json({ title: [], id: [], evidence: [] });
+        return res.json({ title: [], id: [], evidence: [], challenge_title: [], flag: [] });
       }
-      // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
+      
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
       const evidence = rows.map(r => r.evidence);
       const challenge_title = rows.map(r => r.title);
-      return res.json({ title, id, evidence, challenge_title, flag: 'hello this is a flag' });
+      const flag = rows.map(r => r.flags ? r.flags : "No automatic flags triggered");
+      return res.json({ title, id, evidence, challenge_title, flag});
+      
 
     }); // closes db.all
   }); // closes const db
@@ -1170,11 +1201,11 @@ app.get('/getApprovalTimes', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT date(ModerationDecisions.timestamp) AS decision, date(ActionLogs.date) AS submission FROM ActionLogs JOIN Submissions.linked_action_logs = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id", (e, rows) => {
+    db.all("SELECT (julianday(ModerationDecisions.timestamp) - julianday(ActionLogs.date)) AS decision_time FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id ORDER BY decision_time ASC", (e, rows) => {
       if (e) {
         console.log(e.message);
       }
-      return res.json({ decision, submission });
+      return res.json(rows);
     });
   });
 });
@@ -1224,14 +1255,14 @@ app.post("/delete", (req,res) => {
         db.each("SELECT evidence FROM ActionLogs WHERE user_id = ?", [user_id], async (e, row) => {
           if (e) {
             console.log(e.message);
-            return res.sendStatus(500);
-          }
-          try {
-            await fs.unlink(row.evidence);
-            console.log("File removed successfully");
-          } catch (e) {
-            console.log(e.message);
-            return res.sendStatus(500);
+            return;
+          }if (row.evidence) {
+            try {
+              await fs.unlink(row.evidence);
+              console.log("File removed successfully");
+            } catch (e) {
+              console.log(e.message);
+            }
           }
         });
         // delete action logs
@@ -1255,28 +1286,171 @@ app.post("/delete", (req,res) => {
             return res.sendStatus(500);
           }
         });
-        res.sendStatus(200);
+        return res.json({ message: "Account deleted" });
       }
     });
   })
 })
 
 // addChallenge
-//TODO
+app.post('/addChallenge', function (req, res) {
+  console.log("New challenge request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.run("INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required) VALUES (?,?,?,?,?,?,?)", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue], e => {
+      db.close();
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "Failed to create challenge" });
+      } else {
+        console.log('Challenge added sucessfully')
+        return res.status(201).json({ message: "Challenge created" });
+      }
+    });
+  });
+});
 
 // edit a challenge route
-//TODO
+app.post('/editChallenge', function (req, res) {
+  console.log("Edit challenge request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.run("UPDATE Challenges SET title = ?, scope = ?, rules = ?, scoring = ?, start_date = ?, end_date = ?, evidence_required = ? WHERE challenge_id = ?", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue, req.body.id], e => {
+      db.close();
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "Failed to update challenge" });
+      } else {
+        console.log('Challenge updated sucessfully')
+        return res.status(201).json({ message: "Challenge updated" });
+      }
+    });
+  });
+});
 
-// get a list of all the challenges returning everything about them - ONLY CURRENT ONES
+// get a list of all the challenges returning everything about them - ONLY CURRENT/ future ONES
 app.get('/updateModChallengeList', function (req, res) {
-  //make sure year is y-m-d
-    return res.json({ id : [1], name : ['challenge 1'], scope : ['Group'], rules: ['you must do this'], points: [100], start : ['2020-07-10'], end: ['2030-07-10'], evidence: [true]});
+  console.log("Update challenge list - mod page request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.all("SELECT * FROM Challenges WHERE end_date > DATE('now')", [], (e, rows) => {
+      db.close();
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "database failure" });
+      }
+      if (!rows || rows.length === 0) {
+        console.log("No challenges exist");
+        return res.json({ challenges: [] });
+      }
+      const id = rows.map(r => r.challenge_id);
+      const name = rows.map(r => r.title);
+      const scope = rows.map(r => r.scope);
+      const rules = rows.map(r => r.rules);
+      const points = rows.map(r => r.scoring);
+      const start = rows.map(r => r.start_date);
+      const end = rows.map(r => r.end_date);
+      const evidence = rows.map(r => r.evidence_required);
+      return res.json({ id, name, scope, rules, points, start, end, evidence});
+    });
+  });
 });
 
 // delete a challenge given the challenge id
 // including submissions and decisions not actions or evidence
-app.post('/deleteChallenge', function (req, res) {})
+app.post('/deleteChallenge', function (req, res) {
+  console.log("Delete challenge request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // delete decisions
+    db.each("SELECT submission_id FROM Submissions WHERE challenge_id = ?", [req.body.id], (e, row) => {
+      if (e) {
+        console.log(e.message);
+        return res.sendStatus(500);
+      }
+      db.run("DELETE FROM ModerationDecisions WHERE submission_id = ?", [row.submission_id], e => {
+        if (e) {
+          console.log(e.message);
+          return res.sendStatus(500);
+        }
+      });
+    });
+    // delete submissions
+    db.run("DELETE FROM Submissions WHERE challenge_id = ?", [req.body.id], e => {
+      if (e) {
+        console.log(e.message);
+        return res.sendStatus(500);
+      }
+    });
+    // delete challenges
+    db.run("DELETE FROM Challenges WHERE challenge_id = ?", [req.body.id], e => {
+      if (e) {
+        console.log(e.message);
+        return res.sendStatus(500);
+      }
+    });
+    return res.json({ message: "Challenge deleted" });
+  });
+});
 
+// app.post('/uploadFrequency', function(req, res){
+//   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+//     if (e) {
+//       console.log(e.message);
+//       return res.status(500).json({ error: "database failure" });
+//     }
+//     db.get("SELECT Submissions.submission_id, datetime(ActionLogs.date) AS created, Users.user_id FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+//       if (e) {
+//         console.log(e.message);
+//         return res.status(500);
+//       }
+//       const user_id = row.user_id;
+      
+//       db.get("SELECT COUNT(*) AS total FROM Submissions WHERE user_id = ? AND datetime(created) >= datetime('now', '-10 minutes')"
+
+//     }); // closes db.get
+//   }); // closes database open
+// }); // closes first line
+
+app.post('/uploadFrequency', function(req,res) {
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
+        if (e) {
+          console.log(e.message);
+          return res.status(500).json({ error: "database failure" });
+        }
+        let flagged = 0;
+
+        if (countRow.total >= 3) {
+          flagged = 1;
+        }
+
+        return res.json({ flagged });
+      })
+    })
+  })
+})
 
 //add points to leaderboard and orderby statement
 // update updateLog to get user challenge submissions only

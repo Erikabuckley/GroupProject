@@ -57,14 +57,13 @@ CREATE TABLE IF NOT EXISTS Challenges (
     evidence_required TEXT
 );
 CREATE TABLE IF NOT EXISTS Submissions (
-    submission_id INTEGER NOT NULL,
+    submission_id INTEGER PRIMARY KEY AUTOINCREMENT,
     linked_action_log INTEGER NOT NULL,
     challenge_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
     points INTEGER NOT NULL,
     status TEXT NOT NULL,
-    PRIMARY KEY (submission_id),
     FOREIGN KEY (linked_action_log) REFERENCES ActionLogs(log_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
