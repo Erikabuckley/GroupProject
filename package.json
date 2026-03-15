@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "node --test"
+    "test": "node --test test/auth.test.js test/challengeUtil.test.js test/dashUtil.test.js test/settingsUtil.test.js test/submissionsUtil.test.js test/template.test.js test/total.test.js test/validation.test.js && jest test/index.test.js --forceExit",
+    "test:backend": "jest test/index.test.js --forceExit"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -16,10 +17,12 @@
     "multer": "^2.0.2",
     "sharp": "^0.34.5",
     "sharp-phash": "^2.2.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^6.0.1"
   },
   "devDependencies": {
+    "jest": "^30.3.0",
     "jsdom": "^28.0.0",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "supertest": "^7.2.2"
   }
 }
