@@ -15,6 +15,7 @@ cursor.execute("DELETE FROM Users")
 cursor.execute("DELETE FROM Groups")
 cursor.execute("DELETE FROM Challenges")
 cursor.execute("DELETE FROM ActionLogs")
+cursor.execute("DELETE FROM ParticipantGroups")
 
 # reset ids
 cursor.execute("DELETE FROM sqlite_sequence")
@@ -212,6 +213,73 @@ def populate_action_conversion_factors(cursor):
     cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820, 'empty')")
     cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'vegan for a day', 'kcal', 104), (5, 'FOOD', 'vegeterian for a day', 'kcal', 105)")
 
+# populate groups with 30 users
+def populate_participant_groups(cursor):
+    groups = set()
+    while (len(groups) < 30):
+        group_id = random.randint(1, 10)
+        user_id = random.randint(1, 60)
+        groups.add((user_id, group_id))
+    cursor.executemany(
+        """
+        INSERT INTO ParticipantGroups(user_id, group_id)
+        VALUES(?, ?)
+        """, 
+        groups
+    )
+
+# insert 200 challenge submissions into db
+
+# def populate_submissions(cursor):
+#     submissions = []
+#     for i in range(1, 201):
+
+#         # get linked_action_log ids
+#         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups)")
+#         log_ids = [row[0] for row in cursor.fetchall()]
+#         log_id = random.choice(log_ids)
+
+#         # get challenge_ids
+#         cursor.execute("SELECT challenge_id FROM Challenges")
+#         challenge_ids = [row[0] for row in cursor.fetchall()]
+#         challenge_id = random.choice(challenge_ids)
+
+#         # get user_ids
+#         cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
+#         user_id = cursor.fetchone()[0]
+        
+#         # get group_ids 
+#         cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
+#         group_id = cursor.fetchone()[0]
+
+#         # get random number for points 
+#         points = random.randint(5, 20)
+
+#         # use placeholder text for status 
+#         status = "submitted"
+
+#         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
+
+#     cursor.executemany(
+#         """
+#         INSERT INTO Submissions(log_id, challenge_id, user_id, group_id, points, status)
+#         VALUES(?, ?, ?, ?, ?, ?)
+#         """,
+#         submissions
+#     )
+
+    # insert 40 moderation decisions into db
+
+# def populate_moderation_decisions(cursor):
+    # decisions = []
+    # get submission_ids 
+    # cursor.execute("SELECT submission_id FROM Submissions")
+
+    # get moderator_ids
+    # decision - randomly choose between approved and denied
+    # reason - use placeholder text
+    # timestamp - choose randomly from time of submission to now 
+
 
 populate_users(cursor)
 seed_users()
@@ -219,6 +287,8 @@ populate_groups(cursor)
 populate_challenges(cursor)
 populate_action_logs(cursor)
 populate_action_conversion_factors(cursor)
+populate_participant_groups(cursor)
+# populate_submissions(cursor)
 
 # check that the above have been added to the database
 
@@ -236,6 +306,12 @@ print("Action logs:", cursor.fetchone()[0])
 
 cursor.execute("SELECT COUNT(*) FROM ConversionFactors")
 print("Conversion factors:", cursor.fetchone()[0])
+
+cursor.execute("SELECT COUNT(*) FROM ParticipantGroups")
+print("ParticipantGroups:", cursor.fetchone()[0])
+
+# cursor.execute("SELECT COUNT(*) FROM Submissions")
+# print("Submisions:", cursor.fetchone()[0])
 
 
 # save and close the connection

@@ -1111,11 +1111,11 @@ app.get('/getApprovalTimes', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT date(ModerationDecisions.timestamp) AS decision, date(ActionLogs.date) AS submission FROM ActionLogs JOIN Submissions.linked_action_logs = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id", (e, rows) => {
+    db.all("SELECT (julianday(ModerationDecisions.timestamp) - julianday(ActionLogs.date)) AS decision_time FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id ORDER BY decision_time ASC", (e, rows) => {
       if (e) {
         console.log(e.message);
       }
-      return res.json({ decision, submission });
+      return res.json(rows);
     });
   });
 });
