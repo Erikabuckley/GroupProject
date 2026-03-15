@@ -22,7 +22,7 @@ app.use(
       // Prevent client-side access to cookies
       sameSite: 'strict',
       // Mitigate CSRF attacks
-      maxAge: 60000
+      maxAge: 10000 * 60 * 60
     }
   })
 );
