@@ -1312,6 +1312,7 @@ app.get('/updateModChallengeList', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     db.all("SELECT * FROM Challenges WHERE end_date > DATE('now')", [], (e, rows) => {
+      db.close();
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -1335,7 +1336,43 @@ app.get('/updateModChallengeList', function (req, res) {
 
 // delete a challenge given the challenge id
 // including submissions and decisions not actions or evidence
-app.post('/deleteChallenge', function (req, res) {})
+app.post('/deleteChallenge', function (req, res) {
+  console.log("Delete challenge request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // delete decisions
+    db.each("SELECT submission_id FROM Submissions WHERE challenge_id = ?", [req.body.id], (e, row) => {
+      if (e) {
+        console.log(e.message);
+        return res.sendStatus(500);
+      }
+      db.run("DELETE FROM ModerationDecisions WHERE submission_id = ?", [row.submission_id], e => {
+        if (e) {
+          console.log(e.message);
+          return res.sendStatus(500);
+        }
+      });
+    });
+    // delete submissions
+    db.run("DELETE FROM Submissions WHERE challenge_id = ?", [req.body.id], e => {
+      if (e) {
+        console.log(e.message);
+        return res.sendStatus(500);
+      }
+    });
+    // delete challenges
+    db.run("DELETE FROM Challenges WHERE challenge_id = ?", [req.body.id], e => {
+      if (e) {
+        console.log(e.message);
+        return res.sendStatus(500);
+      }
+    });
+    return res.json({ message: "Challenge deleted" });
+  });
+});
 
 
 //add points to leaderboard and orderby statement
