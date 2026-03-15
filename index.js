@@ -1262,7 +1262,23 @@ app.post("/delete", (req,res) => {
 })
 
 // addChallenge
-//TODO
+app.post('/addChallenge', function (req, res) {
+  console.log("New challenge request received");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, async (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.run("INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required) VALUES (?,?,?,?,?,?,?)", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue], e => {
+      if (e) {
+        console.log(e.message);
+        return res.status(500).json({ error: "Failed to create challenge" });
+      } else {
+        return res.sendStatus(201);
+      }
+    })
+  })
+})
 
 // edit a challenge route
 //TODO
