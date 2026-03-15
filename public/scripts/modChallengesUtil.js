@@ -129,7 +129,7 @@ async function getChallenges() {
                 closebutton.addEventListener('click', () =>
                     document.getElementById("delete").close()
                 );
-                const confirmbutton = document.getElementById("confirm");
+                const confirmbutton = document.getElementById("confirm-delete");
                 confirmbutton.addEventListener('click', async () => {
                     const text = document.getElementById("password").value;
                     if (text === 'delete challenge'){
@@ -142,7 +142,7 @@ async function getChallenges() {
                             body: JSON.stringify({ id: challengeDiv.dataset.id } //turn to json
                             )
                         });
-                        getChallenges();
+                        document.getElementById("delete").close()
                     }
                 })
             });
