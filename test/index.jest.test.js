@@ -36,6 +36,9 @@ const mockDb = sqlite3.__mockDb;
 const app = require('../index');
 
 beforeEach(() => jest.clearAllMocks());
+beforeAll(() => {
+  jest.spyOn(console, "log").mockImplementation(() => {});
+});
 
 
 // ─── 1. POST /login ──────────────────────────────────────────────────────────

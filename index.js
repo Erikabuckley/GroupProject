@@ -13,7 +13,6 @@ const sqlite3 = require('sqlite3').verbose();
 const port = 8080; //specify the port number
 const bcrypt = require('bcryptjs'); //imports bcrypt for hashing
 const fs = require('fs/promises');
-const { fileURLToPath } = require('url');
 const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -1469,10 +1468,13 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-module.exports = app;// Added by Nehir for back end testing.
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
 
 app.use(function (req, res, next) {
   res.status(404).sendFile('validation/404.html', { root: 'public' });
