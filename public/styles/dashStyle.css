@@ -130,3 +130,68 @@
     display: flex;
     gap: 1rem;
 }
+
+/* mobile friendly styling */
+
+@media screen and (max-width: 768px) /* 768px because ipad/tablet width */ {
+    .modal {
+        width: 90%;
+        max-width:none;
+        padding:1.5rem;
+        box-sizing: border-box;
+    }
+
+    .modal-content {
+        width:100%;
+
+    }
+
+    .form input,
+    .form select {
+        width:100%;
+        box-sizing: border-box;
+        font-size:16px;
+        margin-bottom: 1rem;
+    }
+
+    .box {
+        flex-direction: column;
+        align-items: center;
+        gap:1.5rem;
+    }
+    .total {
+        font-size: 30px;
+        width:90%;
+        min-width: 0;
+    }
+    .total h1 {
+        font-size:1.2rem;
+
+    }
+
+    .submission {
+        margin: 1rem 0;
+        padding:1rem;
+    }
+
+    .card {
+        margin:0.5rem 0;
+        padding:0.5rem;
+    }
+
+    .declaration {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        gap:10px;
+        text-align:left;
+    }
+
+    .declaration input[type="checkbox"] {
+        width: 20px !important;
+        height: 20px !important;
+        flex-shrink: 0;
+    }
+
+
+}
