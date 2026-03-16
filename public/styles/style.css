@@ -244,19 +244,28 @@ a{
 /* mobile friendly */
 @media screen and (max-width:768px) {
     .policy, .indent {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        margin-left:1.5rem;
-        margin-right:1.5rem;
+        margin-left:1rem;
+        margin-right:1rem;
     }
 
     .header {
-        flex-direction: column;
-        padding-bottom: 1rem;
+        flex-direction: row;
+        padding: 0.5rem;
+        justify-content: space-between;
+    }
+    .header-heading {
+        margin:0;
+        padding:0.2rem;
     }
 
     .header-heading.header-1 {
         font-size: 2rem;
+    }
+    .header-heading a {
+        padding: 6px 12px;
+        margin-left: 5px;
+        font-size:0.8 rem;
+        border-radius: 8px;
     }
 
     .footer {
@@ -267,7 +276,8 @@ a{
     }
 
     #logo {
-        max-height: 60px;
+        max-height: 40px;
+        padding-left:0.5rem;
     }
     
 }
