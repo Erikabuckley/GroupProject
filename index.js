@@ -1201,11 +1201,11 @@ app.get('/getApprovalTimes', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT date(ModerationDecisions.timestamp) AS decision, date(ActionLogs.date) AS submission FROM ActionLogs JOIN Submissions.linked_action_logs = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id", (e, rows) => {
+    db.all("SELECT (julianday(ModerationDecisions.timestamp) - julianday(ActionLogs.date)) AS decision_time FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id JOIN ModerationDecisions ON ModerationDecisions.submission_id = Submissions.submission_id ORDER BY decision_time ASC", (e, rows) => {
       if (e) {
         console.log(e.message);
       }
-      return res.json({ decision, submission });
+      return res.json(rows);
     });
   });
 });
@@ -1225,7 +1225,7 @@ app.post("/delete", (req,res) => {
     // find user id
     db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
       if (e || !user) {
-        console.log(e.message);
+        console.log(e?.message);
         return res.status(400).json({ error: "no user found" });
       }
       if (user) {
@@ -1469,6 +1469,7 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
+module.exports = app;// Added by Nehir for back end testing.
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

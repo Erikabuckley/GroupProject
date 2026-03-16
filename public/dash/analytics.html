@@ -44,6 +44,7 @@
         import json
         import asyncio
         from datetime import datetime
+        import statistics
 
         # retrieve submission data 
         async def get_submission_data():
@@ -127,22 +128,43 @@
             plt.tight_layout()
 
             display(fig, target="graph3", append=False)
+
+        async def make_box_plot():
+            res = await fetch("/getApprovalTimes")
+            data =  (await res.json()).to_py()
+
+            fig, ax = plt.subplots(figsize=(4,3))
+
+            # show empty graph if there is no data present
+            if len(data) == 0:
+                display(fig, target="graph4", append=False)
+                return
+            
+            # make list of date differences to show decision times
+            decision_times = []
+            for row in data:
+                decision_times.append(row["decision_time"])
+            
+            decision_times = np.array(decision_times)
+
+            ax.boxplot(decision_times)
+            ax.set_title("Moderation Decision Times")
+
+            display(fig, target="graph4", append=False)
             
 
         asyncio.ensure_future(make_submissions_scatter())
         asyncio.ensure_future(make_points_scatter())
         asyncio.ensure_future(make_groups_chart())
+        asyncio.ensure_future(make_box_plot())
         </py-script>
 
         <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> Submissions made Overtime </h1>
+                <h1> loading... </h1>
             </div>
-            <div class="graph" id="graph2">
-                <h1> Points Earned Overtime </h1>
-            </div>
-            <div class="graph" id="graph3">
-                <h1> Number Of Users Per Group </h1>
+            <div class="graph" id="graph4">
+                <h1> Moderation Decision Times </h1>
             </div>
         </div>
 

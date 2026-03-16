@@ -20,8 +20,9 @@
 
 <body>
     <div class="header-container"></div>
+    <h1> Group Metrics </h1>
+    <h4 class="facts">Working together can help save the planet - The Paris Agreement is a landmark accord. It aims to limit global warming to well below 2°C above pre-industrial levels</h4>
     <div>
-        <h1> Group Metrics </h1>
         <div class="key-stats">
             <div class="total">
                 <h3>Total Carbon Saved:</h3>
@@ -33,8 +34,8 @@
                 <h3 id="group-points"></h3>
             </div>
         </div>
-
     </div>
+    
     <py-script>
         import matplotlib.pyplot as plt
         import numpy as np
@@ -109,7 +110,7 @@
 
             display(fig, target="graph2", append=False)
 
-             # retrieve action type data
+        # retrieve action type data
         async def get_action_type_data():
             res = await fetch("/updateActionTypesGroup")
             data = (await res.json()).to_py()
@@ -137,14 +138,10 @@
 
         <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> Total Metrics Graph </h1>
+                <h1> loading... </h1>
             </div>
-            <div class="graph" id="graph2">
-                <h1> Carbon Saved Graph </h1>
-            </div>
-            <div class="graph" id="graph3">
-                <h1> Carbon Saved Per Action Type Graph </h1>
-            </div>
+            <div class="graph" id="graph2"></div>
+            <div class="graph" id="graph3"></div>
         </div>
 
     <div class="filters">

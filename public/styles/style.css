@@ -236,7 +236,8 @@ body {
     flex-direction: column;
     align-items: center;
 }
-a{
+
+a {
     text-decoration: none;
     color: var(--second);
 }
@@ -279,5 +280,19 @@ a{
         max-height: 40px;
         padding-left:0.5rem;
     }
+
+}
     
+.facts {
+    display: inline-flex;
+    background: #e8f7f1;
+    border-left: 6px solid #2ecc71;
+    padding: 15px;
+    margin-left: 3rem;
+    border-radius: 10px;
+    font-size: 1.1em;
+    line-height: 1.5;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    position: relative;
+    align-self: center;
 }

@@ -63,7 +63,7 @@ test("SUBMISSIONS (real script): groups by challenge_title and renders submissio
             id: ["A", "A", "B"],
             evidence: ["img1.png", "img2.png", "img3.png"],
             challenge_title: ["Challenge X", "Challenge X", "Challenge Y"],
-            flag: null
+            flag: [null, null, null]  // FIX: array instead of null, script does flag[i] in a loop
           };
         },
       };
@@ -116,7 +116,7 @@ test("SUBMISSIONS (real script): clicking a card opens modal/backdrop", async ()
             id: ["A", "A"],
             evidence: ["img1.png", "img2.png"],
             challenge_title: ["Challenge X", "Challenge X"],
-            flag: null
+            flag: [null, null]  // FIX: array instead of null
           };
         },
       };
@@ -157,7 +157,7 @@ test("SUBMISSIONS (real script): approveDenyForm submit posts correct data and c
             id: ["A"],
             evidence: ["img1.png"],
             challenge_title: ["Challenge X"],
-            flag: null
+            flag: [null]  // FIX: array instead of null
           };
         },
       };
@@ -229,7 +229,7 @@ test("SUBMISSIONS (real script): clears old submissions content before rendering
             id: ["A"],
             evidence: ["img1.png"],
             challenge_title: ["Challenge X"],
-            flag: null
+            flag: [null]  // FIX: array instead of null
           };
         },
       };
@@ -265,7 +265,7 @@ test("SUBMISSIONS (real script): groups correctly even when challenge titles are
             id: ["A", "B", "A"],
             evidence: ["a1.png", "b1.png", "a2.png"],
             challenge_title: ["Challenge A", "Challenge B", "Challenge A"],
-            flag: null
+            flag: [null, null, null]  // FIX: array instead of null
           };
         },
       };
