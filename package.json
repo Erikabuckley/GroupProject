@@ -5,8 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "node --test test/auth.test.js test/challengeUtil.test.js test/dashUtil.test.js test/settingsUtil.test.js test/submissionsUtil.test.js test/template.test.js test/total.test.js test/validation.test.js && jest test/index.test.js --forceExit",
-    "test:backend": "jest test/index.test.js --forceExit"
+    "test": "node --test test/auth.test.js test/challengeUtil.test.js test/dashUtil.test.js test/settingsUtil.test.js test/submissionsUtil.test.js test/template.test.js test/total.test.js test/validation.test.js",
+    "test:backend": "npx jest test/index.test.js --forceExit"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

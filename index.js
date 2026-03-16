@@ -1225,7 +1225,7 @@ app.post("/delete", (req,res) => {
     // find user id
     db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
       if (e || !user) {
-        console.log(e.message);
+        console.log(e?.message);
         return res.status(400).json({ error: "no user found" });
       }
       if (user) {

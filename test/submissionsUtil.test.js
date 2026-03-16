@@ -63,7 +63,7 @@ test("SUBMISSIONS (real script): groups by challenge_title and renders submissio
             id: ["A", "A", "B"],
             evidence: ["img1.png", "img2.png", "img3.png"],
             challenge_title: ["Challenge X", "Challenge X", "Challenge Y"],
-            flag: [null, null, null]  // FIX: array instead of null — script does flag[i] in a loop
+            flag: [null, null, null]  // FIX: array instead of null, script does flag[i] in a loop
           };
         },
       };
