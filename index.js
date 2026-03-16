@@ -1028,7 +1028,7 @@ app.get('/updateActionDatesIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT date(ActionLogs.date) AS date, ActionLogs.calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, rows) => {
+    db.all("SELECT date(ActionLogs.date) AS date, SUM(ActionLogs.calculated_co2e) AS calculated_co2e FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ? GROUP BY date(ActionLogs.date) ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
@@ -1046,7 +1046,7 @@ app.get('/updateActionDatesGroup', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT date(ActionLogs.date) AS date, ActionLogs.calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?)", [req.session.email], (e, rows) => {
+    db.all("SELECT date(ActionLogs.date) AS date, SUM(ActionLogs.calculated_co2e) AS calculated_co2e FROM ActionLogs JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) GROUP BY date(ActionLogs.date) ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
@@ -1122,6 +1122,40 @@ app.get('/updatePointsDate', function (req, res) {
     }
     // check if user exists
     db.all("SELECT SUM(Submissions.points) AS total, date(ActionLogs.date) AS date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log GROUP BY ActionLogs.date", (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json(rows);
+    });
+  });
+});
+
+app.get('/updatePointsDateIndi', function (req, res) {
+  console.log("Points gained over time by individual user"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT SUM(Submissions.points) AS total, date(ActionLogs.date) AS date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ? GROUP BY ActionLogs.date", [req.session.email], (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json(rows);
+    });
+  });
+});
+
+app.get('/updatePointsDateGroup', function (req, res) {
+  console.log("Points gained over time by group"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT SUM(Submissions.points) AS total, date(ActionLogs.date) AS date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log JOIN ParticipantGroups ON  ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) GROUP BY date(ActionLogs.date) ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
       if (e) {
         console.log(e.message);
       }
