@@ -5,7 +5,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 function loadRealScript(window, relPathFromRoot) {
-  const scriptPath = path.join(__dirname, "..", relPathFromRoot);
+  const scriptPath = path.join(__dirname, "..", "..", relPathFromRoot);
   const code = fs.readFileSync(scriptPath, "utf8");
   window.eval(code);
 }

@@ -17,8 +17,8 @@ const path = require("node:path");
 
 const SCRIPT_PATH = (() => {
   const candidates = [
-    path.join(__dirname, "..", "public", "scripts", "validation.js"),
-    path.join(__dirname, "..", "scripts", "validation.js"),
+    path.join(__dirname,"..", "..", "public", "scripts", "validation.js"),
+    path.join(__dirname,"..", "..", "scripts", "validation.js"),
   ];
   const found = candidates.find((p) => fs.existsSync(p));
   if (!found) throw new Error(`validation.js not found. Looked in:\n${candidates.join("\n")}`);

@@ -13,8 +13,8 @@ const path = require("node:path");
 
 const SCRIPT_PATH = (() => {
     const candidates = [
-      path.join(__dirname, "..", "public", "scripts", "template.js"),
-      path.join(__dirname, "..", "scripts", "template.js"),
+      path.join(__dirname, "..", "..", "public", "scripts", "template.js"),
+      path.join(__dirname, "..", "..", "scripts", "template.js"),
     ];
     return candidates.find((p) => fs.existsSync(p));
 })();

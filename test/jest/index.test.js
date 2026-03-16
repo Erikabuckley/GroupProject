@@ -21,7 +21,7 @@ jest.mock('sqlite3', () => {
   };
 });
 
-jest.mock('../sitemap', () => ({ generateSitemap: jest.fn() }));
+jest.mock('../../sitemap', () => ({ generateSitemap: jest.fn() }));
 jest.mock('sharp', () => jest.fn(() => ({ metadata: jest.fn().mockResolvedValue({}) })));
 jest.mock('sharp-phash', () => jest.fn().mockResolvedValue('hash'));
 jest.mock('sharp-phash/distance', () => jest.fn().mockReturnValue(10));
@@ -33,7 +33,7 @@ jest.mock('fs/promises', () => ({
 
 const sqlite3 = require('sqlite3');
 const mockDb = sqlite3.__mockDb;
-const app = require('../index');
+const app = require('../../index');
 
 beforeEach(() => jest.clearAllMocks());
 beforeAll(() => {

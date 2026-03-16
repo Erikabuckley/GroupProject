@@ -5,7 +5,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 function loadBrowserScript(window, relPathFromProjectRoot) {
-  const absolutePath = path.join(__dirname, "..", relPathFromProjectRoot);
+  const absolutePath = path.join(__dirname, "..", "..", relPathFromProjectRoot);  
   let scriptCode = fs.readFileSync(absolutePath, "utf8");
 
   scriptCode = scriptCode.replace(
