@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS Submissions (
     linked_action_log INTEGER NOT NULL,
     challenge_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    group_id INTEGER NOT NULL,
+    group_id INTEGER,
     points INTEGER NOT NULL,
     status TEXT NOT NULL,
     FOREIGN KEY (linked_action_log) REFERENCES ActionLogs(log_id),
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS ModerationDecisions (
 CREATE TABLE IF NOT EXISTS AntiGamingFlags (
     flag_id INTEGER PRIMARY KEY AUTOINCREMENT,
     submission_id INTEGER NOT NULL,
-    flag_type TEXT NOT NULL,
+    flag_type INTEGER NOT NULL,
     rule_triggered TEXT NOT NULL,
     status TEXT NOT NULL,
     FOREIGN KEY (submission_id) REFERENCES Submissions(submission_id)

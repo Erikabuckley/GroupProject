@@ -84,7 +84,7 @@ def seed_users():
 # insert groups into db
 
 def populate_groups(cursor):
-    groups = ["Lafrowda", "East Park", "Birks", "Rowe House", "Duryard", "St David's", "Point Exe", "Mardon Hall", "Lopes Hall", "Nash Grove"]
+    groups = ["Lafrowda", "East Park", "Birks", "Rowe House", "Duryard", "St David's", "Point Exe", "Mardon Hall", "Lopes Hall", "Nash Grove", "Staff"]
 
     for name in groups: 
         cursor.execute(
@@ -97,8 +97,8 @@ def populate_groups(cursor):
 
 
 today = date.today()
-start_date = today - timedelta(days=365)
-end_date = today + timedelta(days=365)
+start_date = (today - timedelta(days=365)).isoformat()
+end_date = (today + timedelta(days=365)).isoformat()
 
 # insert challenges into db
 
@@ -106,49 +106,49 @@ end_date = today + timedelta(days=365)
 def populate_challenges(cursor):
     challenges_info = [
         {
-            "title": "LITTER PICKING",
+            "title": "Litter picking",
             "scope": "Personal",
             "rules": "Pick up ten pieces of litter in a day",
             "scoring": 5
         },
         {
-            "title": "MAKE A JOURNEY BY FOOT",
+            "title": "Make a journey by foot",
             "scope": "Personal",
             "rules": "Switch a journey made by a vehicle to one by foot",
             "scoring": 5
         },
         {
-            "title": "TAKE PUBLIC TRANSPORT",
+            "title": "Take public transport",
             "scope": "Personal",
             "rules": "Make a singular journey by public transport",
             "scoring": 5
         },
         {
-            "title": "VEGETERIAN FRO 5 DAYS",
+            "title": "Vegetarian for 5 days",
             "scope": "Personal",
             "rules": "Eat 5 vegetarian meals in a week",
             "scoring": 10
         },
         {
-            "title": "VEGAN FOR 3 DAYS",
+            "title": "Vegan for 3 days",
             "scope": "Personal",
             "rules": "Eat 3 vegan meals in a week",
             "scoring": 10
         },
         {
-            "title": "100KM CYCLE",
+            "title": "100km cycle",
             "scope": "Group",
             "rules": "Complete a 100km cycle between the group over 1 month",
             "scoring": 30
         },
         {
-            "title": "SAVING CO2",
+            "title": "Saving CO2",
             "scope": "Group",
-            "rules": "Save 500kg CO2 between the group in a month)",
+            "rules": "Save 500kg CO2 between the group in a month",
             "scoring": 40
         },
         {
-            "title": "RECYCLE",
+            "title": "Recycle",
             "scope": "Personal",
             "rules": "Take 50kg of recycling to a recycling point",
             "scoring": 30
@@ -190,7 +190,7 @@ def populate_action_logs(cursor):
         quantity = random.randint(1, 10)
 
         # randomly choose a date in the last 30 days
-        date = (today - timedelta(days=random.randint(0, 30)))
+        date = (today - timedelta(days=random.randint(0, 30))).isoformat()
 
 
         # calculated co2e = quantity * default factor id (from action type)
@@ -219,7 +219,7 @@ def populate_action_conversion_factors(cursor):
 def populate_participant_groups(cursor):
     groups = set()
     while (len(groups) < 30):
-        group_id = random.randint(1, 10)
+        group_id = random.randint(1, 11)
         user_id = random.randint(1, 60)
         groups.add((user_id, group_id))
     cursor.executemany(
@@ -300,7 +300,7 @@ def populate_moderation_decisions(cursor):
             days_to_add = random.randrange(days)
         else:
             days_to_add = 0
-        timestamp = submission_date + timedelta(days = days_to_add)
+        timestamp = (submission_date + timedelta(days = days_to_add)).isoformat()
 
         decisions.append((submission_id, moderator_id, decision, reason, timestamp))
 
