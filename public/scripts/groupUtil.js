@@ -25,6 +25,8 @@ async function populateTable(type) {
         plotPi(type, data.date);
     } else if (type === 'type') {
         plotPi(type, data.cat);
+    } else if(type == 'indi'){
+        plotPi(type, data.id, data.userId);
     }
 
     const table = document.getElementById("data-table");
@@ -59,7 +61,7 @@ async function populateTable(type) {
     };
 }
 
-function plotPi(type, data){
+function plotPi(type, data , id=null){
     var xValues;
     var yValues;
     var title
@@ -67,12 +69,17 @@ function plotPi(type, data){
         const grouped = groupDatesByMonth(data);
         xValues = grouped.labels;
         yValues = grouped.values;
-        title = 'Grouped by date'
+        title = 'Submission grouped by date'
     } else if (type === 'type') {
         const grouped = groupDatesByType(data);
         xValues = grouped.labels;
         yValues = grouped.values;
-        title = 'Grouped by type'
+        title = 'Submissions grouped by type'
+    } else if(type === 'indi'){
+        const grouped = groupDatesByUser(data, id);
+        xValues = grouped.labels;
+        yValues = grouped.values;
+        title = 'Submissions per user'
     }
     const barColors = [
     "#b91d47",
@@ -112,12 +119,6 @@ function setActiveFilter(activeElement, type) {
         filter.style.backgroundColor = 'var(--second)';
     });
     activeElement.style.backgroundColor = 'var(--main)';
-    if(type === "indi"){
-        document.getElementById("myChart").style.display = "none";
-    } else {
-        document.getElementById("myChart").style.display = "block";
-    }
-
     populateTable(type);
 }
 
@@ -184,4 +185,21 @@ function groupDatesByType(types){
         labels: Object.keys(result),
         values: Object.values(result)
     };
+}
+
+function groupDatesByUser(submissions, targetId) {
+  const result = { [targetId]: 0, other: 0 };
+
+  submissions.forEach(sub => {
+    if (sub.id === targetId) {
+      result[targetId]++;
+    } else {
+      result.other++;
+    }
+  });
+
+  return {
+    labels: ["Your Submissions", "Other Submissions"],
+    values: Object.values(result)
+  };
 }

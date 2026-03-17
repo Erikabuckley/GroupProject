@@ -6,6 +6,8 @@ updateUserGroupsList();
 updateIndi();
 updatePoints();
 updateLog();
+loadName();
+updateBadges();
 
 // when the event listener is trigged the submission information is sent
 const form = document.getElementById('evidanceForm')
@@ -257,5 +259,28 @@ async function updateLog() {
             submissionDiv.appendChild(cardDiv);
         });
         submissions.appendChild(submissionDiv);
+    });
+}
+
+async function loadName() {
+    const hello_name = document.getElementById("name");
+
+    const res = await fetch("/getName");
+    const data = await res.json();
+
+    hello_name.textContent = "Hello " + data.dis_name;
+}
+
+async function updateBadges() {
+    const badges = document.querySelectorAll('.badge');
+
+    const res = await fetch("/getBadges");
+    const data = await res.json();
+
+    badges.forEach((badge, index) => {
+        const earned = data.vals[index];
+
+        badge.classList.toggle("earnt", earned);
+        badge.classList.toggle("not-earnt", !earned);
     });
 }

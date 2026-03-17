@@ -22,38 +22,56 @@ function makeWindow() {
 
   const dom = new JSDOM(
     `<!doctype html>
-     <html>
-     <body>
-       <select id="mission-input"></select>
-       <select id="challenge-input"></select>
-       <select id="group-input"></select>
-       <select id="group-challenge-input"></select>
-       <input id="declaration" type="checkbox" />
-       <div id="indi-carbon"></div>
-       <div id="indi-points"></div>
+      <html>
+        <body>
+          <div id="welcome">
+            <div class="text">
+              <h1 id="name"></h1>
+              <h3>Now you can start logging carbon saving actions!</h3>
+            </div>
 
-       <div id="upload-modal" style="display:block"></div>
-       <div id="data-modal" style="display:none"></div>
-       <div id="amount"></div>
-       <a id="source"></a>
+            <div id="badges">
+              <img class="badge" id="badge1">
+              <img class="badge" id="badge2">
+              <img class="badge" id="badge3">
+              <img class="badge" id="badge4">
+              <img class="badge" id="badge5">
+              <img class="badge" id="badge6">
+            </div>
+          </div>
 
-       <div id="error" style="visibility:hidden"></div>
-       <div id="error-message" style="visibility:hidden"></div>
+          <select id="mission-input"></select>
+          <select id="challenge-input"></select>
+          <select id="group-input"></select>
+          <select id="group-challenge-input"></select>
 
-       <div id="log"></div>
-       <div id="join-modal" style="display:none"></div>
-       <div id="backdrop" style="display:none"></div>
+          <input id="declaration" type="checkbox" />
 
-       <form id="evidanceForm">
-         <input id="quantity-input" value="" />
-         <input id="upload-input" type="file" />
-         <button type="submit">Submit</button>
-       </form>
+          <div id="indi-carbon"></div>
+          <div id="indi-points"></div>
 
-       <form id="joinForm">
-         <button type="submit">Join</button>
-       </form>
-     </body>
+          <div id="upload-modal" style="display:block"></div>
+          <div id="data-modal" style="display:none"></div>
+          <div id="amount"></div>
+          <a id="source"></a>
+
+          <div id="error" style="visibility:hidden"></div>
+          <div id="error-message" style="visibility:hidden"></div>
+
+          <div id="log"></div>
+          <div id="join-modal" style="display:none"></div>
+          <div id="backdrop" style="display:none"></div>
+
+          <form id="evidanceForm">
+            <input id="quantity-input" value="" />
+            <input id="upload-input" type="file" />
+            <button type="submit">Submit</button>
+          </form>
+
+          <form id="joinForm">
+            <button type="submit">Join</button>
+          </form>
+        </body>
      </html>`,
     {
       url: "https://example.com/dash/dashboard.html",
@@ -106,6 +124,12 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
         },
       };
     }
+    if (url === "/getName") {
+      return { async json() { return { dis_name : 'test'}; } };
+    }    
+    if (url === "/getBadges") {
+      return { async json() { return {vals : [true,true,true,true,true,true] }; } };
+    }
 
     throw new Error("Unexpected fetch call: " + url);
   };
@@ -122,6 +146,8 @@ test("DASHBOARD (real script): on load populates dropdowns and updates indi tota
     "/updateTotalIndi",
     "/updatePointsIndi",
     "/updateLog",
+    "/getName",
+    "/getBadges"
   ]) {
     assert.ok(seen.has(u), `Expected call to ${u}`);
   }
@@ -165,6 +191,12 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
           };
         },
       };
+    }
+    if (url === "/getName") {
+      return { async json() { return { dis_name : 'test'}; } };
+    }    
+    if (url === "/getBadges") {
+      return { async json() { return {vals : [true,true,true,true,true,true] }; } };
     }
     if (url === "/addAction") {
       lastAddAction = { url, opts };
@@ -245,8 +277,13 @@ test("DASHBOARD (real script): join group 409 shows error message", async () => 
           };
         },
       };
-    }
-
+    };
+    if (url === "/getName") {
+      return { async json() { return { dis_name : 'test'}; } };
+    };  
+    if (url === "/getBadges") {
+      return { async json() { return {vals : [true,true,true,true,true,true] }; } };
+    };
     if (url === "/addGroup") {
       addGroupCalled = true;
       assert.equal(opts.method, "POST");
@@ -307,8 +344,13 @@ test("DASHBOARD (real script): join group success attempts redirect to dashboard
           };
         },
       };
-    }
-
+    };
+    if (url === "/getName") {
+      return { async json() { return { dis_name : 'test'}; } };
+    };   
+    if (url === "/getBadges") {
+      return { async json() { return {vals : [true,true,true,true,true,true] }; } };
+    };
     if (url === "/addGroup") {
       assert.equal(opts.method, "POST");
       return {

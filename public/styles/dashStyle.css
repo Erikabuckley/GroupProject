@@ -131,6 +131,31 @@
     gap: 1rem;
 }
 
+#welcome{
+    display:flex;
+    flex-direction: row;
+}
+
+#text{
+    display:flex;
+    flex-direction: column;
+}
+
+#badges{
+    margin-left: auto;
+}
+
+.badge{
+    width :100px;
+    height: 100px;
+    padding: 1rem;
+    filter: grayscale(100%);
+}
+
+.badge.earnt{
+    filter: none;
+}
+
 /* mobile friendly styling */
 
 @media screen and (max-width: 768px) /* 768px because ipad/tablet width */ {

@@ -35,6 +35,17 @@
             </div>
         </div>
     </div>
+
+    <div class="filters">
+        <button type="button" class="in-button" id="filter-one">My Contributions</button>
+        <button type="button" class="in-button" id="filter-two">Sort By: Date Submitted</button>
+        <button type="button" class="in-button" id="filter-three">Sort By: Action Type</button>
+    </div>
+
+    <div class="table">
+        <table id="data-table"></table>
+        <canvas id="myChart" class="pi"></canvas>
+    </div>
     
     <py-script>
         import matplotlib.pyplot as plt
@@ -139,16 +150,6 @@
             <div class="graph" id="graph3"></div>
         </div>
 
-    <div class="filters">
-        <button type="button" class="in-button" id="filter-one">My Contributions</button>
-        <button type="button" class="in-button" id="filter-two">Sort By: Date Submitted</button>
-        <button type="button" class="in-button" id="filter-three">Sort By: Action Type</button>
-    </div>
-
-    <div class="table">
-        <table id="data-table"></table>
-        <canvas id="myChart" class="pi"></canvas>
-    </div>
     <div class="footer-container"></div>
 </body>
 
