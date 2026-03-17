@@ -110,7 +110,7 @@ async function getChallenges() {
             titleDiv.textContent = name[i];
             rulesDiv.textContent = rules[i];
             pointsDiv.textContent = points[i];
-            dateDiv.textContent = start[i] + "-" + end[i];
+            dateDiv.textContent = start[i] + " - " + end[i];
             deleteImg.src = "../images/bin.png";
 
             textDiv.appendChild(titleDiv);
