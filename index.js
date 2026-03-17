@@ -41,15 +41,16 @@ app.post("/setSession", (req,res) => {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.get("SELECT role FROM Users WHERE Users.email =?", [req.body.email], (e, row) => {
+    db.get("SELECT role, display_name FROM Users WHERE Users.email =?", [req.body.email], (e, row) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
 
-      }
+      } 
       if (row) {
         req.session.email = req.body.email;
         req.session.role = row.role;
+        req.session.name = row.display_name;
         req.session.authenticated = true;
         res.send("Session data set");
         res.end();
@@ -1484,6 +1485,14 @@ app.post('/uploadFrequency', function(req,res) {
     })
   })
 })
+
+app.get('/getName', function (req, res) {
+ return res.json({ dis_name: req.session.name });
+});
+
+app.get('/getBadges', function (req, res) {
+ return res.json({ vals: [true, true, false, false, true, true]});
+});
 
 //add points to leaderboard and orderby statement
 // update updateLog to get user challenge submissions only
