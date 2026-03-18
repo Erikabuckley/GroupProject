@@ -36,20 +36,8 @@ async function loadHeader() {
         await loadBasicHeader();
         const exit = document.getElementById("out");
         if (exit) {
-            const {role, auth} = await checkAuth();
-            if (!auth) {
-                exit.onclick = function () {
-                    window.location.href = "../index.html";
-                }
-
-            } else {
-                exit.onclick = function () {
-                    if (role === 'moderator'){
-                    window.location.href = "../dash/analytics.html";
-                    } else{
-                        window.location.href = "../dash/dashboard.html";
-                    }
-                };
+            exit.onclick = function () {
+                history.back();
             }
         }
     } else {
