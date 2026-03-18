@@ -262,6 +262,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
             const evidencePath = uploadedFilePath;
             const co2_saved = factor.value * req.body.quantity;
             const source_url = factor.source;
+            const value = factor.value;
 
             // Get user
             db.get(
@@ -287,7 +288,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                     // If no challenge, return immediately
                     if (req.body.challenge === 'No') {
-                      return res.json({ carbon: co2_saved, source: source_url });
+                      return res.json({ carbon: co2_saved, source: source_url, value:value });
                     }
 
                     // Get challenge info
@@ -350,7 +351,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                     }
                                   }
 
-                                  return res.json({ carbon: co2_saved, source: source_url });
+                                  return res.json({ carbon: co2_saved, source: source_url, value: value});
                                 }
                               }
                             );
@@ -1223,6 +1224,25 @@ app.get('/updateSubmissionsCount', function (req, res) {
       if (e) {
         console.log(e.message);
       }
+      console.log(rows)
+      return res.json(rows);
+    });
+  });
+});
+
+app.get('/updateActionsCount', function (req, res) {
+  console.log("Total number of submissions"); 
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    // check if user exists
+    db.all("SELECT COUNT(log_id) as total FROM ActionLogs", (e, rows) => {
+      if (e) {
+        console.log(e.message);
+      }
+      console.log(rows)
       return res.json(rows);
     });
   });

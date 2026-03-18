@@ -53,6 +53,7 @@ function makeWindow() {
           <div id="upload-modal" style="display:block"></div>
           <div id="data-modal" style="display:none"></div>
           <div id="amount"></div>
+          <div id="conversion"></div>
           <a id="source"></a>
 
           <div id="error" style="visibility:hidden"></div>
@@ -203,7 +204,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
       return {
         status: 200,
         async json() {
-          return { carbon: 7, source: "Test source" };
+          return { carbon: 7, source: "Test source", value: 10};
         },
       };
     }
@@ -249,6 +250,7 @@ test("DASHBOARD (real script): evidence submit posts /addAction, hides upload mo
   assert.equal(window.document.getElementById("upload-modal").style.display, "none");
   assert.equal(window.document.getElementById("data-modal").style.display, "block");
   assert.equal(window.document.getElementById("amount").innerText, "7g");
+  assert.equal(window.document.getElementById("conversion").innerText, "Using a factor of 10g");
   assert.equal(window.document.getElementById("source").innerText, "Test source");
 });
 

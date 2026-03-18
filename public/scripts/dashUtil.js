@@ -55,13 +55,13 @@ if (form) {
                 });
                 document.getElementById("upload-modal").style.display = "none";
                 // shows the carbon saved by the action to the user
-                showData(String(data.carbon), String(data.source));
+                showData(String(data.carbon), String(data.value),String(data.source));
 
             }else{
                 form.reset()
                 document.getElementById("upload-modal").style.display = "none";
                 // shows the carbon saved by the action to the user
-                showData(String(data.carbon), String(data.source));
+                showData(String(data.carbon), String(data.value),String(data.source));
             }            
         }
     });
@@ -145,9 +145,10 @@ async function updateUserGroupsList() {
 }
 
 // shows the carbon saved from that action
-async function showData(num, source) {
+async function showData(num,conv, source) {
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("amount").innerText = (num + "g");
+    document.getElementById("conversion").innerText = ("Using a factor of " + conv + "g");
     document.getElementById("source").innerText = (source);
     document.getElementById("source").setAttribute("href", source);
 }
