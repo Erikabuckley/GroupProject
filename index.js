@@ -349,8 +349,30 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                         }
                                       })
                                     }
-                                  }
 
+                                    // flag for submission frequency
+                                    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
+                                      if (e) {
+                                        console.log(e.message);
+                                      }
+                                      db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
+                                        if (e) {
+                                          console.log(e.message);
+                                          return res.status(500).json({ error: "database failure" });
+                                        }
+
+                                        if (countRow.total >= 3) {
+                                          db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
+                                          if (e) {
+                                            console.log(e.message);
+                                            return res.status(500).json({ error: "Failed to flag" });
+                                          }
+                                          });
+                                        }
+                                      });
+                                    });
+                              
+                                  }
                                   return res.json({ carbon: co2_saved, source: source_url, value: value});
                                 }
                               }
@@ -1224,7 +1246,6 @@ app.get('/updateSubmissionsCount', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log(rows)
       return res.json(rows);
     });
   });
@@ -1242,7 +1263,6 @@ app.get('/updateActionsCount', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-      console.log(rows)
       return res.json(rows);
     });
   });
@@ -1458,53 +1478,6 @@ app.post('/deleteChallenge', function (req, res) {
     return res.json({ message: "Challenge deleted" });
   });
 });
-
-// app.post('/uploadFrequency', function(req, res){
-//   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-//     if (e) {
-//       console.log(e.message);
-//       return res.status(500).json({ error: "database failure" });
-//     }
-//     db.get("SELECT Submissions.submission_id, datetime(ActionLogs.date) AS created, Users.user_id FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
-//       if (e) {
-//         console.log(e.message);
-//         return res.status(500);
-//       }
-//       const user_id = row.user_id;
-      
-//       db.get("SELECT COUNT(*) AS total FROM Submissions WHERE user_id = ? AND datetime(created) >= datetime('now', '-10 minutes')"
-
-//     }); // closes db.get
-//   }); // closes database open
-// }); // closes first line
-
-app.post('/uploadFrequency', function(req,res) {
-  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
-    if (e) {
-      console.log(e.message);
-      return res.status(500).json({ error: "database failure" });
-    }
-
-    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
-      if (e) {
-        console.log(e.message);
-      }
-      db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
-        if (e) {
-          console.log(e.message);
-          return res.status(500).json({ error: "database failure" });
-        }
-        let flagged = 0;
-
-        if (countRow.total >= 3) {
-          flagged = 1;
-        }
-
-        return res.json({ flagged });
-      })
-    })
-  })
-})
 
 app.get('/getName', function (req, res) {
  return res.json({ dis_name: req.session.name });
