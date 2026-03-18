@@ -299,9 +299,9 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                           console.log(e?.message);
                           return res.status(400).json({ error: "no challenge found" });
                         }
-
-                        // Check evidence requirement
-                        if (challenge.evidence_required && !evidencePath) {
+                        const challengeEvidenceRequired = challenge.evidence_required;
+                        // Check if evidence not provided when required
+                        if (challengeEvidenceRequired && !evidencePath) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
 
@@ -349,7 +349,23 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                       })
                                     }
                                   }
-
+                                  // Check if evidence provided when not required
+                                  if (!challengeEvidenceRequired && evidencePath) {
+                                    // remove evidence
+                                    db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id], (e, row) => {
+                                      if (e) {
+                                        console.log(e.message);
+                                        return res.status(500).json({ error: "database failure" });
+                                      }
+                                    })
+                                    try {
+                                      await fs.unlink(evidencePath);
+                                      console.log("File removed successfully");
+                                    } catch (e) {
+                                      console.log(e.message);
+                                    }
+                                    return res.status(202).json({ carbon: co2_saved, source: source_url });
+                                  }
                                   return res.json({ carbon: co2_saved, source: source_url });
                                 }
                               }
