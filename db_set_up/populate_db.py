@@ -287,7 +287,7 @@ def populate_moderation_decisions(cursor):
         moderator_id = random.choice(moderator_ids)
 
         # decision - randomly choose between approved and denied
-        decision = random.choice(["approved", "denied"])
+        decision = random.choice(["Approved", "Denied"])
 
         # reason - use placeholder text
         reason = "explanation"
@@ -310,6 +310,9 @@ def populate_moderation_decisions(cursor):
         VALUES(?, ?, ?, ?, ?)
         """, 
         decisions)
+    
+def update_submission_status(cursor):
+    cursor.execute("UPDATE Submissions SET status = (SELECT decision FROM ModerationDecisions WHERE ModerationDecisions.submission_id = Submissions.submission_id) WHERE submission_id IN (SELECT submission_id FROM ModerationDecisions)")
 
 
 populate_users(cursor)
@@ -321,6 +324,7 @@ populate_action_conversion_factors(cursor)
 populate_participant_groups(cursor)
 populate_submissions(cursor)
 populate_moderation_decisions(cursor)
+update_submission_status(cursor)
 
 # check that the above have been added to the database
 
