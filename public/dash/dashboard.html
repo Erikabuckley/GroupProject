@@ -16,21 +16,21 @@
     <div id="backdrop"></div>
     <div class="header-container"></div>
 
-    <div class="indent">
-        <div id="welcome">
-            <div class="text">
-                <h1 id="name"></h1>
-                <h3>Now you can start logging carbon saving actions!</h3>
-            </div>
-            <div id="badges">
-                <img src="../images/trophy.png" class="badge" id="badge1">
-                <img src="../images/trophy.png" class="badge" id="badge2">
-                <img src="../images/trophy.png" class="badge" id="badge3">
-                <img src="../images/trophy.png" class="badge" id="badge4">
-                <img src="../images/trophy.png" class="badge" id="badge5">
-                <img src="../images/trophy.png" class="badge" id="badge6">
-            </div>
+    <div id="welcome" class="small-indent">
+        <div class="text">
+            <h1 id="name"></h1>
+            <h2>Now you can start logging carbon saving actions!</h2>
         </div>
+        <div id="badges">
+            <img src="../images/trophy.png" class="badge" id="badge1">
+            <img src="../images/trophy.png" class="badge" id="badge2">
+            <img src="../images/trophy.png" class="badge" id="badge3">
+            <img src="../images/trophy.png" class="badge" id="badge4">
+            <img src="../images/trophy.png" class="badge" id="badge5">
+            <img src="../images/trophy.png" class="badge" id="badge6">
+        </div>
+    </div>
+    <div class="indent">
         <h1>Reduce your emissions today! </h1>
         <input type="button" id="upload" value="Submit action" class="in-button"><br>
 
@@ -57,12 +57,12 @@
                         <option value="" selected disabled hidden>Select an group</option>
                         <option value="Individual">Individual challenge</option>
                     </select><br>
-                    <label for="upload-input">Please upload evidence for the challenge sumission if required:</label>
+                    <label for="upload-input">Please upload evidence for the challenge submission if required:</label>
                     <input type="file" name="upload" id="upload-input"
                         accept=".jpg, .jpeg, .png"><br>
                     <div class="declaration">
                         <input required type="checkbox" id="declaration" name="declaration">
-                        <label for="declaration"> Any evidance uploaded does not contain sensitive informaton</label>
+                        <label for="declaration"> Any evidence uploaded does not contain sensitive information</label>
                     </div>
                     <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
                 </form>

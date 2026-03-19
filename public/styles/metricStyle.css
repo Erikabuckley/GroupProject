@@ -33,6 +33,13 @@ h1 {
     align-items: center;
 }
 
+.graph canvas,
+.graph svg,
+.graph img {
+    max-width: 100%;
+    height: auto;
+}
+
 .table {
     padding-left: 4rem;
     padding-right: 4rem;
@@ -98,6 +105,8 @@ h1 {
 .info-block {
     background: rgb(140, 240, 165);
     padding: 20px;
+    border-radius: 16px;
+    text-align: center;
 }
 
 .icon-part {
@@ -105,6 +114,8 @@ h1 {
     height: 80px;
     padding: 20px;
     border-bottom: 2px solid rgb(51, 154, 104);
+    display: flex;
+    justify-content: center;
 }
 
 #stats {
