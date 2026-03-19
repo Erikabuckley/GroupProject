@@ -292,7 +292,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                     // Get challenge info
                     db.get(
-                      "SELECT challenge_id, evidence_required FROM Challenges WHERE title = ?",
+                      "SELECT challenge_id, scope, evidence_required FROM Challenges WHERE title = ?",
                       [req.body.challenge],
                       async (e, challenge) => {
                         if (e || !challenge) {
@@ -305,6 +305,13 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
 
+                        // if personal submitted for a group challenge - 403
+                        if (challenge.scope === "GROUP" && req.body.group === "No") {
+                          return res.status(403).json({ error: "Insuffiecient group information for submission" })
+                        }
+
+                        // if group submitted for a personal challenge
+                        
                         // Get group info
                         db.get(
                           "SELECT group_id FROM Groups WHERE name = ?",
