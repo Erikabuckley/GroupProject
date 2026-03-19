@@ -288,7 +288,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                     // If no challenge, return immediately
                     if (req.body.challenge === 'No') {
-                      return res.json({ carbon: co2_saved, source: source_url, value:value });
+                      return res.json({ carbon: co2_saved, source: source_url, value: value });
                     }
 
                     // Get challenge info
@@ -357,6 +357,27 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                       })
                                     }
                                   }
+                                  // flag for submission frequency
+                                  db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
+                                    if (e) {
+                                      console.log(e.message);
+                                    }
+                                    db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
+                                      if (e) {
+                                        console.log(e.message);
+                                        return res.status(500).json({ error: "database failure" });
+                                      }
+
+                                      if (countRow.total >= 3) {
+                                        db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
+                                        if (e) {
+                                          console.log(e.message);
+                                          return res.status(500).json({ error: "Failed to flag" });
+                                        }
+                                        });
+                                      }
+                                    });
+                                  });
                                   // Check if evidence provided when not required
                                   if (!challengeEvidenceRequired && evidencePath) {
                                     // remove evidence
@@ -365,44 +386,19 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                         console.log(e.message);
                                         return res.status(500).json({ error: "database failure" });
                                       }
-                                    })
+                                    });
                                     try {
                                       await fs.unlink(evidencePath);
                                       console.log("File removed successfully");
                                     } catch (e) {
                                       console.log(e.message);
                                     }
-                                    return res.status(202).json({ carbon: co2_saved, source: source_url });
-                                  }
-                                  return res.json({ carbon: co2_saved, source: source_url });
-
-                                    // flag for submission frequency
-                                    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
-                                      if (e) {
-                                        console.log(e.message);
-                                      }
-                                      db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
-                                        if (e) {
-                                          console.log(e.message);
-                                          return res.status(500).json({ error: "database failure" });
-                                        }
-
-                                        if (countRow.total >= 3) {
-                                          db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
-                                          if (e) {
-                                            console.log(e.message);
-                                            return res.status(500).json({ error: "Failed to flag" });
-                                          }
-                                          });
-                                        }
-                                      });
-                                    });
-                              
+                                    return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
                                   }
                                   return res.json({ carbon: co2_saved, source: source_url, value: value});
                                 }
-                              }
-                            );
+                                  
+                            });
                           }
                         );
                       }
