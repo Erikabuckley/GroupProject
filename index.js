@@ -343,7 +343,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                     // flag for file integrity
                                     const isValid = await check_file(uploadedFilePath);
                                     if (!isValid) { // if corrpted
-                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'Pending')", [id], e => {
                                         if (e) {
                                           console.log(e.message);
                                           return res.status(500).json({ error: "Failed to flag" });
@@ -353,7 +353,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                     // flag for duplicate uploads
                                     const original = await check_originality(uploadedFilePath);
                                     if (!original) { 
-                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '2', 'Rule 2: Duplicate Upload', 'PENDING')", [id], e => {
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '2', 'Rule 2: Duplicate Upload', 'Pending')", [id], e => {
                                         if (e) {
                                           console.log(e.message);
                                           return res.status(500).json({ error: "Failed to flag" });
@@ -540,6 +540,12 @@ app.post('/approveDeny', function (req, res) {
                       console.log(e.message);
                       return res.status(500).json({ error: "database failure" });
                     }
+                    db.run("UPDATE AntiGamingFlags SET status = 'Approved' WHERE submission_id = ? ", [req.body.id], (e) => {
+                      if (e) {
+                        console.log(e.message);
+                        return res.status(500).json({ error: "database failure" });
+                      }
+                    });
                     console.log("Submission approve successful");
                     res.end();
                   });
@@ -579,6 +585,12 @@ app.post('/approveDeny', function (req, res) {
                 if (e) {
                   console.log(e.message);
                 }
+                db.run("UPDATE AntiGamingFlags SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e) => {
+                  if (e) {
+                    console.log(e.message);
+                    return res.status(500).json({ error: "database failure" });
+                  }
+                });
                 console.log("Submission deny successful");
                 res.end();
               });
