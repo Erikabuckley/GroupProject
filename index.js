@@ -526,21 +526,30 @@ app.post('/approveDeny', function (req, res) {
             return res.status(500).json({ error: "database failure" });
           } else {
             console.log("Request added to db");
-            if (req.body.outcome === 'approve') {
-              db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [req.body.id], (e, row) => {
+            if (req.body.outcome === 'Approved') {
+              db.get("SELECT challenge_id FROM Submissions WHERE submission_id = ? ", [req.body.id], (e, challenge) => {
                 if (e) {
                   console.log(e.message);
                   return res.status(500).json({ error: "database failure" });
                 }
-                console.log("Retrieved points sucesfully");
+                console.log("Retrieved challenge id sucesfully");
                 if (row){
-                  db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
+                  db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [challenge.challenge_id], (e, row) => {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "database failure" });
                     }
-                    console.log("Submission approve successful");
-                    res.end();
+                    console.log("Retrieved points sucesfully");
+                    if (row){
+                      db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
+                        if (e) {
+                          console.log(e.message);
+                          return res.status(500).json({ error: "database failure" });
+                        }
+                        console.log("Submission approve successful");
+                        res.end();
+                      });
+                    }
                   });
                 }
               });
