@@ -293,19 +293,26 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                     // Get challenge info
                     db.get(
-                      "SELECT challenge_id, evidence_required FROM Challenges WHERE title = ?",
+                      "SELECT challenge_id, scope, evidence_required FROM Challenges WHERE title = ?",
                       [req.body.challenge],
                       async (e, challenge) => {
                         if (e || !challenge) {
                           console.log(e?.message);
                           return res.status(400).json({ error: "no challenge found" });
                         }
-
-                        // Check evidence requirement
-                        if (challenge.evidence_required && !evidencePath) {
+                        const challengeEvidenceRequired = challenge.evidence_required;
+                        // Check if evidence not provided when required
+                        if (challengeEvidenceRequired && !evidencePath) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
 
+                        // if personal submitted for a group challenge - 403
+                        if (challenge.scope === "GROUP" && req.body.group === "No") {
+                          return res.status(403).json({ error: "Insuffiecient group information for submission" })
+                        }
+
+                        // if group submitted for a personal challenge
+                        
                         // Get group info
                         db.get(
                           "SELECT group_id FROM Groups WHERE name = ?",
@@ -349,6 +356,25 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                         }
                                       })
                                     }
+                                  }
+                                  // Check if evidence provided when not required
+                                  if (!challengeEvidenceRequired && evidencePath) {
+                                    // remove evidence
+                                    db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id], (e, row) => {
+                                      if (e) {
+                                        console.log(e.message);
+                                        return res.status(500).json({ error: "database failure" });
+                                      }
+                                    })
+                                    try {
+                                      await fs.unlink(evidencePath);
+                                      console.log("File removed successfully");
+                                    } catch (e) {
+                                      console.log(e.message);
+                                    }
+                                    return res.status(202).json({ carbon: co2_saved, source: source_url });
+                                  }
+                                  return res.json({ carbon: co2_saved, source: source_url });
 
                                     // flag for submission frequency
                                     db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
