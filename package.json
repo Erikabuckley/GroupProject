@@ -7,8 +7,8 @@
     "dev": "nodemon index.js",
     "test:node": "node --test test/node/*",
     "test:jest": "jest test/jest/*",
-    "test": "npm run test:node && npm run test:jest" ,
-    "postinstall": "npm rebuild sqlite3"
+    "test": "npm run test:node && npm run test:jest",
+    "postinstall": "npm rebuild sqlite3 --build-from-source"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
