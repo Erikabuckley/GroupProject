@@ -149,8 +149,12 @@
             if not in_group:
                 # show a message telling user to join a group
                 js.document.getElementById("group-message").innerHTML = """
-                <h2>You have not joined a group yet</h2>
-                <p>Join a group to work together with others to reduce your carbon emissions and your group stats will appear here</p>
+                <div class="graph-block">
+                    <div class="graph">
+                        <p>You have not joined a group yet</p>
+                        <p>Join a group to work together with others to reduce your carbon emissions and your group stats will appear here</p>
+                    </div>
+                </div>
                 """
                 js.document.getElementById("graph1").style.display = "none"
                 js.document.getElementById("graph2").style.display = "none"
