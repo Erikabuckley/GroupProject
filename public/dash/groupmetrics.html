@@ -138,10 +138,39 @@
             
             display(fig, target="graph3", append=False)
 
-        asyncio.ensure_future(make_co2_scatter())
-        asyncio.ensure_future(make_points_chart())
-        asyncio.ensure_future(make_action_type_pie())
+        async def check_group():
+            res = await fetch("/checkGroup")
+            data = (await res.json()).to_py()
+            return data["inGroup"]
+
+        async def load_page():
+            in_group = await check_group()
+
+            if not in_group:
+                # show a message telling user to join a group
+                js.document.getElementById("group-message").innerHTML = """
+                <h2>You have not joined a group yet</h2>
+                <p>Join a group to work together with others to reduce your carbon emissions and your group stats will appear here</p>
+                """
+                js.document.getElementById("graph1").style.display = "none"
+                js.document.getElementById("graph2").style.display = "none"
+                js.document.getElementById("graph3").style.display = "none"
+                js.document.getElementById("group-carbon").style.display = "none"
+                js.document.getElementById("group-points").style.display = "none"
+                js.document.getElementById("data-table").style.display = "none"
+                js.document.getElementById("myChart").style.display = "none"
+                return
+                
+            # if user is in a group, load associated graphs
+            await make_points_chart()
+            await make_co2_scatter()
+            await make_action_type_pie()
+
+        asyncio.ensure_future(load_page())
+
         </py-script>
+
+        <div id="group-message"></div>
 
         <div class="graph-block">
             <div class="graph" id="graph1">

@@ -152,6 +152,10 @@
     filter: grayscale(100%);
 }
 
+.badge:hover{
+    cursor: pointer;
+    transform: scale(1.3);
+}
 .badge.earnt{
     filter: none;
 }

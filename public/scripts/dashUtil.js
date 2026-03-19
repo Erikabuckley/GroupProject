@@ -283,5 +283,16 @@ async function updateBadges() {
 
         badge.classList.toggle("earnt", earned);
         badge.classList.toggle("not-earnt", !earned);
+        badge.addEventListener('click', () =>{
+            const dialog = document.getElementById('badge-info');
+            const dialogText = document.getElementById('badge-text');
+            dialogText.textContent = badge.alt;
+            dialog.showModal();    
+
+            const button = document.getElementById("close-badge");
+            button.addEventListener('click', () =>{
+                dialog.close()
+            });              
+        });
     });
 }
