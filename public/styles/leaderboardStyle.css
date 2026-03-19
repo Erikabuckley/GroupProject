@@ -25,9 +25,9 @@
 .info {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    padding: 2rem 35rem 2rem 35rem;
-    gap: 1rem;
+    padding: 2rem;
+    gap: 7rem;
+    justify-content: center;
 }
 
 .info iframe {
