@@ -534,6 +534,7 @@ app.post('/approveDeny', function (req, res) {
                 }
                 console.log("Retrieved points sucesfully");
                 if (row){
+
                   db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
                     if (e) {
                       console.log(e.message);
@@ -545,6 +546,35 @@ app.post('/approveDeny', function (req, res) {
                 }
               });
             } else if (req.body.outcome === 'deny') {
+              // if sensitive info
+              if (req.body.info === true) {
+                // get file path
+                db.get("SELECT evidence, log_id FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id WHERE Submissions.submission_id = ?", [req.body.id], async (e, row) => {
+                  if (e) {
+                    console.log(e.message);
+                    return res.status(500).json({ error: "database failure" });
+                  }
+                  if (row) {
+                    // delete file
+                    try {
+                      const evidenceFullPath =  path.join(__dirname, 'public', row.evidence);
+                      await fs.unlink(evidenceFullPath);
+                      console.log("File removed successfully");
+                    } catch (e) {
+                      console.log(e.message);
+                    }
+                    // set path to null
+                    db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [row.log_id], (e) => {
+                      if (e) {
+                        console.log(e.message);
+                        return res.status(500).json({ error: "database failure" });
+                      }
+                    });
+                  }
+                });
+              } // closes if sensitive info block
+              
+              
               db.run("UPDATE Submissions SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e, row) => {
                 if (e) {
                   console.log(e.message);
