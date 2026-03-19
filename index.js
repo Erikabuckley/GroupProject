@@ -307,11 +307,10 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                         }
 
                         // if personal submitted for a group challenge - 403
-                        if (challenge.scope === "GROUP" && req.body.group === "No") {
+                        if (challenge.scope === "Group" && req.body.group === "No") {
                           return res.status(403).json({ error: "Insuffiecient group information for submission" })
                         }
 
-                        // if group submitted for a personal challenge
                         
                         // Get group info
                         db.get(
@@ -322,11 +321,16 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                               console.log(e?.message || "Group not found");
                               return res.status(400).json({ error: "no group found" });
                             }
+                            var group_id = group.group_id;
+                            // if group submitted for a personal challenge
+                            if (challenge.scope === "Personal") {
+                              group_id = null;
+                            }
 
                             // Insert into Submissions
                             db.run(
                               "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
-                              [challenge.challenge_id, user.user_id, group.group_id, log_id],
+                              [challenge.challenge_id, user.user_id, group_id, log_id],
                               async function (e) {
                                 if (e) {
                                   console.log(e.message);
