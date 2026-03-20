@@ -324,9 +324,9 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                         if (challengeEvidenceRequired && !evidencePath) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
-
+                        console.log(challenge.scope, req.body.group);
                         // if personal submitted for a group challenge - 403
-                        if (challenge.scope === "Group" && req.body.group === "Individual challenge") {
+                        if (challenge.scope === "Group" && req.body.group === "Individual") {
                           return res.status(403).json({ error: "Insuffiecient group information for submission" })
                         }
 
