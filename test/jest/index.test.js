@@ -71,7 +71,7 @@ describe('POST /login', () => {
       .send({ email: 'user@test.com', password: 'wrongpass' });
 
     expect(res.statusCode).toBe(401);
-    expect(res.body.error).toMatch(/incorrect password/i);
+    expect(res.body.error).toMatch(/Incorrect log in credentials, please try again/i);
   });
 
   test('returns 401 when email is not registered', async () => {
@@ -84,7 +84,7 @@ describe('POST /login', () => {
       .send({ email: 'ghost@test.com', password: 'anything' });
 
     expect(res.statusCode).toBe(401);
-    expect(res.body.error).toMatch(/no user with that email/i);
+    expect(res.body.error).toMatch(/Incorrect log in credentials, please try again/i);
   });
 
 });
@@ -100,7 +100,7 @@ describe('POST /signUp', () => {
 
     const res = await request(app)
       .post('/signUp')
-      .send({ name: 'Alice', email: 'alice@test.com', password: 'secure123' });
+      .send({ name: 'Alice', email: 'alice@test.com', password: 'secure1234567891011' });
 
     expect(res.statusCode).toBe(201);
   });
@@ -112,7 +112,7 @@ describe('POST /signUp', () => {
 
     const res = await request(app)
       .post('/signUp')
-      .send({ name: 'Alice', email: 'alice@test.com', password: 'secure123' });
+      .send({ name: 'Alice', email: 'alice@test.com', password: 'secure1234567891011' });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.error).toMatch(/already with this email/i);
@@ -126,7 +126,7 @@ describe('POST /signUp', () => {
 
     const res = await request(app)
       .post('/signUp')
-      .send({ name: 'Alice', email: 'alice@test.com', password: 'secure123' });
+      .send({ name: 'Alice', email: 'alice@test.com', password: 'secure1235678901011' });
 
     expect(res.statusCode).toBe(500);
     expect(res.body.error).toMatch(/failed to create user/i);

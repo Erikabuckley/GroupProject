@@ -115,11 +115,11 @@ app.post('/login', async (req, res) => {
           console.log("User sign in successful"); // log that user has been signed in
         } else {
           console.log("Incorrect password entered");
-          return res.status(401).json({ error: "Incorrect password, please try again" }); // return error
+          return res.status(401).json({ error: "Incorrect log in credentials, please try again" }); // return error
         }
       } else {
         console.log("user does not exist"); // log that user doesn't exist
-        return res.status(401).json({ error: "No user with that email, please try again" });
+        return res.status(401).json({ error: "Incorrect log in credentials, please try again" });
       }
     })
   });

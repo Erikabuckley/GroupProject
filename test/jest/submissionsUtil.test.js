@@ -27,11 +27,12 @@ function makeWindow() {
      <div id="backdrop" style="display:none"></div>
 
      <form id="approveDenyForm">
-       <input id="reason-input" value="" />
-       <input type="radio" name="val" value="approve" />
-       <input type="radio" name="val" value="deny" />
-       <input type="checkbox" id="identifying-info" />
-       <button type="submit">Submit</button>
+      <span class="error" id="approval-error"></span>
+      <input id="reason-input" value="" />
+      <input type="radio" name="val" value="approve" />
+      <input type="radio" name="val" value="deny" />
+      <input type="checkbox" id="identifying-info" />
+      <button type="submit">Submit</button>
      </form>`,
     { url: "https://example.com/mod.html", runScripts: "dangerously" }
   );

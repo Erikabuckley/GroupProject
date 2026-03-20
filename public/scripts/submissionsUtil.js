@@ -128,9 +128,13 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
         document.getElementById("approval-error").textContent = "You must deny submissions with identifying information";
         document.getElementById("approval-error").style.visibility = 'visible'
         return;
+    } else if (!/^[A-Za-z0-9'-. ]+$/.test(reason)){
+        document.getElementById('approval-error').textContent = "Name must not contain special characters";
+        document.getElementById('approval-error').style.visibility = 'visible';
     }
     await approveDeny(decision, reason, selectedSubmission.id, info);  //calls function to subbmit information to database
     form.reset();
+    document.getElementById('approval-error').style.visibility = 'hidden';
     document.getElementById('approveDeny-modal').style.display = 'none';
 
     document.getElementById('backdrop').style.display = "none";
