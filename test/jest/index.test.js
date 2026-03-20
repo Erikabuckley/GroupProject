@@ -27,8 +27,8 @@ jest.mock('sharp-phash', () => jest.fn().mockResolvedValue('hash'));
 jest.mock('sharp-phash/distance', () => jest.fn().mockReturnValue(10));
 jest.mock('fs/promises', () => ({
   readFile: jest.fn().mockResolvedValue(Buffer.from('')),
-  readdir:  jest.fn().mockResolvedValue([]),
-  unlink:   jest.fn().mockResolvedValue(undefined),
+  readdir: jest.fn().mockResolvedValue([]),
+  unlink: jest.fn().mockResolvedValue(undefined),
 }));
 
 const sqlite3 = require('sqlite3');
@@ -36,12 +36,14 @@ const mockDb = sqlite3.__mockDb;
 const app = require('../../index');
 
 beforeEach(() => jest.clearAllMocks());
+
 beforeAll(() => {
-  jest.spyOn(console, "log").mockImplementation(() => {});
+  jest.spyOn(console, 'log').mockImplementation(() => {});
 });
 
 
-// ─── 1. POST /login ──────────────────────────────────────────────────────────
+// 1. POST /login
+// Checks login success and common failure cases.
 describe('POST /login', () => {
 
   test('returns role when email and password are correct', async () => {
@@ -88,7 +90,8 @@ describe('POST /login', () => {
 });
 
 
-// ─── 2. POST /signUp ─────────────────────────────────────────────────────────
+// 2. POST /signUp
+// Checks signup success, duplicate email, and insert failure.
 describe('POST /signUp', () => {
 
   test('creates a new user and returns 201', async () => {
@@ -132,7 +135,8 @@ describe('POST /signUp', () => {
 });
 
 
-// ─── 3. POST /setSession ─────────────────────────────────────────────────────
+// 3. POST /setSession
+// Checks session setup when user exists and DB failure case.
 describe('POST /setSession', () => {
 
   test('sets session and responds when user is found', async () => {
@@ -163,7 +167,8 @@ describe('POST /setSession', () => {
 });
 
 
-// ─── 4. GET /getSession ──────────────────────────────────────────────────────
+// 4. GET /getSession
+// Confirms the endpoint responds successfully.
 describe('GET /getSession', () => {
 
   test('responds with 200', async () => {
@@ -174,7 +179,8 @@ describe('GET /getSession', () => {
 });
 
 
-// ─── 5. POST /destroySession ─────────────────────────────────────────────────
+// 5. POST /destroySession
+// Confirms session destroy route responds successfully.
 describe('POST /destroySession', () => {
 
   test('destroys session and returns confirmation message', async () => {
@@ -186,7 +192,8 @@ describe('POST /destroySession', () => {
 });
 
 
-// ─── 6. GET /updateTotal ─────────────────────────────────────────────────────
+// 6. GET /updateTotal
+// Checks the total CO2 saved across all logged actions.
 describe('GET /updateTotal', () => {
 
   test('returns total CO2 saved as a number', async () => {
@@ -215,7 +222,8 @@ describe('GET /updateTotal', () => {
 });
 
 
-// ─── 7. GET /updatePoints ────────────────────────────────────────────────────
+// 7. GET /updatePoints
+// Checks the total number of points in the system.
 describe('GET /updatePoints', () => {
 
   test('returns total points as a number', async () => {
@@ -243,7 +251,48 @@ describe('GET /updatePoints', () => {
 });
 
 
-// ─── 8. GET /getMembers ──────────────────────────────────────────────────────
+// 8. GET /checkPerm
+// Checks the logged-in user's permission level.
+describe('GET /checkPerm', () => {
+
+  test('returns moderator permission when the user is a moderator', async () => {
+    mockDb.get.mockImplementation((_sql, _params, cb) => {
+      cb(null, { role: 'moderator' });
+    });
+
+    const res = await request(app).get('/checkPerm');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ perm: 'moderator' });
+  });
+
+  test('returns participant permission when the user is a participant', async () => {
+    mockDb.get.mockImplementation((_sql, _params, cb) => {
+      cb(null, { role: 'participant' });
+    });
+
+    const res = await request(app).get('/checkPerm');
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({ perm: 'participant' });
+  });
+
+  test('returns 500 when the database query fails', async () => {
+    mockDb.get.mockImplementation((_sql, _params, cb) => {
+      cb(new Error('DB error'), null);
+    });
+
+    const res = await request(app).get('/checkPerm');
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body.error).toMatch(/database failure/i);
+  });
+
+});
+
+
+// 9. GET /getMembers
+// Returns the total number of registered users.
 describe('GET /getMembers', () => {
 
   test('returns the total number of members', async () => {
@@ -271,7 +320,8 @@ describe('GET /getMembers', () => {
 });
 
 
-// ─── 9. POST /delete ─────────────────────────────────────────────────────────
+// 10. POST /delete
+// Checks account deletion success and missing-user case.
 describe('POST /delete', () => {
 
   test('returns 200 and confirmation message when account is deleted', async () => {
@@ -303,14 +353,15 @@ describe('POST /delete', () => {
 });
 
 
-// ─── 10. GET /updateLeaderboard ──────────────────────────────────────────────
+// 11. GET /updateLeaderboard
+// Checks leaderboard formatting, null handling, and DB errors.
 describe('GET /updateLeaderboard', () => {
 
   test('returns parallel name/total arrays', async () => {
     mockDb.all.mockImplementation((_sql, cb) => {
       cb(null, [
         { name: 'Team Alpha', total: 300 },
-        { name: 'Team Beta',  total: 150 },
+        { name: 'Team Beta', total: 150 },
       ]);
     });
 
@@ -354,15 +405,17 @@ describe('GET /updateLeaderboard', () => {
 });
 
 
-// ─── 11. POST /approveDeny ───────────────────────────────────────────────────
+// 12. POST /approveDeny
+// Tests moderator decisions for approving or denying submissions.
 describe('POST /approveDeny', () => {
 
-  test('approve: inserts decision, fetches score, updates submission', async () => {
+  test('approve: inserts decision, fetches challenge and score, updates submission', async () => {
     let callCount = 0;
     mockDb.get.mockImplementation((_sql, _params, cb) => {
       callCount++;
       if (callCount === 1) cb(null, { user_id: 5 });
-      else                 cb(null, { score: 50 });
+      else if (callCount === 2) cb(null, { challenge_id: 10 });
+      else cb(null, { score: 50 });
     });
     mockDb.run.mockImplementation(function (_sql, _params, cb) {
       if (cb) cb(null);
@@ -370,7 +423,7 @@ describe('POST /approveDeny', () => {
 
     const res = await request(app)
       .post('/approveDeny')
-      .send({ id: 1, outcome: 'approve', reason: 'Great work' });
+      .send({ id: 1, outcome: 'Approved', reason: 'Great work' });
 
     expect(res.statusCode).toBe(200);
   });
@@ -400,7 +453,7 @@ describe('POST /approveDeny', () => {
 
     const res = await request(app)
       .post('/approveDeny')
-      .send({ id: 1, outcome: 'deny', reason: 'Bad submission' });
+      .send({ id: 1, outcome: 'Denied', reason: 'Bad submission' });
 
     expect(res.statusCode).toBe(500);
   });
@@ -408,13 +461,14 @@ describe('POST /approveDeny', () => {
 });
 
 
-// ─── 12. GET /updateChallengeList ────────────────────────────────────────────
+// 13. GET /updateChallengeList
+// Checks active challenge list formatting and DB errors.
 describe('GET /updateChallengeList', () => {
 
   test('returns parallel arrays of active challenges', async () => {
     mockDb.all.mockImplementation((_sql, _params, cb) => {
       cb(null, [
-        { title: 'Go Vegan',      end_date: '2026-12-01', evidence_required: 1 },
+        { title: 'Go Vegan', end_date: '2026-12-01', evidence_required: 1 },
         { title: 'Cycle to Work', end_date: '2026-11-01', evidence_required: 0 },
       ]);
     });
@@ -449,12 +503,18 @@ describe('GET /updateChallengeList', () => {
 });
 
 
-// ─── 13. POST /addChallenge ──────────────────────────────────────────────────
+// 14. POST /addChallenge
+// Checks challenge creation and insert failure.
 describe('POST /addChallenge', () => {
 
   const validChallenge = {
-    name: 'New Challenge', scope: 'global', rules: 'Do the thing',
-    points: 100, start: '2026-01-01', end: '2026-06-01', selectedValue: 1,
+    name: 'New Challenge',
+    scope: 'global',
+    rules: 'Do the thing',
+    points: 100,
+    start: '2026-01-01',
+    end: '2026-06-01',
+    selectedValue: 1,
   };
 
   test('creates a challenge and returns 201', async () => {
@@ -480,7 +540,8 @@ describe('POST /addChallenge', () => {
 });
 
 
-// ─── 14. POST /deleteChallenge ───────────────────────────────────────────────
+// 15. POST /deleteChallenge
+// Checks challenge deletion success.
 describe('POST /deleteChallenge', () => {
 
   test('returns 200 and confirmation message', async () => {
@@ -498,7 +559,8 @@ describe('POST /deleteChallenge', () => {
 });
 
 
-// ─── 15. GET /updateCarbon ───────────────────────────────────────────────────
+// 16. GET /updateCarbon
+// Checks the total carbon saved in the whole system.
 describe('GET /updateCarbon', () => {
 
   test('returns total carbon saved as a number', async () => {
@@ -527,14 +589,27 @@ describe('GET /updateCarbon', () => {
 });
 
 
-// ─── 16. GET /updateSubmissionsList ──────────────────────────────────────────
+// 17. GET /updateSubmissionsList
+// Checks moderator submissions list formatting and automatic flag text.
 describe('GET /updateSubmissionsList', () => {
 
   test('returns parallel arrays with flag messages correctly mapped', async () => {
     mockDb.all.mockImplementation((_sql, _params, cb) => {
       cb(null, [
-        { name: 'Cycle to work', submission_id: 1, evidence: 'img1.png', title: 'Cycle Challenge', flags: null },
-        { name: 'Go vegan',      submission_id: 2, evidence: 'img2.png', title: 'Diet Challenge',  flags: 'Rule 1: Corrupted File' },
+        {
+          name: 'Cycle to work',
+          submission_id: 1,
+          evidence: 'img1.png',
+          title: 'Cycle Challenge',
+          flags: null,
+        },
+        {
+          name: 'Go vegan',
+          submission_id: 2,
+          evidence: 'img2.png',
+          title: 'Diet Challenge',
+          flags: 'Rule 1: Corrupted File',
+        },
       ]);
     });
 

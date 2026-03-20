@@ -1349,6 +1349,22 @@ app.get('/getApprovalTimes', function (req, res) {
   // join based on linked action logs/log id
   // where users.role = moderator
 
+app.get('/checkGroup', function (req, res) {
+  console.log("Check whether user is part of a group");
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+    db.get("SELECT group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+      if (e) {
+        console.log(e.message);
+      }
+      return res.json({ inGroup: !!row });
+    });
+  });
+});
+
 // delete user information
 app.post("/delete", (req,res) => {
   console.log("Delete request received");

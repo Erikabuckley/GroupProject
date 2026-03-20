@@ -22,6 +22,7 @@
     <div class="header-container"></div>
     <div>
         <h1> View Participant Analytics</h1>
+        <h4 class="description"> See the data for the groups you are managing. </h4>
         <div class="key-stats">
             <div class="total">
                 <h3> Number of Members: </h3>
@@ -32,6 +33,25 @@
                <h3 id="points"></h3>
             </div>
         </div>
+
+        <div class="info-section">
+            <div class="info-block">
+                <div class="icon-part">
+                    <img src="../images/trophy.png" id="stats">
+                </div>
+                <h4>Total Number of Challenge Submissions</h4>
+                <h4 id="challenge-stat"></h4>
+            </div>
+
+            <div class="info-block">
+                <div class="icon-part">
+                    <img src="../images/trophy.png" id="stats">
+                </div>
+                <h4>Total Number of Actions Made</h4>
+                <h4 id="mission-stat"></h4> 
+            </div>
+        </div>
+
         <py-script>
 
         import matplotlib.pyplot as plt
@@ -164,24 +184,6 @@
             <div class="graph" id="graph2"></div>
             <div class="graph" id="graph3"></div>
             <div class="graph" id="graph4"></div>
-        </div>
-
-        <div class="info-section">
-            <div class="info-block">
-                <div class="icon-part">
-                    <img src="../images/climate.png" id="stats">
-                </div>
-                <h4>Total number of challenge submissions</h4>
-                <h4 id="challenge-stat"></h4>
-            </div>
-
-            <div class="info-block">
-                <div class="icon-part">
-                    <img src="../images/climate.png" id="stats">
-                </div>
-                <h4>Total number of actions made</h4>
-                <h4 id="mission-stat"></h4> 
-            </div>
         </div>
 
     </div>

@@ -23,23 +23,25 @@
         </div>
     </dialog>
 
-    <div class="indent">
+    <div class="small-indent">
         <div id="welcome">
             <div class="text">
                 <h1 id="name"></h1>
                 <h3>Now you can start logging carbon saving actions!</h3>
             </div>
             <div id="badges">
-                <img src="../images/trophy.png" class="badge" id="badge1" alt="1kg of CO2e saved">
-                <img src="../images/trophy.png" class="badge" id="badge2" alt="Joining and participating in a group challenge">
-                <img src="../images/trophy.png" class="badge" id="badge3" alt="30 pieces of litter picked">
-                <img src="../images/trophy.png" class="badge" id="badge4" alt="10 missions completed">
-                <img src="../images/trophy.png" class="badge" id="badge5" alt="Completing 5 challenges">
-                <img src="../images/trophy.png" class="badge" id="badge6" alt="Earning 5 badges">
+                <img src="../images/badges/badge1.png" class="badge" id="badge1" alt="1kg of CO2e saved">
+                <img src="../images/badges/badge2.png" class="badge" id="badge2" alt="Joining and participating in a group challenge">
+                <img src="../images/badges/badge3.png" class="badge" id="badge3" alt="30 pieces of litter picked">
+                <img src="../images/badges/badge4.png" class="badge" id="badge4" alt="10 missions completed">
+                <img src="../images/badges/badge5.png" class="badge" id="badge5" alt="Completing 5 challenges">
+                <img src="../images/badges/badge6.png" class="badge" id="badge6" alt="Earning 5 badges">
             </div>
         </div>
+    </div>
+    <div class="indent">
         <h1>Reduce your emissions today! </h1>
-        <input type="button" id="upload" value="Submit action" class="in-button"><br>
+        <input type="button" id="upload" value="Submit action" class="in-button"><br><br>
 
         <div id="upload-modal" class="modal">
             <div class="modal-content">
@@ -64,12 +66,12 @@
                         <option value="" selected disabled hidden>Select an group</option>
                         <option value="Individual">Individual challenge</option>
                     </select><br>
-                    <label for="upload-input">Please upload evidence for the challenge sumission if required:</label>
+                    <label for="upload-input">Please upload evidence for the challenge submission if required:</label>
                     <input type="file" name="upload" id="upload-input"
                         accept=".jpg, .jpeg, .png"><br>
                     <div class="declaration">
                         <input required type="checkbox" id="declaration" name="declaration">
-                        <label for="declaration"> Any evidance uploaded does not contain sensitive informaton</label>
+                        <label for="declaration"> Any evidence uploaded does not contain sensitive information</label>
                     </div>
                     <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
                 </form>
