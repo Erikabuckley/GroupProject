@@ -68,8 +68,8 @@ def populate_users(cursor):
 
 def seed_users():
     users = [
-        ('test user', 'user', 'user@exeter.ac.uk', 'user123'),
-        ('test moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
+        ('Test user', 'user', 'user@exeter.ac.uk', 'user123'),
+        ('Test moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
     ]
 
     for display_name, role, email, plain_password in users:
