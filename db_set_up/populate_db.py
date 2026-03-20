@@ -18,6 +18,7 @@ cursor.execute("DELETE FROM ActionLogs")
 cursor.execute("DELETE FROM ParticipantGroups")
 cursor.execute("DELETE FROM Submissions")
 cursor.execute("DELETE FROM ModerationDecisions")
+cursor.execute("DELETE FROM AntiGamingFlags")
 
 # reset ids
 cursor.execute("DELETE FROM sqlite_sequence")
@@ -179,9 +180,8 @@ def populate_action_logs(cursor):
         cursor.execute("SELECT user_id FROM Users")
         user_ids = [row[0] for row in cursor.fetchall()]
 
-        # action type id (FK) - 3 types: travel, food, waste
-        # do same way as user_id once made action type table?
-        action_type_id = random.randint(1, 3)
+        # action type id (FK) - 5 action types populated in db - choose one randomly
+        action_type_id = random.randint(1, 5)
 
         # randomly choose user id
         user_id = random.choice(user_ids)
@@ -192,18 +192,32 @@ def populate_action_logs(cursor):
         # randomly choose a date in the last 30 days
         date = (today - timedelta(days=random.randint(0, 30))).isoformat()
 
+        # choose 80 logs to have evidence 
+        evidence_logs = set(random.sample(range(500), 80))
+        # list of images for each action type's evidence 
+        images = {"FOOD" : "../images/food.png", 
+                  "WASTE" : "../images/waste.png",
+                  "TRAVEL" : "../images/travel.png"}
+        if i in evidence_logs:
+            cursor.execute("SELECT category FROM ActionTypes WHERE ActionTypes.action_type_id = ?", (action_type_id,))
+            category = cursor.fetchone()[0]
+            evidence = images[category]
+        else:
+            evidence = None
 
         # calculated co2e = quantity * default factor id (from action type)
-        # use default factor id once made action table
-        calculated_co2e = random.randint(1, 100)
+        cursor.execute("SELECT default_factor_id FROM ActionTypes WHERE ActionTypes.action_type_id = ?", (action_type_id,))
+        default_factor_id = cursor.fetchone()[0]
+        calculated_co2e = quantity*default_factor_id
 
         action_logs.append((action_type_id, user_id, quantity,
-                           date, calculated_co2e))
+                           date, evidence, calculated_co2e))
+        
 
     cursor.executemany(
         """ 
-        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, calculated_co2e)
-        VALUES(?, ?, ?, ?, ?)
+        INSERT INTO ActionLogs(action_type_id, user_id, quantity, date, evidence, calculated_co2e)
+        VALUES(?, ?, ?, ?, ?, ?)
         """,
         action_logs
     )
@@ -258,7 +272,7 @@ def populate_submissions(cursor):
         points = random.randint(5, 20)
 
         # use placeholder text for status 
-        status = "Pending"
+        status = "submitted"
 
         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
@@ -314,6 +328,82 @@ def populate_moderation_decisions(cursor):
 def update_submission_status(cursor):
     cursor.execute("UPDATE Submissions SET status = (SELECT decision FROM ModerationDecisions WHERE ModerationDecisions.submission_id = Submissions.submission_id) WHERE submission_id IN (SELECT submission_id FROM ModerationDecisions)")
 
+def populate_evidence_submissions(cursor):
+    submissions = []
+    for i in range(1, 81):
+
+        # get linked_action_log ids of those with evidence 
+        cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
+        log_ids = [row[0] for row in cursor.fetchall()]
+        log_id = random.choice(log_ids)
+
+        # get challenge_ids
+        cursor.execute("SELECT challenge_id FROM Challenges")
+        challenge_ids = [row[0] for row in cursor.fetchall()]
+        challenge_id = random.choice(challenge_ids)
+
+        # get user_ids
+        cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
+        user_id = cursor.fetchone()[0]
+        
+        # get group_ids 
+        cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
+        group_id = cursor.fetchone()[0]
+
+        # get random number for points 
+        points = random.randint(5, 20)
+
+        # use placeholder text for status 
+        status = "pending"
+
+        submissions.append((log_id, challenge_id, user_id, group_id, points, status))
+
+    cursor.executemany(
+        """
+        INSERT INTO Submissions(linked_action_log, challenge_id, user_id, group_id, points, status)
+        VALUES(?, ?, ?, ?, ?, ?)
+        """,
+        submissions
+    )
+
+def populate_anti_gaming_flags(cursor):
+    flags = []
+    # get submission_ids
+    cursor.execute("SELECT submission_id FROM Submissions")
+    submission_ids = [row[0] for row in cursor.fetchall()]
+
+
+    # list of rules and their flag type 
+    rules = [("1", "File integrity"),
+            ("2", "Duplicate upload"),
+            ("3", "Upload frequency")]
+    for rule in rules:
+        submission_id = random.choice(submission_ids)
+        flag_type, rule_triggered = rule
+        # status matches moderation decisions
+        cursor.execute("SELECT status FROM Submissions WHERE Submissions.submission_id = ?", (submission_id,))
+        status = cursor.fetchone()[0]
+        flags.append((submission_id, flag_type, rule_triggered, status))
+    
+    cursor.executemany(
+    """
+    INSERT INTO AntiGamingFlags(submission_id, rule_triggered, flag_type, status)
+    VALUES(?, ?, ?, ?)
+    """,
+    flags
+    )
+
+
+# edge case submissions to test anti-gaming checks and moderation - 100
+# File integrity 
+# Duplicate upload 
+# Upload frequency 
+# Contradiction 
+# Sensitive information 
+# Fake/ AI images 
+# Extreme value 
+
+
 
 populate_users(cursor)
 seed_users()
@@ -325,6 +415,8 @@ populate_participant_groups(cursor)
 populate_submissions(cursor)
 populate_moderation_decisions(cursor)
 update_submission_status(cursor)
+populate_evidence_submissions(cursor)
+populate_anti_gaming_flags(cursor)
 
 # check that the above have been added to the database
 
@@ -351,6 +443,9 @@ print("Submisions:", cursor.fetchone()[0])
 
 cursor.execute("SELECT COUNT(*) FROM ModerationDecisions")
 print("ModerationDecisions:", cursor.fetchone()[0])
+
+cursor.execute("SELECT COUNT(*) FROM AntiGamingFlags")
+print("AntiGamingFlags:", cursor.fetchone()[0])
 
 
 # save and close the connection
