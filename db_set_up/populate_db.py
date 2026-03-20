@@ -352,43 +352,43 @@ def populate_moderation_decisions(cursor):
 def update_submission_status(cursor):
     cursor.execute("UPDATE Submissions SET status = (SELECT decision FROM ModerationDecisions WHERE ModerationDecisions.submission_id = Submissions.submission_id) WHERE submission_id IN (SELECT submission_id FROM ModerationDecisions)")
 
-# def populate_evidence_submissions(cursor):
-#     submissions = []
-#     for i in range(1, 81):
+def populate_evidence_submissions(cursor):
+    submissions = []
+    for i in range(1, 81):
 
-#         # get linked_action_log ids of those with evidence 
-#         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
-#         log_ids = [row[0] for row in cursor.fetchall()]
-#         log_id = random.choice(log_ids)
+        # get linked_action_log ids of those with evidence 
+        cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
+        log_ids = [row[0] for row in cursor.fetchall()]
+        log_id = random.choice(log_ids)
 
-#         # get challenge_ids
-#         cursor.execute("SELECT challenge_id FROM Challenges")
-#         challenge_ids = [row[0] for row in cursor.fetchall()]
-#         challenge_id = random.choice(challenge_ids)
+        # get challenge_ids
+        cursor.execute("SELECT challenge_id FROM Challenges")
+        challenge_ids = [row[0] for row in cursor.fetchall()]
+        challenge_id = random.choice(challenge_ids)
 
-#         # get user_ids
-#         cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
-#         user_id = cursor.fetchone()[0]
+        # get user_ids
+        cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
+        user_id = cursor.fetchone()[0]
         
-#         # get group_ids 
-#         cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
-#         group_id = cursor.fetchone()[0]
+        # get group_ids 
+        cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
+        group_id = cursor.fetchone()[0]
 
-#         # get random number for points 
-#         points = random.randint(5, 20)
+        # get random number for points 
+        points = random.randint(5, 20)
 
-#         # use placeholder text for status 
-#         status = "Pending"
+        # use placeholder text for status 
+        status = "Pending"
 
-#         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
+        submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
-#     cursor.executemany(
-#         """
-#         INSERT INTO Submissions(linked_action_log, challenge_id, user_id, group_id, points, status)
-#         VALUES(?, ?, ?, ?, ?, ?)
-#         """,
-#         submissions
-#     )
+    cursor.executemany(
+        """
+        INSERT INTO Submissions(linked_action_log, challenge_id, user_id, group_id, points, status)
+        VALUES(?, ?, ?, ?, ?, ?)
+        """,
+        submissions
+    )
 
 def populate_anti_gaming_flags(cursor):
     flags = []
@@ -430,13 +430,13 @@ populate_users(cursor)
 seed_users()
 populate_groups(cursor)
 populate_challenges(cursor)
-populate_action_logs(cursor)
 populate_action_conversion_factors(cursor)
+populate_action_logs(cursor)
 populate_participant_groups(cursor)
 populate_submissions(cursor)
 populate_moderation_decisions(cursor)
 update_submission_status(cursor)
-# populate_evidence_submissions(cursor)
+populate_evidence_submissions(cursor)
 populate_anti_gaming_flags(cursor)
 
 # check that the above have been added to the database
