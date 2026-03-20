@@ -288,7 +288,26 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                     // If no challenge, return immediately
                     if (req.body.challenge === 'No') {
-                      return res.json({ carbon: co2_saved, source: source_url, value: value });
+                      // Check if evidence provided when not required
+                      if (evidencePath) {
+                        // remove evidence
+                        db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id],(e, row) => {
+                          if (e) {
+                            console.log(e.message);
+                            return res.status(500).json({ error: "database failure" });
+                          }
+                        });
+                        try {
+                          const evidenceFullPath =  path.join(__dirname, 'public', evidencePath);
+                          fs.unlink(evidenceFullPath);
+                          console.log("File removed successfully");
+                        } catch (e) {
+                          console.log(e.message);
+                        }
+                        return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
+                      }else{
+                        return res.json({ carbon: co2_saved, source: source_url, value: value });
+                      }
                     }
 
                     // Get challenge info
