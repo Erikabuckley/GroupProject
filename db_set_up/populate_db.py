@@ -1,7 +1,7 @@
 import sqlite3
 import random
 import bcrypt
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta, datetime, timezone
 
 # Connect to database
 con = sqlite3.connect("CarbonChallenge.db")
@@ -26,6 +26,7 @@ cursor.execute("DELETE FROM sqlite_sequence")
 # insert users into db
 
 def populate_users(cursor):
+    
     participants = []
     moderators = []
     for i in range(1, 61):
@@ -97,9 +98,15 @@ def populate_groups(cursor):
         )
 
 
-today = date.today()
-start_date = (today - timedelta(days=365)).isoformat()
-end_date = (today + timedelta(days=365)).isoformat()
+today = datetime.now(timezone.utc)
+
+start_date = (today - timedelta(days=365)).replace(
+    hour=0, minute=0, second=0, microsecond=0
+).isoformat(timespec="milliseconds").replace('+00:00','Z')
+
+end_date = (today + timedelta(days=365)).replace(
+    hour=0, minute=0, second=0, microsecond=0
+).isoformat(timespec="milliseconds").replace('+00:00','Z')
 
 # insert challenges into db
 
@@ -172,6 +179,12 @@ def populate_challenges(cursor):
 
 # insert action logs into db
 
+def populate_action_conversion_factors(cursor):
+    cursor.execute("DELETE FROM ConversionFactors")
+    cursor.execute("DELETE FROM ActionTypes")
+    cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820, 'empty'),(106, 'https://beryl.cc/carbon-saving-calculator', 'km', 'g', 138, 'empty')")
+    cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'vegan for a day', 'kcal', 104), (5, 'FOOD', 'vegeterian for a day', 'kcal', 105),(6, 'TRAVEL', 'Cycle 1km', 'km', 106)")
+
 
 def populate_action_logs(cursor):
     action_logs = []
@@ -190,7 +203,7 @@ def populate_action_logs(cursor):
         quantity = random.randint(1, 10)
 
         # randomly choose a date in the last 30 days
-        date = (today - timedelta(days=random.randint(0, 30))).isoformat()
+        date = (today - timedelta(seconds=random.randint(0, 30 * 24 * 60 * 60))).isoformat(timespec="milliseconds").replace('+00:00','Z')
 
         # choose 80 logs to have evidence 
         evidence_logs = set(random.sample(range(500), 80))
@@ -206,6 +219,7 @@ def populate_action_logs(cursor):
             evidence = None
 
         # calculated co2e = quantity * default factor id (from action type)
+        # calculated_co2e = random.randint(1, 100)
         cursor.execute("SELECT default_factor_id FROM ActionTypes WHERE ActionTypes.action_type_id = ?", (action_type_id,))
         default_factor_id = cursor.fetchone()[0]
         calculated_co2e = quantity*default_factor_id
@@ -308,13 +322,23 @@ def populate_moderation_decisions(cursor):
 
         # timestamp - choose randomly from time of submission to now 
         cursor.execute("SELECT date FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.submission_id = ?", (submission_id,))
-        submission_date = datetime.strptime(cursor.fetchone()[0], "%Y-%m-%d").date()
-        days = (today - submission_date).days
-        if days > 0:
-            days_to_add = random.randrange(days)
-        else:
-            days_to_add = 0
-        timestamp = (submission_date + timedelta(days = days_to_add)).isoformat()
+        # submission_date = datetime.strptime(cursor.fetchone()[0], "%Y-%m-%dT%H:%M:%SZ")
+        submission_date = datetime.fromisoformat(cursor.fetchone()[0])
+        # submission_date = cursor.fetchone()[0]
+        # days = (today - submission_date).days
+        # if days > 0:
+        #     days_to_add = random.randrange(days)
+        # else:
+        #     days_to_add = 0
+        # timestamp = (submission_date + timedelta(days = days_to_add)).isoformat()
+
+        now = datetime.now(timezone.utc)
+        time_diff = now - submission_date
+
+        random_seconds = random.randint(0, int(time_diff.total_seconds()))
+        timestamp = (submission_date + timedelta(seconds=random_seconds)).isoformat(timespec="milliseconds").replace('+00:00','Z')
+
+
 
         decisions.append((submission_id, moderator_id, decision, reason, timestamp))
 
@@ -328,43 +352,43 @@ def populate_moderation_decisions(cursor):
 def update_submission_status(cursor):
     cursor.execute("UPDATE Submissions SET status = (SELECT decision FROM ModerationDecisions WHERE ModerationDecisions.submission_id = Submissions.submission_id) WHERE submission_id IN (SELECT submission_id FROM ModerationDecisions)")
 
-def populate_evidence_submissions(cursor):
-    submissions = []
-    for i in range(1, 81):
+# def populate_evidence_submissions(cursor):
+#     submissions = []
+#     for i in range(1, 81):
 
-        # get linked_action_log ids of those with evidence 
-        cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
-        log_ids = [row[0] for row in cursor.fetchall()]
-        log_id = random.choice(log_ids)
+#         # get linked_action_log ids of those with evidence 
+#         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
+#         log_ids = [row[0] for row in cursor.fetchall()]
+#         log_id = random.choice(log_ids)
 
-        # get challenge_ids
-        cursor.execute("SELECT challenge_id FROM Challenges")
-        challenge_ids = [row[0] for row in cursor.fetchall()]
-        challenge_id = random.choice(challenge_ids)
+#         # get challenge_ids
+#         cursor.execute("SELECT challenge_id FROM Challenges")
+#         challenge_ids = [row[0] for row in cursor.fetchall()]
+#         challenge_id = random.choice(challenge_ids)
 
-        # get user_ids
-        cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
-        user_id = cursor.fetchone()[0]
+#         # get user_ids
+#         cursor.execute("SELECT user_id FROM ActionLogs WHERE ActionLogs.log_id = ?", (log_id,))
+#         user_id = cursor.fetchone()[0]
         
-        # get group_ids 
-        cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
-        group_id = cursor.fetchone()[0]
+#         # get group_ids 
+#         cursor.execute("SELECT group_id FROM ParticipantGroups WHERE ParticipantGroups.user_id = ?", (user_id,))
+#         group_id = cursor.fetchone()[0]
 
-        # get random number for points 
-        points = random.randint(5, 20)
+#         # get random number for points 
+#         points = random.randint(5, 20)
 
-        # use placeholder text for status 
-        status = "Pending"
+#         # use placeholder text for status 
+#         status = "Pending"
 
-        submissions.append((log_id, challenge_id, user_id, group_id, points, status))
+#         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
-    cursor.executemany(
-        """
-        INSERT INTO Submissions(linked_action_log, challenge_id, user_id, group_id, points, status)
-        VALUES(?, ?, ?, ?, ?, ?)
-        """,
-        submissions
-    )
+#     cursor.executemany(
+#         """
+#         INSERT INTO Submissions(linked_action_log, challenge_id, user_id, group_id, points, status)
+#         VALUES(?, ?, ?, ?, ?, ?)
+#         """,
+#         submissions
+#     )
 
 def populate_anti_gaming_flags(cursor):
     flags = []
@@ -374,9 +398,9 @@ def populate_anti_gaming_flags(cursor):
 
 
     # list of rules and their flag type 
-    rules = [("1", "File integrity"),
-            ("2", "Duplicate upload"),
-            ("3", "Upload frequency")]
+    rules = [(1, "Rule 1: File integrity"),
+            (2, "Rule 2: Duplicate upload"),
+            (3, "Rule 3: Upload frequency")]
     for rule in rules:
         submission_id = random.choice(submission_ids)
         flag_type, rule_triggered = rule
@@ -412,7 +436,7 @@ populate_participant_groups(cursor)
 populate_submissions(cursor)
 populate_moderation_decisions(cursor)
 update_submission_status(cursor)
-populate_evidence_submissions(cursor)
+# populate_evidence_submissions(cursor)
 populate_anti_gaming_flags(cursor)
 
 # check that the above have been added to the database
