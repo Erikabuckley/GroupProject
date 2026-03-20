@@ -380,15 +380,12 @@ def populate_anti_gaming_flags(cursor):
     for rule in rules:
         submission_id = random.choice(submission_ids)
         flag_type, rule_triggered = rule
-        # status matches moderation decisions
-        cursor.execute("SELECT status FROM Submissions WHERE Submissions.submission_id = ?", (submission_id,))
-        status = cursor.fetchone()[0]
-        flags.append((submission_id, flag_type, rule_triggered, status))
+        flags.append((submission_id, flag_type, rule_triggered))
     
     cursor.executemany(
     """
-    INSERT INTO AntiGamingFlags(submission_id, rule_triggered, flag_type, status)
-    VALUES(?, ?, ?, ?)
+    INSERT INTO AntiGamingFlags(submission_id, rule_triggered, flag_type)
+    VALUES(?, ?, ?)
     """,
     flags
     )

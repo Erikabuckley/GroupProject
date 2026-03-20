@@ -345,7 +345,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 // flag for file integrity
                                 const isValid = await check_file(uploadedFilePath);
                                 if (!isValid) { // if corrpted
-                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, 1, 'Rule 1: Corrupted File', 'Pending')", [id], e => {
+                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered) VALUES (?, 1, 'Rule 1: Corrupted File')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
                                       return res.status(500).json({ error: "Failed to flag" });
@@ -355,7 +355,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 // flag for duplicate uploads
                                 const original = await check_originality(uploadedFilePath);
                                 if (!original) { 
-                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, 2, 'Rule 2: Duplicate Upload', 'Pending')", [id], e => {
+                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered) VALUES (?, 2, 'Rule 2: Duplicate Upload')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
                                       return res.status(500).json({ error: "Failed to flag" });
@@ -375,7 +375,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                   }
 
                                   if (countRow.total >= 3) {
-                                    db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, 3, 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
+                                    db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered) VALUES (?, 3, 'Rule 3: Upload frequency')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
                                       return res.status(500).json({ error: "Failed to flag" });
@@ -539,12 +539,6 @@ app.post('/approveDeny', function (req, res) {
                           console.log(e.message);
                           return res.status(500).json({ error: "database failure" });
                         }
-                        db.run("UPDATE AntiGamingFlags SET status = 'Approved' WHERE submission_id = ? ", [req.body.id], (e) => {
-                          if (e) {
-                            console.log(e.message);
-                            return res.status(500).json({ error: "database failure" });
-                          }
-                        });
                         console.log("Submission approve successful");
                         res.end();
                       });
@@ -586,12 +580,6 @@ app.post('/approveDeny', function (req, res) {
                 if (e) {
                   console.log(e.message);
                 }
-                db.run("UPDATE AntiGamingFlags SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e) => {
-                  if (e) {
-                    console.log(e.message);
-                    return res.status(500).json({ error: "database failure" });
-                  }
-                });
                 console.log("Submission deny successful");
                 res.end();
               });
@@ -837,32 +825,6 @@ app.get('/updateSubmissionsList', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-//     db.all(`
-//     SELECT 
-//   ActionTypes.name,
-//   Submissions.submission_id,
-//   ActionLogs.evidence,
-//   Challenges.title,
-//   Flags.flags
-// FROM Submissions
-// JOIN ActionLogs 
-//   ON ActionLogs.log_id = Submissions.linked_action_log
-// JOIN ActionTypes 
-//   ON ActionLogs.action_type_id = ActionTypes.action_type_id
-// JOIN Challenges 
-//   ON Challenges.challenge_id = Submissions.challenge_id
-// LEFT JOIN (
-//     SELECT 
-//         submission_id,
-//         GROUP_CONCAT(rule_triggered, ', ') AS flags
-//     FROM AntiGamingFlags
-//     GROUP BY submission_id
-// ) Flags
-// ON Flags.submission_id = Submissions.submission_id
-// WHERE Submissions.status = 'Pending';
-//     `, [], (err, rows) => {
-//       console.log(rows);
-//     });
 
     db.all("SELECT ActionTypes.name, Submissions.submission_id, ActionLogs.evidence, Challenges.title, Flags.flags FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Challenges ON Challenges.challenge_id = Submissions.challenge_id LEFT JOIN (SELECT submission_id, GROUP_CONCAT(rule_triggered, ', ') AS flags FROM AntiGamingFlags GROUP BY submission_id) AS Flags ON Flags.submission_id = Submissions.submission_id WHERE Submissions.status = 'Pending' ", [], (e, rows) => {
       if (e) {
