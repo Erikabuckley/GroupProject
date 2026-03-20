@@ -345,7 +345,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 // flag for file integrity
                                 const isValid = await check_file(uploadedFilePath);
                                 if (!isValid) { // if corrpted
-                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'Pending')", [id], e => {
+                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, 1, 'Rule 1: Corrupted File', 'Pending')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
                                       return res.status(500).json({ error: "Failed to flag" });
@@ -355,7 +355,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 // flag for duplicate uploads
                                 const original = await check_originality(uploadedFilePath);
                                 if (!original) { 
-                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '2', 'Rule 2: Duplicate Upload', 'Pending')", [id], e => {
+                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, 2, 'Rule 2: Duplicate Upload', 'Pending')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
                                       return res.status(500).json({ error: "Failed to flag" });
@@ -375,7 +375,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                   }
 
                                   if (countRow.total >= 3) {
-                                    db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
+                                    db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, 3, 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
                                       return res.status(500).json({ error: "Failed to flag" });
