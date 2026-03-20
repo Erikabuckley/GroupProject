@@ -58,6 +58,7 @@ if (form) {
                 showData(String(data.carbon), String(data.value),String(data.source));
 
             }else{
+                document.getElementById('error').style.visibility = 'hidden';
                 form.reset()
                 document.getElementById("upload-modal").style.display = "none";
                 // shows the carbon saved by the action to the user

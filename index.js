@@ -307,7 +307,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                         }
 
                         // if personal submitted for a group challenge - 403
-                        if (challenge.scope === "Group" && req.body.group === "Individual Challenge") {
+                        if (challenge.scope === "Group" && req.body.group === "Individual challenge") {
                           return res.status(403).json({ error: "Insuffiecient group information for submission" })
                         }
 
