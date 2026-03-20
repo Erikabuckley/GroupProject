@@ -1262,7 +1262,7 @@ app.get('/updateLeaderboard', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id ORDER BY total", (e, rows) => {
+    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id GROUP BY Groups.group_id ORDER BY total DESC", (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -1279,6 +1279,7 @@ app.get('/updateLeaderboard', function (req, res) {
       });
       const names = rows.map(r => r.name);
       const totals = rows.map(r => r.total);
+      console.log(names);
       res.json({ name: names, total: totals });
     });
   });
