@@ -8,7 +8,7 @@ async function loadFooter() {
 
 async function loadHeader() {
     if (document.URL.includes("dash")) {
-        const {auth, role} = await checkAuth();
+        const { auth, role } = await checkAuth();
         await loadDashHeader();
         if (role === 'moderator') {
             document.getElementById('participant').style.display = "none";
@@ -79,7 +79,7 @@ async function init() {
     // Only protect dashboard pages
     if (document.URL.includes("dash")) {
 
-        const {auth, role} = await checkAuth();
+        const { auth, role } = await checkAuth();
 
         if (!auth) {
             window.location.href = "../index.html";

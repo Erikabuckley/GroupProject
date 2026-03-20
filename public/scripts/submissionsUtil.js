@@ -25,7 +25,7 @@ async function getSubmissions() {
                 id: id[i],
                 evidence: evidence[i],
                 challenge_title: key,
-                flag : flag[i],
+                flag: flag[i],
                 index: i
             });
         }
@@ -38,7 +38,7 @@ async function getSubmissions() {
             challengeDiv.className = "challenge";
             challengeTitleDiv.className = "challenge_title"
 
-            challengeTitleDiv.textContent = groupId;            
+            challengeTitleDiv.textContent = groupId;
             challengeDiv.dataset.id = groupId;
 
             challengeDiv.appendChild(challengeTitleDiv);
@@ -59,9 +59,9 @@ async function getSubmissions() {
 
                 titleDiv.textContent = item.title;
 
-                if (item.flag != "No automatic flags triggered"){
+                if (item.flag != "No automatic flags triggered") {
                     flagDiv.textContent = item.flag; //change to iteration no. flag
-                } else{
+                } else {
                     flagDiv.textContent = "";
                 }
 
@@ -109,7 +109,7 @@ async function approveDeny(outcome, reason, id, info) {// sends the moderators d
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ outcome, reason, id, info}
+            body: JSON.stringify({ outcome, reason, id, info }
             )
         }
 
@@ -122,11 +122,11 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
     const info = document.getElementById("identifying-info").checked;
-    if(decision === 'approve' && info){
+    if (decision === 'approve' && info) {
         document.getElementById("approval-error").textContent = "You must deny submissions with identifying information";
         document.getElementById("approval-error").style.visibility = 'visible'
         return;
-    } else if (!/^[A-Za-z0-9'-. ]+$/.test(reason)){
+    } else if (!/^[A-Za-z0-9'-. ]+$/.test(reason)) {
         document.getElementById('approval-error').textContent = "Name must not contain special characters";
         document.getElementById('approval-error').style.visibility = 'visible';
     }

@@ -1279,7 +1279,6 @@ app.get('/updateLeaderboard', function (req, res) {
       });
       const names = rows.map(r => r.name);
       const totals = rows.map(r => r.total);
-      console.log(names);
       res.json({ name: names, total: totals });
     });
   });
@@ -1554,16 +1553,6 @@ app.get('/getName', function (req, res) {
 app.get('/getBadges', function (req, res) {
  return res.json({ vals: [true, true, false, false, true, true]});
 });
-
-//add points to leaderboard and orderby statement
-// update updateLog to get user challenge submissions only
-// update submissions list to check if a flag has been raised and return it
-// add flagging route
-// add updatetotalgroup and updatepointsgroup to do group not individual x
-// updatepoints needs to be points i just copied from updatetotal x
-// getMembers needs adding body to it x
-// 5 updateTable routes  needs correcting
-
 
 //NEEDS TO BE AT THE BOTTOM
 // Define a route for GET requests to the root URL

@@ -10,17 +10,18 @@ try {
         const confirmbutton = document.getElementById("confirm");
         confirmbutton.addEventListener('click', async () => {
             const text = document.getElementById("password").value;
-            if (text === 'delete'){
+            if (text === 'delete') {
                 document.getElementById("delete").close()
+                // Send post to backend when user presses delete account
                 await fetch("/delete",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                });
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
                 window.location.href = "../index.html";
-            }else{
+            } else {
                 document.getElementById("delete-error").textContent = "Please type delete";
                 document.getElementById("delete-error").style.visibility = 'visible'
             }
