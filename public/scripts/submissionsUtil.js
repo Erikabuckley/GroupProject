@@ -124,7 +124,7 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
     const info = document.getElementById("identifying-info").checked;
-    if(decision === 'Approved' && info){
+    if(decision === 'approve' && info){
         document.getElementById("approval-error").textContent = "You must deny submissions with identifying information";
         document.getElementById("approval-error").style.visibility = 'visible'
         return;

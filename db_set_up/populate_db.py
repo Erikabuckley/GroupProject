@@ -258,7 +258,7 @@ def populate_submissions(cursor):
         points = random.randint(5, 20)
 
         # use placeholder text for status 
-        status = "submitted"
+        status = "Pending"
 
         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
