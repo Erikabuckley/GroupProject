@@ -394,7 +394,8 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                   }
                                 });
                                 try {
-                                  await fs.unlink(evidencePath);
+                                  const evidenceFullPath =  path.join(__dirname, 'public', evidencePath);
+                                  await fs.unlink(evidenceFullPath);
                                   console.log("File removed successfully");
                                 } catch (e) {
                                   console.log(e.message);
@@ -1410,7 +1411,8 @@ app.post("/delete", (req,res) => {
             return;
           }if (row.evidence) {
             try {
-              await fs.unlink(row.evidence);
+              const evidenceFullPath =  path.join(__dirname, 'public', row.evidence);
+              await fs.unlink(evidenceFullPath);
               console.log("File removed successfully");
             } catch (e) {
               console.log(e.message);
