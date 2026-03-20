@@ -307,114 +307,108 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                         }
 
                         // if personal submitted for a group challenge - 403
-                        if (challenge.scope === "Group" && req.body.group === "No") {
+                        if (challenge.scope === "Group" && req.body.group === "Individual Challenge") {
                           return res.status(403).json({ error: "Insuffiecient group information for submission" })
                         }
 
-                        
-                        // Get group info
-                        db.get(
-                          "SELECT group_id FROM Groups WHERE name = ?",
-                          [req.body.group],
-                          async (e, group) => {
-                            if (e || !group) {
-                              console.log(e?.message || "Group not found");
-                              return res.status(400).json({ error: "no group found" });
-                            }
-                            var group_id = group.group_id;
-                            // if group submitted for a personal challenge
-                            if (challenge.scope === "Personal") {
-                              group_id = null;
-                            }
+                        let group_id;
+                        // if group submitted for a personal challenge
+                        if (challenge.scope === "Personal") {
+                          group_id = null;
+                        } else { // if actually a group challenge
+                          // Get group info
+                          db.get(
+                            "SELECT group_id FROM Groups WHERE name = ?",
+                            [req.body.group],
+                            async (e, group) => {
+                              if (e || !group) {
+                                console.log(e?.message || "Group not found");
+                                return res.status(400).json({ error: "no group found" });
+                              }
+                              group_id = group.group_id;
+                          });
+                        } 
 
-                            // Insert into Submissions
-                            db.run(
-                              "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
-                              [challenge.challenge_id, user.user_id, group_id, log_id],
-                              async function (e) {
-                                if (e) {
-                                  console.log(e.message);
-                                  return res.status(500).json({ error: "Failed to create submission" });
-                                } else {
-                                  const id = this.lastID;
-                                  // ANTI GAMING FLAGS HERE
-                                  if (req.file) {
-                                    const uploadedFilePath = req.file.path;
-                                    // flag for file integrity
-                                    const isValid = await check_file(uploadedFilePath);
-                                    if (!isValid) { // if corrpted
-                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
-                                        if (e) {
-                                          console.log(e.message);
-                                          return res.status(500).json({ error: "Failed to flag" });
-                                        }
-                                      })
-                                    }
-                                    // flag for duplicate uploads
-                                    const original = await check_originality(uploadedFilePath);
-                                    if (!original) { 
-                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '2', 'Rule 2: Duplicate Upload', 'PENDING')", [id], e => {
-                                        if (e) {
-                                          console.log(e.message);
-                                          return res.status(500).json({ error: "Failed to flag" });
-                                        }
-                                      })
-                                    }
-                                  }
-                                  // flag for submission frequency
-                                  db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
+                        // Insert into Submissions
+                        db.run(
+                          "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
+                          [challenge.challenge_id, user.user_id, group_id, log_id],
+                          async function (e) {
+                            if (e) {
+                              console.log(e.message);
+                              return res.status(500).json({ error: "Failed to create submission" });
+                            } else {
+                              const id = this.lastID;
+                              // ANTI GAMING FLAGS HERE
+                              if (req.file) {
+                                const uploadedFilePath = req.file.path;
+                                // flag for file integrity
+                                const isValid = await check_file(uploadedFilePath);
+                                if (!isValid) { // if corrpted
+                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'Pending')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
+                                      return res.status(500).json({ error: "Failed to flag" });
                                     }
-                                    db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
-                                      if (e) {
-                                        console.log(e.message);
-                                        return res.status(500).json({ error: "database failure" });
-                                      }
-
-                                      if (countRow.total >= 3) {
-                                        db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
-                                        if (e) {
-                                          console.log(e.message);
-                                          return res.status(500).json({ error: "Failed to flag" });
-                                        }
-                                        });
-                                      }
-                                    });
-                                  });
-                                  // Check if evidence provided when not required
-                                  if (!challengeEvidenceRequired && evidencePath) {
-                                    // remove evidence
-                                    db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id], (e, row) => {
-                                      if (e) {
-                                        console.log(e.message);
-                                        return res.status(500).json({ error: "database failure" });
-                                      }
-                                    });
-                                    try {
-                                      await fs.unlink(evidencePath);
-                                      console.log("File removed successfully");
-                                    } catch (e) {
-                                      console.log(e.message);
-                                    }
-                                    return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
-                                  }
-                                  return res.json({ carbon: co2_saved, source: source_url, value: value});
+                                  })
                                 }
-                                  
-                            });
-                          }
-                        );
-                      }
-                    );
-                  }
-                );
-              }
-            );
-          }
-        );
-      }
-    );
+                                // flag for duplicate uploads
+                                const original = await check_originality(uploadedFilePath);
+                                if (!original) { 
+                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '2', 'Rule 2: Duplicate Upload', 'Pending')", [id], e => {
+                                    if (e) {
+                                      console.log(e.message);
+                                      return res.status(500).json({ error: "Failed to flag" });
+                                    }
+                                  })
+                                }
+                              }
+                              // flag for submission frequency
+                              db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, row) => {
+                                if (e) {
+                                  console.log(e.message);
+                                }
+                                db.get("SELECT COUNT(*) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND datetime(ActionLogs.date) >= datetime('now', '-30 seconds')", [row.user_id], (e, countRow) => {
+                                  if (e) {
+                                    console.log(e.message);
+                                    return res.status(500).json({ error: "database failure" });
+                                  }
+
+                                  if (countRow.total >= 3) {
+                                    db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: Upload frequency', 'PENDING')", [id], e => {
+                                    if (e) {
+                                      console.log(e.message);
+                                      return res.status(500).json({ error: "Failed to flag" });
+                                    }
+                                    });
+                                  }
+                                });
+                              });
+                              // Check if evidence provided when not required
+                              if (!challengeEvidenceRequired && evidencePath) {
+                                // remove evidence
+                                db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id], (e, row) => {
+                                  if (e) {
+                                    console.log(e.message);
+                                    return res.status(500).json({ error: "database failure" });
+                                  }
+                                });
+                                try {
+                                  await fs.unlink(evidencePath);
+                                  console.log("File removed successfully");
+                                } catch (e) {
+                                  console.log(e.message);
+                                }
+                                return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
+                              }
+                              return res.json({ carbon: co2_saved, source: source_url, value: value});
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    });
   });
 });
 
@@ -526,38 +520,71 @@ app.post('/approveDeny', function (req, res) {
             return res.status(500).json({ error: "database failure" });
           } else {
             console.log("Request added to db");
-            if (req.body.outcome === 'Approved') {
-              db.get("SELECT challenge_id FROM Submissions WHERE submission_id = ? ", [req.body.id], (e, challenge) => {
+            if (req.body.outcome === 'approve') {
+              db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [req.body.id], (e, row) => {
                 if (e) {
                   console.log(e.message);
                   return res.status(500).json({ error: "database failure" });
                 }
-                console.log("Retrieved challenge id sucesfully");
+                console.log("Retrieved points sucesfully");
                 if (row){
-                  db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [challenge.challenge_id], (e, row) => {
+
+                  db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "database failure" });
                     }
-                    console.log("Retrieved points sucesfully");
-                    if (row){
-                      db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
-                        if (e) {
-                          console.log(e.message);
-                          return res.status(500).json({ error: "database failure" });
-                        }
-                        console.log("Submission approve successful");
-                        res.end();
-                      });
-                    }
+                    db.run("UPDATE AntiGamingFlags SET status = 'Approved' WHERE submission_id = ? ", [req.body.id], (e) => {
+                      if (e) {
+                        console.log(e.message);
+                        return res.status(500).json({ error: "database failure" });
+                      }
+                    });
+                    console.log("Submission approve successful");
+                    res.end();
                   });
                 }
               });
             } else if (req.body.outcome === 'deny') {
+              // if sensitive info
+              if (req.body.info === true) {
+                // get file path
+                db.get("SELECT evidence, log_id FROM ActionLogs JOIN Submissions ON Submissions.linked_action_log = ActionLogs.log_id WHERE Submissions.submission_id = ?", [req.body.id], async (e, row) => {
+                  if (e) {
+                    console.log(e.message);
+                    return res.status(500).json({ error: "database failure" });
+                  }
+                  if (row) {
+                    // delete file
+                    try {
+                      const evidenceFullPath =  path.join(__dirname, 'public', row.evidence);
+                      await fs.unlink(evidenceFullPath);
+                      console.log("File removed successfully");
+                    } catch (e) {
+                      console.log(e.message);
+                    }
+                    // set path to null
+                    db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [row.log_id], (e) => {
+                      if (e) {
+                        console.log(e.message);
+                        return res.status(500).json({ error: "database failure" });
+                      }
+                    });
+                  }
+                });
+              } // closes if sensitive info block
+              
+              
               db.run("UPDATE Submissions SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e, row) => {
                 if (e) {
                   console.log(e.message);
                 }
+                db.run("UPDATE AntiGamingFlags SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e) => {
+                  if (e) {
+                    console.log(e.message);
+                    return res.status(500).json({ error: "database failure" });
+                  }
+                });
                 console.log("Submission deny successful");
                 res.end();
               });
