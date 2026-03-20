@@ -728,7 +728,7 @@ app.get('/updateChallengeList', function (req, res) {
       }
 
       const title = rows.map(r => r.title);
-      const date = rows.map(r => r.end_date);
+      const date = rows.map(r => new Date(r.end_date).toLocaleDateString("en-GB"));
       const evidence = rows.map(r => r.evidence_required);
       return res.json({ title, date, evidence });
 
@@ -912,7 +912,7 @@ app.get('/updateTableIndi', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => r.date);
+        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -932,7 +932,7 @@ app.get('/updateTableIndi', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => r.date);
+        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -958,7 +958,7 @@ app.get('/updateTableGroup', function (req, res) {
           return res.status(500).json({ error: "database failure" });
         }
         const id = rows.map(r => r.group_id);
-        const date = rows.map(r => r.date);
+        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -983,7 +983,7 @@ app.get('/updateTableGroup', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => r.date);
+        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -1004,7 +1004,7 @@ app.get('/updateTableGroup', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => r.date);
+        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -1422,7 +1422,7 @@ app.post('/addChallenge', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.run("INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required) VALUES (?,?,?,?,?,?,?)", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue], e => {
+    db.run("INSERT INTO Challenges (title, scope, rules, scoring, start_date, end_date, evidence_required) VALUES (?,?,?,?,?,?,?)", [req.body.name, req.body.scope, req.body.rules, req.body.points, new Date(req.body.start).toISOString(), new Date(req.body.end).toISOString(), req.body.selectedValue], e => {
       db.close();
       if (e) {
         console.log(e.message);
@@ -1443,7 +1443,7 @@ app.post('/editChallenge', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.run("UPDATE Challenges SET title = ?, scope = ?, rules = ?, scoring = ?, start_date = ?, end_date = ?, evidence_required = ? WHERE challenge_id = ?", [req.body.name, req.body.scope, req.body.rules, req.body.points, req.body.start, req.body.end, req.body.selectedValue, req.body.id], e => {
+    db.run("UPDATE Challenges SET title = ?, scope = ?, rules = ?, scoring = ?, start_date = ?, end_date = ?, evidence_required = ? WHERE challenge_id = ?", [req.body.name, req.body.scope, req.body.rules, req.body.points, new Date(req.body.start).toISOString(), new Date(req.body.end).toISOString(), req.body.selectedValue, req.body.id], e => {
       db.close();
       if (e) {
         console.log(e.message);
@@ -1479,8 +1479,8 @@ app.get('/updateModChallengeList', function (req, res) {
       const scope = rows.map(r => r.scope);
       const rules = rows.map(r => r.rules);
       const points = rows.map(r => r.scoring);
-      const start = rows.map(r => r.start_date);
-      const end = rows.map(r => r.end_date);
+      const start = rows.map(r => new Date(r.start_date).toLocaleDateString("en-GB"));
+      const end = rows.map(r => new Date(r.end_date).toLocaleDateString("en-GB"));
       const evidence = rows.map(r => r.evidence_required);
       return res.json({ id, name, scope, rules, points, start, end, evidence});
     });
