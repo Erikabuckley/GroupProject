@@ -5,12 +5,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test:node": "node --test test/node/*",
     "test:jest": "jest test/jest --verbose --expand",
     "test:jest:watch": "jest test/jest --watch --verbose --expand",
-    "test:jest:one": "jest --runTestsByPath --verbose --expand",
-    "test:jest:debug": "jest test/jest --runInBand --detectOpenHandles --verbose --expand",
-    "test": "npm run test:node && npm run test:jest",
+    "test": "npm run test:jest",
     "postinstall": "npm rebuild sqlite3 --build-from-source"
   },
   "jest": {
