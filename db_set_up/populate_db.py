@@ -382,8 +382,16 @@ def populate_evidence_submissions(cursor):
 
 # update submission status for moderated submissions
 def update_submission_status(cursor):
-    cursor.execute("UPDATE Submissions SET status = (SELECT decision FROM ModerationDecisions WHERE ModerationDecisions.submission_id = Submissions.submission_id) WHERE submission_id IN (SELECT submission_id FROM ModerationDecisions)")
-
+    cursor.execute("""
+        UPDATE Submissions
+        SET status = CASE
+            WHEN md.decision = 'approve' THEN 'Approved'
+            WHEN md.decision = 'deny' THEN 'Denied'
+            ELSE status
+        END
+        FROM ModerationDecisions md
+        WHERE Submissions.submission_id = md.submission_id
+    """)
 
 # loop through denied submissions and add flags to show edge cases
 def populate_flagged_submissions(cursor):

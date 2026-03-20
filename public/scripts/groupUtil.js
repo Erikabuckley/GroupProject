@@ -1,6 +1,6 @@
 updatePoints();
 updateTotal();
-populateTable('indi');
+populateTable('date');
 
 // gets the total amount of carbon the group had saved
 async function updateTotal() {
