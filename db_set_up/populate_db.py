@@ -68,8 +68,8 @@ def populate_users(cursor):
 
 def seed_users():
     users = [
-        ('user', 'user', 'user@exeter.ac.uk', 'user123'),
-        ('moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
+        ('test user', 'user', 'user@exeter.ac.uk', 'user123'),
+        ('test moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
     ]
 
     for display_name, role, email, plain_password in users:
@@ -272,7 +272,7 @@ def populate_submissions(cursor):
         points = random.randint(5, 20)
 
         # use placeholder text for status 
-        status = "pending"
+        status = "submitted"
 
         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
