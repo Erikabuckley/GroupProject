@@ -6,9 +6,17 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test:node": "node --test test/node/*",
-    "test:jest": "jest test/jest/*",
+    "test:jest": "jest test/jest --verbose --expand",
+    "test:jest:watch": "jest test/jest --watch --verbose --expand",
+    "test:jest:one": "jest --runTestsByPath --verbose --expand",
+    "test:jest:debug": "jest test/jest --runInBand --detectOpenHandles --verbose --expand",
     "test": "npm run test:node && npm run test:jest",
     "postinstall": "npm rebuild sqlite3 --build-from-source"
+  },
+  "jest": {
+    "clearMocks": true,
+    "verbose": true,
+    "testEnvironment": "node"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -23,7 +31,7 @@
   },
   "devDependencies": {
     "jest": "^30.3.0",
-    "jsdom": "^28.0.0",
+    "jsdom": "^26.1.0",
     "nodemon": "^3.1.11",
     "supertest": "^7.2.2"
   },
