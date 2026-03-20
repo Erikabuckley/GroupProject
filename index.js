@@ -1243,7 +1243,7 @@ app.get('/updateLeaderboard', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id GROUP BY Groups.name", (e, rows) => {
+    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id ORDER BY total", (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
