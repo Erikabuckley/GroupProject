@@ -47,23 +47,23 @@ if (form) {
             } else if (res.status === 403) {
                 document.getElementById('error').textContent = 'This challenge is is a group challenge, please select a group';
                 document.getElementById('error').style.visibility = 'visible';
-            } else if(res.status === 202){
+            } else if (res.status === 202) {
                 document.getElementById("no-evidence").showModal();
                 const button = document.getElementById("close-no-evidence");
-                button.addEventListener('click', () =>{
+                button.addEventListener('click', () => {
                     document.getElementById("no-evidence").close()
                 });
                 document.getElementById("upload-modal").style.display = "none";
                 // shows the carbon saved by the action to the user
-                showData(String(data.carbon), String(data.value),String(data.source));
+                showData(String(data.carbon), String(data.value), String(data.source));
 
-            }else{
+            } else {
                 document.getElementById('error').style.visibility = 'hidden';
                 form.reset()
                 document.getElementById("upload-modal").style.display = "none";
                 // shows the carbon saved by the action to the user
-                showData(String(data.carbon), String(data.value),String(data.source));
-            }            
+                showData(String(data.carbon), String(data.value), String(data.source));
+            }
         }
     });
 };
@@ -146,7 +146,7 @@ async function updateUserGroupsList() {
 }
 
 // shows the carbon saved from that action
-async function showData(num,conv, source) {
+async function showData(num, conv, source) {
     document.getElementById("data-modal").style.display = "block";
     document.getElementById("amount").innerText = (num + "g");
     document.getElementById("conversion").innerText = ("Using a factor of " + conv + "g");
@@ -284,16 +284,16 @@ async function updateBadges() {
 
         badge.classList.toggle("earnt", earned);
         badge.classList.toggle("not-earnt", !earned);
-        badge.addEventListener('click', () =>{
+        badge.addEventListener('click', () => {
             const dialog = document.getElementById('badge-info');
             const dialogText = document.getElementById('badge-text');
             dialogText.textContent = badge.alt;
-            dialog.showModal();    
+            dialog.showModal();
 
             const button = document.getElementById("close-badge");
-            button.addEventListener('click', () =>{
+            button.addEventListener('click', () => {
                 dialog.close()
-            });              
+            });
         });
     });
 }

@@ -37,7 +37,7 @@ async function updatePoints() {
 }
 
 //updates stats at the bottom of the page
-async function updateStats(){
+async function updateStats() {
     try {
         const res = await fetch("/updateSubmissionsCount");
 

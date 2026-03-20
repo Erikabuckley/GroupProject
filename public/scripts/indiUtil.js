@@ -64,7 +64,7 @@ async function populateTable(type) {
     };
 }
 
-function plotPi(type, data){
+function plotPi(type, data) {
     var xValues;
     var yValues;
     var title
@@ -80,29 +80,29 @@ function plotPi(type, data){
         title = 'Grouped by type'
     }
     const barColors = [
-    "#b91d47",
-    "#00aba9",
-    "#2b5797",
-    "#e8c3b9",
-    "#1e7145",
-    "#b91d47"
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145",
+        "#b91d47"
     ];
 
     new Chart("myChart", {
-    type: "doughnut",
-    data: {
-        labels: xValues,
-        datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-        }]
-    },
-    options: {
-        title: {
-        display: true,
-        text: title
+        type: "doughnut",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: title
+            }
         }
-    }
     });
 }
 const dateFilter = document.getElementById('filter-one');
@@ -163,7 +163,7 @@ function groupDatesByMonth(dates) {
     };
 }
 
-function groupDatesByType(types){
+function groupDatesByType(types) {
     const result = {};
     types.forEach(type => {
 

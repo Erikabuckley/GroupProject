@@ -188,7 +188,7 @@ def populate_action_conversion_factors(cursor):
 
 def populate_action_logs(cursor):
     action_logs = []
-    for i in range(1, 501):
+    for i in range(1, 601):
         # get user ids
         cursor.execute("SELECT user_id FROM Users")
         user_ids = [row[0] for row in cursor.fetchall()]
@@ -206,7 +206,7 @@ def populate_action_logs(cursor):
         date = (today - timedelta(seconds=random.randint(0, 30 * 24 * 60 * 60))).isoformat(timespec="milliseconds").replace('+00:00','Z')
 
         # choose 80 logs to have evidence 
-        evidence_logs = set(random.sample(range(500), 80))
+        evidence_logs = set(random.sample(range(600), 300))
         # list of images for each action type's evidence 
         images = {"FOOD" : "../uploads/food.png", 
                   "WASTE" : "../uploads/waste.png",
@@ -286,7 +286,7 @@ def populate_submissions(cursor):
         points = random.randint(5, 20)
 
         # use placeholder text for status 
-        status = "submitted"
+        status = "Pending"
 
         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
@@ -302,7 +302,7 @@ def populate_submissions(cursor):
 
 def populate_moderation_decisions(cursor):
     decisions = []
-    for i in range(1, 41):
+    for i in range(1, 301):
 
         # get submission_ids 
         cursor.execute("SELECT submission_id FROM Submissions")
@@ -315,22 +315,14 @@ def populate_moderation_decisions(cursor):
         moderator_id = random.choice(moderator_ids)
 
         # decision - randomly choose between approved and denied
-        decision = random.choice(["Approved", "Denied"])
+        decision = random.choice(["approve", "deny"])
 
         # reason - use placeholder text
         reason = "explanation"
 
         # timestamp - choose randomly from time of submission to now 
         cursor.execute("SELECT date FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.submission_id = ?", (submission_id,))
-        # submission_date = datetime.strptime(cursor.fetchone()[0], "%Y-%m-%dT%H:%M:%SZ")
         submission_date = datetime.fromisoformat(cursor.fetchone()[0])
-        # submission_date = cursor.fetchone()[0]
-        # days = (today - submission_date).days
-        # if days > 0:
-        #     days_to_add = random.randrange(days)
-        # else:
-        #     days_to_add = 0
-        # timestamp = (submission_date + timedelta(days = days_to_add)).isoformat()
 
         now = datetime.now(timezone.utc)
         time_diff = now - submission_date
@@ -349,12 +341,10 @@ def populate_moderation_decisions(cursor):
         """, 
         decisions)
     
-def update_submission_status(cursor):
-    cursor.execute("UPDATE Submissions SET status = (SELECT decision FROM ModerationDecisions WHERE ModerationDecisions.submission_id = Submissions.submission_id) WHERE submission_id IN (SELECT submission_id FROM ModerationDecisions)")
 
 def populate_evidence_submissions(cursor):
     submissions = []
-    for i in range(1, 81):
+    for i in range(1, 301):
 
         # get linked_action_log ids of those with evidence 
         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
@@ -390,28 +380,36 @@ def populate_evidence_submissions(cursor):
         submissions
     )
 
-def populate_anti_gaming_flags(cursor):
-    flags = []
-    # get submission_ids
-    cursor.execute("SELECT submission_id FROM Submissions")
+# update submission status for moderated submissions
+def update_submission_status(cursor):
+    cursor.execute("""
+        UPDATE Submissions
+        SET status = CASE
+            WHEN md.decision = 'approve' THEN 'Approved'
+            WHEN md.decision = 'deny' THEN 'Denied'
+            ELSE status
+        END
+        FROM ModerationDecisions md
+        WHERE Submissions.submission_id = md.submission_id
+    """)
+
+# loop through denied submissions and add flags to show edge cases
+def populate_flagged_submissions(cursor):
+    submissions = []
+    cursor.execute("SELECT submission_id FROM Submissions WHERE Submissions.status = 'Denied' ")
     submission_ids = [row[0] for row in cursor.fetchall()]
-
-
-    # list of rules and their flag type 
-    rules = [(1, "Rule 1: File integrity"),
-            (2, "Rule 2: Duplicate upload"),
-            (3, "Rule 3: Upload frequency")]
-    for rule in rules:
-        submission_id = random.choice(submission_ids)
-        flag_type, rule_triggered = rule
-        flags.append((submission_id, flag_type, rule_triggered))
-    
+    rules = ["Rule 1: File integrity", "Rule 2: Duplicate upload", "Rule 3: Upload frequency"]
+    for id in submission_ids:
+        submission_id = id
+        flag_type = random.randint(1, 3)
+        rule_triggered = rules[flag_type-1]
+        submissions.append((submission_id, flag_type, rule_triggered))
     cursor.executemany(
     """
-    INSERT INTO AntiGamingFlags(submission_id, rule_triggered, flag_type)
+    INSERT INTO AntiGamingFlags(submission_id, flag_type, rule_triggered)
     VALUES(?, ?, ?)
     """,
-    flags
+    submissions
     )
 
 
@@ -434,10 +432,11 @@ populate_action_conversion_factors(cursor)
 populate_action_logs(cursor)
 populate_participant_groups(cursor)
 populate_submissions(cursor)
+populate_evidence_submissions(cursor)
 populate_moderation_decisions(cursor)
 update_submission_status(cursor)
-populate_evidence_submissions(cursor)
-populate_anti_gaming_flags(cursor)
+# populate_anti_gaming_flags(cursor)
+populate_flagged_submissions(cursor)
 
 # check that the above have been added to the database
 
@@ -460,7 +459,7 @@ cursor.execute("SELECT COUNT(*) FROM ParticipantGroups")
 print("ParticipantGroups:", cursor.fetchone()[0])
 
 cursor.execute("SELECT COUNT(*) FROM Submissions")
-print("Submisions:", cursor.fetchone()[0])
+print("Submissions:", cursor.fetchone()[0])
 
 cursor.execute("SELECT COUNT(*) FROM ModerationDecisions")
 print("ModerationDecisions:", cursor.fetchone()[0])

@@ -115,11 +115,11 @@ app.post('/login', async (req, res) => {
           console.log("User sign in successful"); // log that user has been signed in
         } else {
           console.log("Incorrect password entered");
-          return res.status(401).json({ error: "Incorrect password, please try again" }); // return error
+          return res.status(401).json({ error: "Incorrect log in credentials, please try again" }); // return error
         }
       } else {
         console.log("user does not exist"); // log that user doesn't exist
-        return res.status(401).json({ error: "No user with that email, please try again" });
+        return res.status(401).json({ error: "Incorrect log in credentials, please try again" });
       }
     })
   });
@@ -288,7 +288,26 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                     // If no challenge, return immediately
                     if (req.body.challenge === 'No') {
-                      return res.json({ carbon: co2_saved, source: source_url, value: value });
+                      // Check if evidence provided when not required
+                      if (evidencePath) {
+                        // remove evidence
+                        db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id],(e, row) => {
+                          if (e) {
+                            console.log(e.message);
+                            return res.status(500).json({ error: "database failure" });
+                          }
+                        });
+                        try {
+                          const evidenceFullPath =  path.join(__dirname, 'public', evidencePath);
+                          fs.unlink(evidenceFullPath);
+                          console.log("File removed successfully");
+                        } catch (e) {
+                          console.log(e.message);
+                        }
+                        return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
+                      }else{
+                        return res.json({ carbon: co2_saved, source: source_url, value: value });
+                      }
                     }
 
                     // Get challenge info
@@ -305,9 +324,9 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                         if (challengeEvidenceRequired && !evidencePath) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
-
+                        console.log(challenge.scope, req.body.group);
                         // if personal submitted for a group challenge - 403
-                        if (challenge.scope === "Group" && req.body.group === "Individual challenge") {
+                        if (challenge.scope === "Group" && req.body.group === "Individual") {
                           return res.status(403).json({ error: "Insuffiecient group information for submission" })
                         }
 
@@ -1243,7 +1262,7 @@ app.get('/updateLeaderboard', function (req, res) {
       console.log(e.message);
       return res.status(500).json({ error: "database failure" });
     }
-    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id ORDER BY total", (e, rows) => {
+    db.all("SELECT Groups.name AS name, SUM(Submissions.points) AS total FROM Groups LEFT JOIN Submissions ON Submissions.group_id = Groups.group_id GROUP BY Groups.group_id ORDER BY total DESC", (e, rows) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
@@ -1534,16 +1553,6 @@ app.get('/getName', function (req, res) {
 app.get('/getBadges', function (req, res) {
  return res.json({ vals: [true, true, false, false, true, true]});
 });
-
-//add points to leaderboard and orderby statement
-// update updateLog to get user challenge submissions only
-// update submissions list to check if a flag has been raised and return it
-// add flagging route
-// add updatetotalgroup and updatepointsgroup to do group not individual x
-// updatepoints needs to be points i just copied from updatetotal x
-// getMembers needs adding body to it x
-// 5 updateTable routes  needs correcting
-
 
 //NEEDS TO BE AT THE BOTTOM
 // Define a route for GET requests to the root URL

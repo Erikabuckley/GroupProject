@@ -1,6 +1,6 @@
 updatePoints();
 updateTotal();
-populateTable('indi');
+populateTable('date');
 
 // gets the total amount of carbon the group had saved
 async function updateTotal() {
@@ -25,7 +25,7 @@ async function populateTable(type) {
         plotPi(type, data.date);
     } else if (type === 'type') {
         plotPi(type, data.cat);
-    } else if(type == 'indi'){
+    } else if (type == 'indi') {
         plotPi(type, data.id, data.userId);
     }
 
@@ -61,7 +61,7 @@ async function populateTable(type) {
     };
 }
 
-function plotPi(type, data , id=null){
+function plotPi(type, data, id = null) {
     var xValues;
     var yValues;
     var title
@@ -75,36 +75,36 @@ function plotPi(type, data , id=null){
         xValues = grouped.labels;
         yValues = grouped.values;
         title = 'Submissions grouped by type'
-    } else if(type === 'indi'){
+    } else if (type === 'indi') {
         const grouped = groupDatesByUser(data, id);
         xValues = grouped.labels;
         yValues = grouped.values;
         title = 'Submissions per user'
     }
     const barColors = [
-    "#b91d47",
-    "#00aba9",
-    "#2b5797",
-    "#e8c3b9",
-    "#1e7145",
-    "#b91d47",
+        "#b91d47",
+        "#00aba9",
+        "#2b5797",
+        "#e8c3b9",
+        "#1e7145",
+        "#b91d47",
     ];
 
     new Chart("myChart", {
-    type: "doughnut",
-    data: {
-        labels: xValues,
-        datasets: [{
-        backgroundColor: barColors,
-        data: yValues
-        }]
-    },
-    options: {
-        title: {
-        display: true,
-        text: title
+        type: "doughnut",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: title
+            }
         }
-    }
     });
 }
 const indiFilter = document.getElementById('filter-one');
@@ -169,7 +169,7 @@ function groupDatesByMonth(dates) {
     };
 }
 
-function groupDatesByType(types){
+function groupDatesByType(types) {
     const result = {};
     types.forEach(type => {
 
@@ -188,18 +188,18 @@ function groupDatesByType(types){
 }
 
 function groupDatesByUser(submissions, targetId) {
-  const result = { [targetId]: 0, other: 0 };
+    const result = { [targetId]: 0, other: 0 };
 
-  submissions.forEach(sub => {
-    if (sub.id === targetId) {
-      result[targetId]++;
-    } else {
-      result.other++;
-    }
-  });
+    submissions.forEach(sub => {
+        if (sub.id === targetId) {
+            result[targetId]++;
+        } else {
+            result.other++;
+        }
+    });
 
-  return {
-    labels: ["Your Submissions", "Other Submissions"],
-    values: Object.values(result)
-  };
+    return {
+        labels: ["Your Submissions", "Other Submissions"],
+        values: Object.values(result)
+    };
 }
