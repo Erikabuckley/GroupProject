@@ -195,9 +195,9 @@ def populate_action_logs(cursor):
         # choose 80 logs to have evidence 
         evidence_logs = set(random.sample(range(500), 80))
         # list of images for each action type's evidence 
-        images = {"FOOD" : "../images/food.png", 
-                  "WASTE" : "../images/waste.png",
-                  "TRAVEL" : "../images/travel.png"}
+        images = {"FOOD" : "../uploads/food.png", 
+                  "WASTE" : "../uploads/waste.png",
+                  "TRAVEL" : "../uploads/travel.png"}
         if i in evidence_logs:
             cursor.execute("SELECT category FROM ActionTypes WHERE ActionTypes.action_type_id = ?", (action_type_id,))
             category = cursor.fetchone()[0]
@@ -354,7 +354,7 @@ def populate_evidence_submissions(cursor):
         points = random.randint(5, 20)
 
         # use placeholder text for status 
-        status = "pending"
+        status = "Pending"
 
         submissions.append((log_id, challenge_id, user_id, group_id, points, status))
 
