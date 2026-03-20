@@ -315,7 +315,7 @@ def populate_moderation_decisions(cursor):
         moderator_id = random.choice(moderator_ids)
 
         # decision - randomly choose between approved and denied
-        decision = random.choice(["Approved", "Denied"])
+        decision = random.choice(["approve", "deny"])
 
         # reason - use placeholder text
         reason = "explanation"

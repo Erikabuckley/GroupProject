@@ -11,27 +11,25 @@ async function getSubmissions() {
         var challenge_title = data.challenge_title;
         var flag = data.flag;
 
-
         var submissions = document.getElementById("submissions-container");
         submissions.innerHTML = "";
 
         const grouped = {};
         // groups submissions by their challenge title
         for (let i = 0; i < id.length; i++) {
-            if (!grouped[challenge_title[i]]) {
-                grouped[challenge_title[i]] = [];
-            }
+            const key = challenge_title[i].replace(/\s+/g, ' ').trim();
+            if (!grouped[key]) grouped[key] = [];
 
-            grouped[challenge_title[i]].push({
+            grouped[key].push({
                 title: title[i],
                 id: id[i],
                 evidence: evidence[i],
-                challenge_title: challenge_title[i],
+                challenge_title: key,
                 flag : flag[i],
                 index: i
             });
         }
-        Object.keys(grouped).forEach(groupId => {
+        Object.keys(grouped).sort((a, b) => a.localeCompare(b)).forEach(groupId => {
 
             // Group container
             const challengeDiv = document.createElement("div");
@@ -61,7 +59,7 @@ async function getSubmissions() {
 
                 titleDiv.textContent = item.title;
 
-                if (flag != "No automatic flags triggered"){
+                if (item.flag != "No automatic flags triggered"){
                     flagDiv.textContent = item.flag; //change to iteration no. flag
                 } else{
                     flagDiv.textContent = "";
