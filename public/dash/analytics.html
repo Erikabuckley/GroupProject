@@ -108,8 +108,9 @@
 
         async def make_points_scatter():
             dates, points = await get_points_data()
+            cumulative_points = np.cumsum(points)
             fig, ax = plt.subplots(figsize=(4,3))
-            ax.scatter(dates, points, color=(0.6, 0.8, 0.7))
+            ax.scatter(dates, cumulative_points, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
             ax.set_ylabel("Points Earned")
@@ -166,6 +167,7 @@
             decision_times = np.array(decision_times)
 
             ax.boxplot(decision_times)
+            ax.set_ylabel("Days")
             ax.set_title("Moderation Decision Times")
 
             display(fig, target="graph4", append=False)
