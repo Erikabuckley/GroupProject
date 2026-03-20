@@ -423,7 +423,7 @@ describe('POST /approveDeny', () => {
 
     const res = await request(app)
       .post('/approveDeny')
-      .send({ id: 1, outcome: 'Approved', reason: 'Great work' });
+      .send({ id: 1, outcome: 'approve', reason: 'Great work' });
 
     expect(res.statusCode).toBe(200);
   });
