@@ -27,8 +27,7 @@ body {
 }
 
 .header-heading.header-1 {
-
-    font-size: 5vw;
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
     white-space: normal;
     text-align: center;
     color: white;
