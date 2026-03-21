@@ -11,6 +11,10 @@
     text-align: justify;
 }
 
+#total-carbon-caption {
+    font-size: 1.5rem;
+}
+
 .rank-screen {
     display: flex;
 }
