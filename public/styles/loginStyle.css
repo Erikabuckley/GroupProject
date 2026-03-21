@@ -2,16 +2,18 @@ body {
     margin: 0;
     background-color: rgb(140, 240, 165);
     font-family: 'Trebuchet MS';
-    height: 100%;   
+    display: block;   
 }
 
 .ls-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 70.9vh;
-    padding: 3rem;
-    margin: 0;
+    min-height: 60vh;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
 }
 
 .ls-form {
@@ -25,9 +27,14 @@ body {
 }
 
 .header-heading.header-1 {
-    font-size: 3rem;
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
+    white-space: normal;
     text-align: center;
     color: white;
+    flex:1;
+    min-width: 0;
+    line-height:1.1;
+    padding: 0 10px;
 }
 
 .login {
@@ -67,7 +74,7 @@ body {
 @media screen and (max-width: 600px) {
     .ls-container {
         padding:1rem;
-        min-height: 80vh;
+        min-height: 20vh;
     }
 
     .ls-form {
@@ -83,7 +90,10 @@ body {
         font-size: 16px;
     }
 
+}
+
+@media screen and (max-width: 350px) {
     .header-heading.header-1 {
-        font-size: 1.8rem;
+        font-size: 1.1rem;
     }
 }

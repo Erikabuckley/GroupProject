@@ -55,7 +55,6 @@ body {
 }
 
 .header-heading {
-    display: flex;
     margin-right: 1rem;
     margin-left: 1rem;
     padding-top: 2rem;
@@ -84,12 +83,17 @@ body {
 
 .header-heading h1 {
     color: white;
+    margin: 0 5px;
 }
 
 .header-heading.header-1 {
-    font-size: 3.75rem;
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
+    white-space: normal;
     text-align: center;
     color: white;
+    flex:1;
+    min-width: 0;
+    line-height: 1.1;
 }
 
 .header-heading.header-2 {
@@ -130,6 +134,13 @@ body {
     margin-bottom: 5rem;
 }
 
+.policy iframe {
+    min-width: 0;
+    width: 100%;
+    height: 300px;
+    min-height:300px;
+}
+
 .description {
     text-align: center;
     text-size-adjust: 0.5rem;
@@ -138,8 +149,8 @@ body {
 }
 
 .indent {
-    margin-right: 15rem;
-    margin-left: 15rem;
+    margin-right: min(15rem, 8vw);
+    margin-left: min(15rem, 8vw);
 }
 
 .spacer {
@@ -154,6 +165,7 @@ body {
 #logo{
     max-height: 100px;
     padding-left: 1rem;
+    flex-shrink: 0;
 }
 
 .in-button {
@@ -254,7 +266,54 @@ a {
     color: var(--second);
 }
 
-/* mobile friendly */
+.facts {
+    display: inline-flex;
+    background: #e8f7f1;
+    border-left: 6px solid #2ecc71;
+    padding: 15px;
+    margin-left: 3rem;
+    border-radius: 10px;
+    font-size: 1.1em;
+    line-height: 1.5;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    position: relative;
+    align-self: center;
+}
+
+
+
+
+/* mobile friendly for up to 700px */
+@media screen and (max-width:400px) {
+    .header-heading.header-2 {
+        display: flex;
+        
+        gap: 5px;
+        margin-right: 0.5rem;
+    }
+
+    .header-heading.header-1 {
+        display: flex;
+        flex-wrap: nowrap;
+        
+        margin-right: 0.5rem;
+    }
+
+    .header-heading .header-button {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+        margin: 0 2px;
+        white-space: nowrap;
+        border-radius: 8px;
+        flex-shrink:0;
+    }
+
+    #logo {
+        max-height:40px;
+    }
+}
+
+/*  mobile friendly for up to 768px */
 @media screen and (max-width:768px) {
     .policy, .indent {
         margin-left:1rem;
@@ -271,9 +330,6 @@ a {
         padding:0.2rem;
     }
 
-    .header-heading.header-1 {
-        font-size: 2rem;
-    }
     .header-heading a {
         padding: 6px 12px;
         margin-left: 5px;
@@ -292,19 +348,19 @@ a {
         max-height: 40px;
         padding-left:0.5rem;
     }
+    
+
 
 }
     
-.facts {
-    display: inline-flex;
-    background: #e8f7f1;
-    border-left: 6px solid #2ecc71;
-    padding: 15px;
-    margin-left: 3rem;
-    border-radius: 10px;
-    font-size: 1.1em;
-    line-height: 1.5;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    position: relative;
-    align-self: center;
+/* mobile friendly for widths below 350px */
+@media screen and (max-width: 350px) {
+    .header-heading.header-1 {
+        font-size: 1.2rem;
+        padding: 0.2rem;
+    }
+
+    #logo {
+        max-height:30px
+    }
 }

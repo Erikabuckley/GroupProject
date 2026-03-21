@@ -134,6 +134,10 @@
 #welcome{
     display:flex;
     flex-direction: row;
+    align-items: center;
+    gap:2rem;
+    max-width:900px;
+    margin: 0 auto;
 }
 
 #text{
@@ -142,10 +146,10 @@
 }
 
 #badges{
-    margin-left: auto;
     display:grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
+    flex-shrink: 0;
 }
 
 .badge{
@@ -163,6 +167,18 @@
     filter: none;
 }
 
+.small-indent {
+    margin-top: 4rem;
+    margin-right: 7rem;
+    margin-left: 7rem;
+    margin-bottom: 4rem;
+}
+
+#upload, #join {
+        display: block;
+        margin: 0 auto 1rem auto;
+    }
+
 /* mobile friendly styling */
 
 @media screen and (max-width: 768px) /* 768px because ipad/tablet width */ {
@@ -176,6 +192,10 @@
     .modal-content {
         width:100%;
 
+    }
+
+    .indent {
+        text-align: center;
     }
 
     .form input,
@@ -224,6 +244,32 @@
         height: 20px !important;
         flex-shrink: 0;
     }
+
+    
+
+    #welcome {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #badges {
+        margin-left: 0;
+        width:100%;
+        grid-template-columns: repeat(3, 1fr);
+        gap:0.5rem;
+    }
+
+    .badge {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        padding:0.25rem;
+    }
+
+    .small-indent {
+    margin-right: 3rem;
+    margin-left: 3rem;
+}
 
 
 }
