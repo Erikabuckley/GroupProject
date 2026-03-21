@@ -468,8 +468,8 @@ describe('GET /updateChallengeList', () => {
   test('returns parallel arrays of active challenges', async () => {
     mockDb.all.mockImplementation((_sql, _params, cb) => {
       cb(null, [
-        { title: 'Go Vegan', end_date: '2026-12-01', evidence_required: 1 },
-        { title: 'Cycle to Work', end_date: '2026-11-01', evidence_required: 0 },
+        { title: 'Go Vegan', end_date: '2026-12-01T00:00:00.000Z', evidence_required: 1 },
+        { title: 'Cycle to Work', end_date: '2026-11-01T00:00:00.000Z', evidence_required: 0 },
       ]);
     });
 
@@ -477,7 +477,7 @@ describe('GET /updateChallengeList', () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body.title).toEqual(['Go Vegan', 'Cycle to Work']);
-    expect(res.body.date).toEqual(['2026-12-01', '2026-11-01']);
+    expect(res.body.date).toEqual(['01/12/2026', '01/11/2026']);
     expect(res.body.evidence).toEqual([1, 0]);
   });
 
@@ -512,8 +512,8 @@ describe('POST /addChallenge', () => {
     scope: 'global',
     rules: 'Do the thing',
     points: 100,
-    start: '2026-01-01',
-    end: '2026-06-01',
+    start: '01/01/2026',
+    end: '01/06/2026',
     selectedValue: 1,
   };
 

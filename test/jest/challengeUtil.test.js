@@ -55,7 +55,7 @@ test("CHALLENGES: loads challengeUtil.js and renders challenge cards", async () 
   window.fetch = makeFetch({
     challenges: {
       title: ["Challenge A", "Challenge B"],
-      date: ["2026-02-01", "2026-02-02"],
+      date: ["01/02/2026", "02/02/2026"],
       evidence: [true, false],
     },
     missions: {
@@ -76,7 +76,7 @@ test("CHALLENGES: loads challengeUtil.js and renders challenge cards", async () 
   const challengeCards = window.document.querySelectorAll("#challenges .card");
   expect(challengeCards.length).toBe(2);
   expect(challengeCards[0].querySelector(".title").textContent).toBe("Challenge A");
-  expect(challengeCards[0].textContent).toContain("2026-02-01");
+  expect(challengeCards[0].textContent).toContain("01/02/2026");
 
   const missionCards = window.document.querySelectorAll("#missions .card");
   expect(missionCards.length).toBe(3);
