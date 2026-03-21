@@ -87,7 +87,7 @@ body {
 }
 
 .header-heading.header-1 {
-    font-size: 5vw;
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
     white-space: normal;
     text-align: center;
     color: white;
@@ -142,8 +142,8 @@ body {
 }
 
 .indent {
-    margin-right: 15rem;
-    margin-left: 15rem;
+    margin-right: min(15rem, 8vw);
+    margin-left: min(15rem, 8vw);
 }
 
 .spacer {
