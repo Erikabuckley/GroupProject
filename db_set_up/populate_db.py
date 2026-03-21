@@ -267,7 +267,14 @@ def populate_submissions(cursor):
         # get linked_action_log ids
         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups)")
         log_ids = [row[0] for row in cursor.fetchall()]
-        log_id = random.choice(log_ids)
+        
+        while True:
+            log_id = random.choice(log_ids)
+
+            # check if decision already exists
+            cursor.execute("SELECT 1 FROM Submissions WHERE linked_action_log = ?", (log_id,))
+            if not cursor.fetchone() and all(log_id != d[0] for d in submissions):
+                break  # found a log without a submission, proceed
 
         # get challenge_ids
         cursor.execute("SELECT challenge_id FROM Challenges")
@@ -307,7 +314,15 @@ def populate_moderation_decisions(cursor):
         # get submission_ids 
         cursor.execute("SELECT submission_id FROM Submissions")
         submission_ids = [row[0] for row in cursor.fetchall()]
-        submission_id = random.choice(submission_ids)
+        
+        
+        while True:
+            submission_id = random.choice(submission_ids)
+
+            # check if decision already exists
+            cursor.execute("SELECT 1 FROM ModerationDecisions WHERE submission_id = ?", (submission_id,))
+            if not cursor.fetchone() and all(submission_id != d[0] for d in decisions):
+                break  # found a submission without a decision, proceed
 
         # get moderator_ids
         cursor.execute("SELECT user_id FROM Users WHERE Users.role = 'moderator'")
@@ -349,6 +364,7 @@ def populate_evidence_submissions(cursor):
         # get linked_action_log ids of those with evidence 
         cursor.execute("SELECT log_id FROM ActionLogs WHERE ActionLogs.user_id IN (SELECT user_id FROM ParticipantGroups) AND ActionLogs.evidence IS NOT NULL")
         log_ids = [row[0] for row in cursor.fetchall()]
+        
         log_id = random.choice(log_ids)
 
         # get challenge_ids
@@ -412,17 +428,38 @@ def populate_flagged_submissions(cursor):
     submissions
     )
 
-
-# edge case submissions to test anti-gaming checks and moderation - 100
-# File integrity 
-# Duplicate upload 
-# Upload frequency 
-# Contradiction 
-# Sensitive information 
-# Fake/ AI images 
-# Extreme value 
-
-
+# update submission status for moderated submissions
+def update_approval_reason(cursor):
+    cursor.execute("""
+        UPDATE ModerationDecisions
+        SET reason = 'Flagged submission'
+        FROM Submissions
+        WHERE Submissions.submission_id = ModerationDecisions.submission_id AND ModerationDecisions.decision = 'deny'
+    """)
+    
+#update evidence for decision
+def update_action_evidence(cursor):
+    cursor.execute("""
+        UPDATE ActionLogs
+        SET evidence = CASE
+            WHEN agf.flag_type = '1' THEN '../uploads/corrupted.png'
+            WHEN agf.flag_type = '2' THEN '../uploads/duplicate.png'
+            ELSE evidence
+        END
+        FROM AntiGamingFlags  agf, Submissions
+        WHERE ActionLogs.log_id = Submissions.linked_action_log AND Submissions.submission_id = agf.submission_id
+    """)
+    
+def update_action_date(cursor):
+    cursor.execute("""
+        UPDATE ActionLogs
+        SET date = CASE
+            WHEN agf.flag_type = '3' THEN '2025-03-21T04:30:24.245Z'
+            ELSE date
+        END
+        FROM AntiGamingFlags  agf, Submissions
+        WHERE ActionLogs.log_id = Submissions.linked_action_log AND Submissions.submission_id = agf.submission_id
+    """)
 
 populate_users(cursor)
 seed_users()
@@ -431,12 +468,14 @@ populate_challenges(cursor)
 populate_action_conversion_factors(cursor)
 populate_action_logs(cursor)
 populate_participant_groups(cursor)
-populate_submissions(cursor)
+#populate_submissions(cursor)
 populate_evidence_submissions(cursor)
 populate_moderation_decisions(cursor)
 update_submission_status(cursor)
-# populate_anti_gaming_flags(cursor)
 populate_flagged_submissions(cursor)
+update_approval_reason(cursor)
+update_action_evidence(cursor)
+update_action_date(cursor)
 
 # check that the above have been added to the database
 
