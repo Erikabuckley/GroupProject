@@ -1532,7 +1532,92 @@ app.get('/getName', function (req, res) {
 });
 
 app.get('/getBadges', function (req, res) {
- return res.json({ vals: [true, true, false, false, true, true]});
+  const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
+    if (e) {
+      console.log(e.message);
+      return res.status(500).json({ error: "database failure" });
+    }
+
+    
+
+    db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, userRow) => {
+      if (e) {
+        console.log(e.message);
+        return res.status(400).json({ error: "no user found" });
+      }
+
+      if (!userRow) {
+        console.log("No user found this email");
+        return res.status(401).json({ error: "user not found or not logged in" });
+      }
+
+      const user_id = userRow.user_id;
+
+      // total co2 badge
+      db.get("SELECT SUM(calculated_co2e) AS total FROM ActionLogs WHERE user_id = ?", [user_id], (e, co2Row) => {
+        if (e) {
+          console.log(e.message);
+        }
+        const totalco2 = co2Row?.total || 0;
+        const badge1 = totalco2 >= 1000;
+
+        // 1 challenge badge
+        db.get("SELECT COUNT(*) AS total FROM Submissions WHERE user_id = ?", [user_id], (e, challengeRow) => {
+          if (e) {
+            console.log(e.message);
+          }
+          const badge2 = (challengeRow?.total || 0) >= 1;
+
+          // 30 litter badge
+          db.get("SELECT SUM(ActionLogs.quantity) AS amount FROM ActionLogs JOIN ActionTypes ON ActionLogs.action_type_id = ActionTypes.action_type_id WHERE ActionTypes.name = 'pick up 1 plastic bottle' AND ActionLogs.user_id = ?", [user_id], (e, litterRow) => {
+            if (e) {
+              console.log(e.message);
+            }
+            const totalLitter = litterRow?.amount || 0;
+            const badge3 = totalLitter >= 30;
+
+            // 10 missions
+            db.get("SELECT COUNT(*) AS missions FROM ActionLogs WHERE user_id=?", [user_id], (e, missionRow) => {
+              if (e) {
+                console.log(e.message);
+              }
+              const badge4 = (missionRow?.missions || 0) >=10;
+
+              // 5 challenges
+              db.get("SELECT COUNT(*) AS approved FROM Submissions WHERE user_id = ? AND status = 'Approved'", [user_id], (e, approvedRow) => {
+                if (e) {
+                  console.log(e.message);
+                }
+                const badge5 = (approvedRow?.approved || 0) >= 5;
+
+                const earned = [badge1, badge2, badge3, badge4, badge5].filter(Boolean).length;
+                const badge6 = earned >= 5;
+
+                return res.json({vals: [badge1, badge2, badge3, badge4, badge5, badge6]});
+              
+              })
+            })
+          })
+        });
+        
+        
+
+        
+
+        
+      });
+
+      
+
+      
+
+      
+
+      
+    })
+
+  })
+ 
 });
 
 //add points to leaderboard and orderby statement
