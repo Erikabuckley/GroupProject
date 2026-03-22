@@ -18,7 +18,7 @@
 
 .text {
     font-style: italic;
-    font-size: 1.1rem;;
+    font-size: 1.1rem;
     align-self: flex-end;
 }
 
@@ -40,15 +40,16 @@
 @media screen and (max-width: 768px) {
     .info {
         flex-direction: column;
-        padding:1rem;
+        padding: 1rem;
         gap: 1.5rem;
     }
 
     .c-container {
         width: 100%;
     }
+
     .card {
-        width:auto;
+        width: auto;
         margin: 0.5rem 0;
     }
 }

@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <link rel="stylesheet" href="../styles/submissionsStyle.css">
-    <script type="module" src="../scripts/template.js" defer></script>
+    <script type="module" src="../scripts/template.js"></script>
+    <script type="module" src="../scripts/modCheck.js"></script>
     <script type="text/javascript" src="../scripts/submissionsUtil.js" defer></script>
-    <script type="module" src="../scripts/modCheck.js" defer></script>
 
     <title>Submissions</title>
 </head>
@@ -23,6 +23,7 @@
 
     <div id="approveDeny-modal" class="modal">
         <div class="modal-content">
+            <!--Form allows moderator to approve or deny a challenge-->
             <span class="close" id="close-approveDeny">&times;</span>
             <h2>Is this submission acceptable:</h2>
             <p>View unacceptable criteria <a href="../policies/submissions.html">here</a></p>
@@ -34,7 +35,7 @@
                 <input type="radio" name="val" value="deny" id="deny" required><br>
                 <label for="reason-input">Please provide a reason</label><br>
                 <textarea required id="reason-input"></textarea><br>
-                <input  type="checkbox" id="identifying-info" name="identifying-info">
+                <input type="checkbox" id="identifying-info" name="identifying-info">
                 <label for="identifying-info"> This submission contains identifying information</label><br>
                 <input type="submit" value="Submit" name="confirm" id="approveDeny-submit" class="in-button">
             </form>

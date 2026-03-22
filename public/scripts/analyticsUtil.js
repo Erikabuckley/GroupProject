@@ -45,7 +45,6 @@ async function updateStats() {
 
         const data = await res.json();
         //gets total number of challenge submissions
-        console.log(data["COUNT(submission_id)"]);
         document.getElementById("challenge-stat").textContent = data[0]["COUNT(submission_id)"];
 
     } catch (err) {

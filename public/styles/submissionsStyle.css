@@ -1,52 +1,53 @@
-.challenge{
+.challenge {
     background-color: var(--main);
-    margin:1rem;
-    padding:1rem;
+    margin: 1rem;
+    padding: 1rem;
     border-radius: 2rem;
 }
 
-.title{
+.title {
     font-weight: bold;
 }
 
-.challenge_title{
+.challenge_title {
     color: white;
-    font-size : 20px;
-    padding:1rem;
+    font-size: 20px;
+    padding: 1rem;
 }
 
-.card{
+.card {
     background-color: white;
-    margin:1rem;
-    padding:1rem;
+    margin: 1rem;
+    padding: 1rem;
     border-radius: 2rem;
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
-.card:hover{
+.card:hover {
     background-color: rgb(145, 142, 142);
 }
 
-#submissions-container{
+#submissions-container {
     display: flex;
     flex-direction: column;
     width: 100%;
     justify-content: space-between;
 }
 
-.evidence-photo{
+.evidence-photo {
     max-height: 100px;
-    max-width:100px;
-    padding: 1rem;;
+    max-width: 100px;
+    padding: 1rem;
+    ;
 }
 
 
-.evidence-photo:hover{
+.evidence-photo:hover {
     transform: scale(2);
 }
 
-.flag{
+.flag {
     color: red;
 }
 

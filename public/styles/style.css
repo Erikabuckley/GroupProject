@@ -1,7 +1,7 @@
 :root {
-  --main: rgb(51, 154, 104);
-  --second: rgb(60, 180, 95);
-  --button-main: #4CAF50;
+    --main: rgb(51, 154, 104);
+    --second: rgb(60, 180, 95);
+    --button-main: #4CAF50;
 }
 
 h1 {
@@ -51,7 +51,7 @@ body {
 
 .header.index {
     position: fixed;
-    width:100%;
+    width: 100%;
 }
 
 .header-heading {
@@ -77,7 +77,7 @@ body {
     text-decoration: none;
     font-weight: 600;
 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
 }
 
@@ -91,7 +91,7 @@ body {
     white-space: normal;
     text-align: center;
     color: white;
-    flex:1;
+    flex: 1;
     min-width: 0;
     line-height: 1.1;
 }
@@ -138,12 +138,11 @@ body {
     min-width: 0;
     width: 100%;
     height: 300px;
-    min-height:300px;
+    min-height: 300px;
 }
 
 .description {
     text-align: center;
-    text-size-adjust: 0.5rem;
     margin-left: 1rem;
     margin-right: 1rem;
     color: var(--second);
@@ -163,7 +162,7 @@ body {
     margin-left: 7rem;
 }
 
-#logo{
+#logo {
     max-height: 100px;
     padding-left: 1rem;
     flex-shrink: 0;
@@ -199,7 +198,7 @@ body {
     margin-top: 10px;
 }
 
-.in-button:hover{
+.in-button:hover {
     background-color: var(--main);
 }
 
@@ -215,13 +214,13 @@ body {
     cursor: pointer;
 }
 
-.header-button:hover{
+.header-button:hover {
     background-color: white;
     color: var(--main);
 }
 
-.error{
-    color:red;
+.error {
+    color: red;
     visibility: hidden;
 }
 
@@ -236,10 +235,10 @@ body {
     font-size: 50px;
     font-weight: bold;
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-#backdrop{
+#backdrop {
     display: none;
     position: fixed;
     height: 100%;
@@ -250,13 +249,13 @@ body {
     z-index: 1;
 }
 
-.dialog{
+.dialog {
     padding: 1rem;
     border-radius: 5px;
     border: none;
 }
 
-.dialog-content{
+.dialog-content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -276,7 +275,7 @@ a {
     border-radius: 10px;
     font-size: 1.1em;
     line-height: 1.5;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
     position: relative;
     align-self: center;
 }
@@ -288,7 +287,7 @@ a {
 @media screen and (max-width:400px) {
     .header-heading.header-2 {
         display: flex;
-        
+
         gap: 5px;
         margin-right: 0.5rem;
     }
@@ -296,7 +295,7 @@ a {
     .header-heading.header-1 {
         display: flex;
         flex-wrap: nowrap;
-        
+
         margin-right: 0.5rem;
     }
 
@@ -306,19 +305,21 @@ a {
         margin: 0 2px;
         white-space: nowrap;
         border-radius: 8px;
-        flex-shrink:0;
+        flex-shrink: 0;
     }
 
     #logo {
-        max-height:40px;
+        max-height: 40px;
     }
 }
 
 /*  mobile friendly for up to 768px */
 @media screen and (max-width:768px) {
-    .policy, .indent {
-        margin-left:1rem;
-        margin-right:1rem;
+
+    .policy,
+    .indent {
+        margin-left: 1rem;
+        margin-right: 1rem;
     }
 
     .header {
@@ -326,34 +327,35 @@ a {
         padding: 0.5rem;
         justify-content: space-between;
     }
+
     .header-heading {
-        margin:0;
-        padding:0.2rem;
+        margin: 0;
+        padding: 0.2rem;
     }
 
     .header-heading a {
         padding: 6px 12px;
         margin-left: 5px;
-        font-size:0.8 rem;
+        font-size: 0.8rem;
         border-radius: 8px;
     }
 
     .footer {
         flex-direction: column;
-        align-items:center;
+        align-items: center;
         gap: 2rem;
         padding: 2rem 0;
     }
 
     #logo {
         max-height: 40px;
-        padding-left:0.5rem;
+        padding-left: 0.5rem;
     }
-    
+
 
 
 }
-    
+
 /* mobile friendly for widths below 350px */
 @media screen and (max-width: 350px) {
     .header-heading.header-1 {
@@ -362,6 +364,6 @@ a {
     }
 
     #logo {
-        max-height:30px
+        max-height: 30px
     }
 }
