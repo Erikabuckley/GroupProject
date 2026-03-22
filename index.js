@@ -658,7 +658,7 @@ app.get('/updateTotalIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Submissions ON ActionLogs.log_id = Submissions.linked_action_log JOIN Users ON Users.user_id = Submissions.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
+    db.get("SELECT SUM(ActionLogs.calculated_co2e) AS total FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id WHERE Users.email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -668,7 +668,7 @@ app.get('/updateTotalIndi', function (req, res) {
   });
 });
 
-// update total carbon saved by individual
+// update total points saved by individual
 app.get('/updatePointsIndi', function (req, res) {
   console.log("Total individual update request received");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
@@ -677,7 +677,7 @@ app.get('/updatePointsIndi', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved'AND Users.email = ?", [req.session.email], (e, row) => {
+    db.get("SELECT SUM(Submissions.points) AS total FROM Submissions JOIN Users ON Users.user_id = Submissions.user_id WHERE Submissions.status = 'Approved' AND Users.email = ?", [req.session.email], (e, row) => {
       if (e) {
         console.log(e.message);
       }
@@ -1578,6 +1578,8 @@ app.get('/getBadges', function (req, res) {
           console.log(e.message);
         }
         const totalco2 = co2Row?.total || 0;
+        console.log("user id:", user_id)
+        console.log("total co2:",totalco2);
         const badge1 = totalco2 >= 1000;
 
         // 1 challenge badge
