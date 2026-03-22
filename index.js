@@ -1178,7 +1178,7 @@ app.get('/updateSubmissions', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
     // check if user exists
-    db.all("SELECT Submissions.submission_id, date(ActionLogs.date) AS date FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log", (e, rows) => {
+    db.all("SELECT date(ActionLogs.date) AS date, COUNT(Submissions.submission_id) AS total FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log GROUP BY date(ActionLogs.date) ORDER BY date(ActionLogs.date)", (e, rows) => {
       if (e) {
         console.log(e.message);
       }
@@ -1333,9 +1333,6 @@ app.get('/getApprovalTimes', function (req, res) {
     });
   });
 });
-// moderation decisions timestamp vs action logs date -> SUBMISSIONS
-  // join based on linked action logs/log id
-  // where users.role = moderator
 
 app.get('/checkGroup', function (req, res) {
   console.log("Check whether user is part of a group");

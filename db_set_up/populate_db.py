@@ -192,7 +192,7 @@ def populate_action_logs(cursor):
     
     for i in range(1, 601):
         # get user ids
-        cursor.execute("SELECT user_id FROM Users WHERE user_id != 66")
+        cursor.execute("SELECT user_id FROM Users WHERE user_id < 66")
         user_ids = [row[0] for row in cursor.fetchall()]
 
         # action type id (FK) - 5 action types populated in db - choose one randomly
@@ -429,13 +429,14 @@ def update_action_evidence(cursor):
 def update_action_date(cursor):
     cursor.execute("""
         UPDATE ActionLogs
-        SET date = CASE
-            WHEN agf.flag_type = '3' THEN '2026-03-20T04:30:24.245Z'
-            ELSE date
-        END
-        FROM AntiGamingFlags  agf, Submissions
-        WHERE ActionLogs.log_id = Submissions.linked_action_log AND Submissions.submission_id = agf.submission_id
-    """)
+        SET date = date(ActionLogs.date, '-1 day')
+        WHERE log_id IN (
+            SELECT Submissions.linked_action_log
+            FROM Submissions
+            JOIN AntiGamingFlags agf
+            ON Submissions.submission_id = agf.submission_id
+            WHERE agf.flag_type = 3)
+    """,)
 
 populate_users(cursor)
 seed_users()

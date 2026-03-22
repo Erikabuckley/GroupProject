@@ -73,14 +73,14 @@
             submissions = []
 
             for row in data:
-                submissions.append(row["submission_id"])
                 dates.append(datetime.strptime(row["date"], "%Y-%m-%d"))
+                submissions.append(row["total"])
 
             return dates, submissions
 
         async def make_submissions_scatter():
             dates, submissions = await get_submission_data()
-            fig, ax = plt.subplots(figsize=(4,3))
+            fig, ax = plt.subplots(figsize=(5,4))
             ax.scatter(dates, submissions, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
@@ -109,7 +109,7 @@
         async def make_points_scatter():
             dates, points = await get_points_data()
             cumulative_points = np.cumsum(points)
-            fig, ax = plt.subplots(figsize=(4,3))
+            fig, ax = plt.subplots(figsize=(5,4))
             ax.scatter(dates, cumulative_points, color=(0.6, 0.8, 0.7))
 
             ax.set_xlabel("Date")
@@ -137,7 +137,7 @@
         async def make_groups_chart():
             num_users, group_names = await get_groups_data()
 
-            fig, ax = plt.subplots(figsize=(4,3))
+            fig, ax = plt.subplots(figsize=(5,4))
             ax.bar(group_names, num_users, color=(0.6, 0.8, 0.7))
             ax.set_xlabel("Groups")
             ax.set_ylabel("Number of users")
@@ -152,7 +152,7 @@
             res = await fetch("/getApprovalTimes")
             data =  (await res.json()).to_py()
 
-            fig, ax = plt.subplots(figsize=(4,3))
+            fig, ax = plt.subplots(figsize=(5,4))
 
             # show empty graph if there is no data present
             if len(data) == 0:
@@ -181,9 +181,11 @@
 
         <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> loading... </h1>
+                <h1> Loading... </h1>
             </div>
             <div class="graph" id="graph2"></div>
+        </div>
+        <div class="graph-block">
             <div class="graph" id="graph3"></div>
             <div class="graph" id="graph4"></div>
         </div>
