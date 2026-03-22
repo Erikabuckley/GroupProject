@@ -1461,6 +1461,7 @@ app.post('/editChallenge', function (req, res) {
     }
     db.run("UPDATE Challenges SET title = ?, scope = ?, rules = ?, scoring = ?, start_date = ?, end_date = ?, evidence_required = ? WHERE challenge_id = ?", [req.body.name, req.body.scope, req.body.rules, req.body.points, new Date(req.body.start).toISOString(), new Date(req.body.end).toISOString(), req.body.selectedValue, req.body.id], e => {
       db.close();
+
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "Failed to update challenge" });
@@ -1495,8 +1496,18 @@ app.get('/updateModChallengeList', function (req, res) {
       const scope = rows.map(r => r.scope);
       const rules = rows.map(r => r.rules);
       const points = rows.map(r => r.scoring);
-      const start = rows.map(r => new Date(r.start_date).toLocaleDateString("en-GB"));
-      const end = rows.map(r => new Date(r.end_date).toLocaleDateString("en-GB"));
+
+      function formatDateForInput(dateStr) {
+        const date = new Date(dateStr);
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+      }
+
+      const start = rows.map(r => formatDateForInput(r.start_date));
+      const end = rows.map(r => formatDateForInput(r.end_date));
+
       const evidence = rows.map(r => r.evidence_required);
       return res.json({ id, name, scope, rules, points, start, end, evidence});
     });
