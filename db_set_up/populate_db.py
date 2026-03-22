@@ -430,7 +430,7 @@ def update_action_date(cursor):
     cursor.execute("""
         UPDATE ActionLogs
         SET date = CASE
-            WHEN agf.flag_type = '3' THEN '2025-03-21T04:30:24.245Z'
+            WHEN agf.flag_type = '3' THEN '2026-03-20T04:30:24.245Z'
             ELSE date
         END
         FROM AntiGamingFlags  agf, Submissions
