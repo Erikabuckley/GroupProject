@@ -34,7 +34,7 @@ app.use(
 generateSitemap();
 
 // route to set session data
-app.post("/setSession", (req,res) => {
+app.post("/setSession", (req, res) => {
   console.log("Checked user permissions"); //log that it has been done successfully
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
@@ -46,7 +46,7 @@ app.post("/setSession", (req,res) => {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
 
-      } 
+      }
       if (row) {
         req.session.email = req.body.email;
         req.session.role = row.role;
@@ -57,11 +57,11 @@ app.post("/setSession", (req,res) => {
       }
     });
   });
-  
+
 });
 
 // route to retrieve session data
-app.get("/getSession", (req,res) => {
+app.get("/getSession", (req, res) => {
   const email = req.session.email;
   const role = req.session.role;
   const authenticated = req.session.authenticated;
@@ -69,7 +69,7 @@ app.get("/getSession", (req,res) => {
 });
 
 // route to destroy session
-app.post("/destroySession", (req,res) => {
+app.post("/destroySession", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Error destroy session: ", err);
@@ -291,21 +291,21 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                       // Check if evidence provided when not required
                       if (evidencePath) {
                         // remove evidence
-                        db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id],(e, row) => {
+                        db.run("UPDATE ActionLogs SET evidence = NULL WHERE log_id =?", [log_id], (e, row) => {
                           if (e) {
                             console.log(e.message);
                             return res.status(500).json({ error: "database failure" });
                           }
                         });
                         try {
-                          const evidenceFullPath =  path.join(__dirname, 'public', evidencePath);
+                          const evidenceFullPath = path.join(__dirname, 'public', evidencePath);
                           fs.unlink(evidenceFullPath);
                           console.log("File removed successfully");
                         } catch (e) {
                           console.log(e.message);
                         }
                         return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
-                      }else{
+                      } else {
                         return res.json({ carbon: co2_saved, source: source_url, value: value });
                       }
                     }
@@ -345,8 +345,8 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 return res.status(400).json({ error: "no group found" });
                               }
                               group_id = group.group_id;
-                          });
-                        } 
+                            });
+                        }
 
                         // Insert into Submissions
                         db.run(
@@ -373,7 +373,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 }
                                 // flag for duplicate uploads
                                 const original = await check_originality(uploadedFilePath);
-                                if (!original) { 
+                                if (!original) {
                                   db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered) VALUES (?, 2, 'Rule 2: Duplicate Upload')", [id], e => {
                                     if (e) {
                                       console.log(e.message);
@@ -395,10 +395,10 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
 
                                   if (countRow.total >= 3) {
                                     db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered) VALUES (?, 3, 'Rule 3: Upload frequency')", [id], e => {
-                                    if (e) {
-                                      console.log(e.message);
-                                      return res.status(500).json({ error: "Failed to flag" });
-                                    }
+                                      if (e) {
+                                        console.log(e.message);
+                                        return res.status(500).json({ error: "Failed to flag" });
+                                      }
                                     });
                                   }
                                 });
@@ -413,7 +413,7 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                   }
                                 });
                                 try {
-                                  const evidenceFullPath =  path.join(__dirname, 'public', evidencePath);
+                                  const evidenceFullPath = path.join(__dirname, 'public', evidencePath);
                                   await fs.unlink(evidenceFullPath);
                                   console.log("File removed successfully");
                                 } catch (e) {
@@ -421,14 +421,14 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                                 }
                                 return res.status(202).json({ carbon: co2_saved, source: source_url, value: value });
                               }
-                              return res.json({ carbon: co2_saved, source: source_url, value: value});
+                              return res.json({ carbon: co2_saved, source: source_url, value: value });
                             }
-                        });
-                    });
-                });
-            });
-        });
-    });
+                          });
+                      });
+                  });
+              });
+          });
+      });
   });
 });
 
@@ -545,14 +545,14 @@ app.post('/approveDeny', function (req, res) {
                 if (e) {
                   console.log(e.message);
                   return res.status(500).json({ error: "database failure" });
-                } else{
+                } else {
                   db.get("SELECT scoring AS score FROM Challenges WHERE challenge_id = ? ", [challenge.challenge_id], (e, row) => {
                     if (e) {
                       console.log(e.message);
                       return res.status(500).json({ error: "database failure" });
                     }
                     console.log("Retrieved points sucesfully");
-                    if (row){
+                    if (row) {
                       db.run("UPDATE Submissions SET status = 'Approved', points = ? WHERE submission_id = ? ", [row.score, req.body.id], (e, row) => {
                         if (e) {
                           console.log(e.message);
@@ -577,7 +577,7 @@ app.post('/approveDeny', function (req, res) {
                   if (row) {
                     // delete file
                     try {
-                      const evidenceFullPath =  path.join(__dirname, 'public', row.evidence);
+                      const evidenceFullPath = path.join(__dirname, 'public', row.evidence);
                       await fs.unlink(evidenceFullPath);
                       console.log("File removed successfully");
                     } catch (e) {
@@ -593,8 +593,8 @@ app.post('/approveDeny', function (req, res) {
                   }
                 });
               } // closes if sensitive info block
-              
-              
+
+
               db.run("UPDATE Submissions SET status = 'Denied' WHERE submission_id = ? ", [req.body.id], (e, row) => {
                 if (e) {
                   console.log(e.message);
@@ -689,7 +689,7 @@ app.get('/updatePointsIndi', function (req, res) {
 
 // gets the total amount of carbon the group had saved
 app.get('/updateTotalGroup', function (req, res) {
-  console.log("Total co2e saved by group"); 
+  console.log("Total co2e saved by group");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -708,7 +708,7 @@ app.get('/updateTotalGroup', function (req, res) {
 
 // gets the total amount of carbon the group had saved
 app.get('/updatePointsGroup', function (req, res) {
-  console.log("Total co2e saved by group"); 
+  console.log("Total co2e saved by group");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -855,14 +855,14 @@ app.get('/updateSubmissionsList', function (req, res) {
         console.log("No submissions exist");
         return res.json({ title: [], id: [], evidence: [], challenge_title: [], flag: [] });
       }
-      
+
       const title = rows.map(r => r.name);
       const id = rows.map(r => r.submission_id);
       const evidence = rows.map(r => r.evidence);
       const challenge_title = rows.map(r => r.title);
       const flag = rows.map(r => r.flags ? r.flags : "No automatic flags triggered");
-      return res.json({ title, id, evidence, challenge_title, flag});
-      
+      return res.json({ title, id, evidence, challenge_title, flag });
+
 
     }); // closes db.all
   }); // closes const db
@@ -879,12 +879,12 @@ app.get('/updateLog', function (req, res) {
     // find user id
     db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
       if (e) {
-          console.log("DB error:", e.message);
-          return res.status(500).json({ error: "database error" });
+        console.log("DB error:", e.message);
+        return res.status(500).json({ error: "database error" });
       }
       if (!user) {
-          console.log("No user found for email:", req.session.email);
-          return res.status(400).json({ error: "no user found" });
+        console.log("No user found for email:", req.session.email);
+        return res.status(400).json({ error: "no user found" });
       }
       if (user) {
         const user_id = user.user_id;
@@ -896,7 +896,7 @@ app.get('/updateLog', function (req, res) {
 
           if (!rows || rows.length === 0) {
             console.log("No submissions exist");
-            return res.json({title : [], id: [], evidence: [], challenge_title: [], status: [], reason:[] });
+            return res.json({ title: [], id: [], evidence: [], challenge_title: [], status: [], reason: [] });
           }
           // ADD CHECK IF A FLAG HAS BEEN RAISED AND CHANGE RESPONSE
           const title = rows.map(r => r.name);
@@ -911,7 +911,7 @@ app.get('/updateLog', function (req, res) {
       }
     });
 
-    
+
   }); // closes const db
 }); // closes app.get
 
@@ -919,14 +919,14 @@ app.get('/updateLog', function (req, res) {
 //gets information for the table
 app.get('/updateTableIndi', function (req, res) {
   const type = req.query.type;
-  if (type === 'date'){
+  if (type === 'date') {
     // odored by date
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=? ORDER BY date(ActionLogs.date)", [req.session.email], (e,rows) => {
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=? ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
         if (e) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
@@ -935,18 +935,18 @@ app.get('/updateTableIndi', function (req, res) {
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
-        
+
         return res.json({ date, title, co2, cat });
       });
     });
-  } else if (type === 'type'){
+  } else if (type === 'type') {
 
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=? ORDER BY types", [req.session.email], (e,rows) => {
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=? ORDER BY types", [req.session.email], (e, rows) => {
         if (e) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
@@ -955,7 +955,7 @@ app.get('/updateTableIndi', function (req, res) {
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
-        
+
         return res.json({ date, title, co2, cat });
       });
     });
@@ -964,14 +964,14 @@ app.get('/updateTableIndi', function (req, res) {
 
 app.get('/updateTableGroup', function (req, res) {
   const type = req.query.type;
-  if (type === 'indi'){
+  if (type === 'indi') {
 
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      db.all("SELECT ParticipantGroups.group_id AS group_id, date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types, ParticipantGroups.user_id AS user FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=?", [req.session.email], (e,rows) => {
+      db.all("SELECT ParticipantGroups.group_id AS group_id, date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types, ParticipantGroups.user_id AS user FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=?", [req.session.email], (e, rows) => {
         if (e) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
@@ -983,13 +983,13 @@ app.get('/updateTableGroup', function (req, res) {
         const cat = rows.map(r => r.types);
         // const userId = rows.map(r => r.user);
         const userId = rows.length > 0 ? rows[0].user : null;
-        
+
         return res.json({ id, date, title, co2, cat, userId });
       });
     });
     // all does not matter about order but the ids too
     // return res.json({id: [1,2,3], date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [100,100,100], cat : ['food', 'food', 'food'], userId :1});
-  } else if(type === 'date'){
+  } else if (type === 'date') {
     // odored by date
 
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
@@ -997,7 +997,7 @@ app.get('/updateTableGroup', function (req, res) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) ORDER BY date(ActionLogs.date)", [req.session.email], (e,rows) => {
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email = ?) ORDER BY date(ActionLogs.date)", [req.session.email], (e, rows) => {
         if (e) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
@@ -1006,19 +1006,19 @@ app.get('/updateTableGroup', function (req, res) {
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
-        
+
         return res.json({ date, title, co2, cat });
       });
     });
     // return res.json({date: ['2020-01-01', '2020-01-01', '2020-01-01'], title : ['action', 'action', 'action'], co2 : [0,0,0], cat : ['food', 'food', 'food']});
-  }else if (type === 'type'){
+  } else if (type === 'type') {
 
     const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
       if (e) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email=?) ORDER BY types", [req.session.email], (e,rows) => {
+      db.all("SELECT date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types FROM ActionLogs JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id WHERE ParticipantGroups.group_id = (SELECT ParticipantGroups.group_id FROM ParticipantGroups JOIN Users ON Users.user_id = ParticipantGroups.user_id WHERE Users.email=?) ORDER BY types", [req.session.email], (e, rows) => {
         if (e) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
@@ -1027,7 +1027,7 @@ app.get('/updateTableGroup', function (req, res) {
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
-        
+
         return res.json({ date, title, co2, cat });
       });
     });
@@ -1095,7 +1095,7 @@ app.get('/updateCarbon', function (req, res) {
 
 // get individual user's carbon and the dates saved
 app.get('/updateActionDatesIndi', function (req, res) {
-  console.log("CO2 saved over time by user"); 
+  console.log("CO2 saved over time by user");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1114,7 +1114,7 @@ app.get('/updateActionDatesIndi', function (req, res) {
 
 // get group's carbon and the dates saved
 app.get('/updateActionDatesGroup', function (req, res) {
-  console.log("CO2 saved over time by group"); 
+  console.log("CO2 saved over time by group");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1124,7 +1124,7 @@ app.get('/updateActionDatesGroup', function (req, res) {
       if (e) {
         console.log(e.message);
       }
-    
+
       return res.json(rows)
     });
   });
@@ -1132,7 +1132,7 @@ app.get('/updateActionDatesGroup', function (req, res) {
 
 // get individual user's carbon and the action type
 app.get('/updateActionTypesIndi', function (req, res) {
-  console.log("CO2 saved by action type by user"); 
+  console.log("CO2 saved by action type by user");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1152,7 +1152,7 @@ app.get('/updateActionTypesIndi', function (req, res) {
 
 // get groups's carbon and the action type
 app.get('/updateActionTypesGroup', function (req, res) {
-  console.log("CO2 saved by action type by group"); 
+  console.log("CO2 saved by action type by group");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1171,7 +1171,7 @@ app.get('/updateActionTypesGroup', function (req, res) {
 });
 
 app.get('/updateSubmissions', function (req, res) {
-  console.log("All submissions and the date they were made"); 
+  console.log("All submissions and the date they were made");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1188,7 +1188,7 @@ app.get('/updateSubmissions', function (req, res) {
 });
 
 app.get('/updatePointsDate', function (req, res) {
-  console.log("All points gained over time"); 
+  console.log("All points gained over time");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1205,7 +1205,7 @@ app.get('/updatePointsDate', function (req, res) {
 });
 
 app.get('/updatePointsDateIndi', function (req, res) {
-  console.log("Points gained over time by individual user"); 
+  console.log("Points gained over time by individual user");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1222,7 +1222,7 @@ app.get('/updatePointsDateIndi', function (req, res) {
 });
 
 app.get('/updatePointsDateGroup', function (req, res) {
-  console.log("Points gained over time by group"); 
+  console.log("Points gained over time by group");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1239,7 +1239,7 @@ app.get('/updatePointsDateGroup', function (req, res) {
 });
 
 app.get('/updateGroupNumbers', function (req, res) {
-  console.log("All groups and the users in the groups"); 
+  console.log("All groups and the users in the groups");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1256,7 +1256,7 @@ app.get('/updateGroupNumbers', function (req, res) {
 });
 
 app.get('/updateLeaderboard', function (req, res) {
-  console.log("Number of points per group"); 
+  console.log("Number of points per group");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1267,10 +1267,10 @@ app.get('/updateLeaderboard', function (req, res) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      
+
       if (!rows || rows.length === 0) {
         console.log("No groups exist");
-        return res.json({ name: [], total : []});
+        return res.json({ name: [], total: [] });
       }
 
       // replace null totals with 0
@@ -1285,7 +1285,7 @@ app.get('/updateLeaderboard', function (req, res) {
 });
 
 app.get('/updateSubmissionsCount', function (req, res) {
-  console.log("Total number of submissions"); 
+  console.log("Total number of submissions");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1302,7 +1302,7 @@ app.get('/updateSubmissionsCount', function (req, res) {
 });
 
 app.get('/updateActionsCount', function (req, res) {
-  console.log("Total number of submissions"); 
+  console.log("Total number of submissions");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1319,7 +1319,7 @@ app.get('/updateActionsCount', function (req, res) {
 });
 
 app.get('/getApprovalTimes', function (req, res) {
-  console.log("Length of time between submission logged and approved/denied"); 
+  console.log("Length of time between submission logged and approved/denied");
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
     if (e) {
       console.log(e.message);
@@ -1351,7 +1351,7 @@ app.get('/checkGroup', function (req, res) {
 });
 
 // delete user information
-app.post("/delete", (req,res) => {
+app.post("/delete", (req, res) => {
   console.log("Delete request received");
   console.log(req.session.email);
   const db = new sqlite3.Database('CarbonChallenge.db', OPEN_READWRITE, (e) => {
@@ -1379,7 +1379,7 @@ app.post("/delete", (req,res) => {
               return res.sendStatus(500);
             }
           });
-        });          
+        });
         // delete submissions
         db.run("DELETE FROM Submissions WHERE user_id = ?", [user_id], e => {
           if (e) {
@@ -1393,9 +1393,9 @@ app.post("/delete", (req,res) => {
           if (e) {
             console.log(e.message);
             return;
-          }if (row.evidence) {
+          } if (row.evidence) {
             try {
-              const evidenceFullPath =  path.join(__dirname, 'public', row.evidence);
+              const evidenceFullPath = path.join(__dirname, 'public', row.evidence);
               await fs.unlink(evidenceFullPath);
               console.log("File removed successfully");
             } catch (e) {
@@ -1509,7 +1509,7 @@ app.get('/updateModChallengeList', function (req, res) {
       const end = rows.map(r => formatDateForInput(r.end_date));
 
       const evidence = rows.map(r => r.evidence_required);
-      return res.json({ id, name, scope, rules, points, start, end, evidence});
+      return res.json({ id, name, scope, rules, points, start, end, evidence });
     });
   });
 });
@@ -1555,7 +1555,7 @@ app.post('/deleteChallenge', function (req, res) {
 });
 
 app.get('/getName', function (req, res) {
- return res.json({ dis_name: req.session.name });
+  return res.json({ dis_name: req.session.name });
 });
 
 app.get('/getBadges', function (req, res) {
@@ -1565,7 +1565,7 @@ app.get('/getBadges', function (req, res) {
       return res.status(500).json({ error: "database failure" });
     }
 
-    
+
 
     db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], (e, userRow) => {
       if (e) {
@@ -1587,7 +1587,7 @@ app.get('/getBadges', function (req, res) {
         }
         const totalco2 = co2Row?.total || 0;
         console.log("user id:", user_id)
-        console.log("total co2:",totalco2);
+        console.log("total co2:", totalco2);
         const badge1 = totalco2 >= 1000;
 
         // 1 challenge badge
@@ -1610,7 +1610,7 @@ app.get('/getBadges', function (req, res) {
               if (e) {
                 console.log(e.message);
               }
-              const badge4 = (missionRow?.missions || 0) >=10;
+              const badge4 = (missionRow?.missions || 0) >= 10;
 
               // 5 challenges
               db.get("SELECT COUNT(*) AS approved FROM Submissions WHERE user_id = ? AND status = 'Approved'", [user_id], (e, approvedRow) => {
@@ -1622,31 +1622,31 @@ app.get('/getBadges', function (req, res) {
                 const earned = [badge1, badge2, badge3, badge4, badge5].filter(Boolean).length;
                 const badge6 = earned >= 5;
 
-                return res.json({vals: [badge1, badge2, badge3, badge4, badge5, badge6]});
-              
+                return res.json({ vals: [badge1, badge2, badge3, badge4, badge5, badge6] });
+
               })
             })
           })
         });
-        
-        
 
-        
 
-        
+
+
+
+
       });
 
-      
 
-      
 
-      
 
-      
+
+
+
+
     })
 
   })
- 
+
 });
 
 //NEEDS TO BE AT THE BOTTOM
