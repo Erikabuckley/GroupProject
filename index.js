@@ -323,7 +323,6 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                         if (challengeEvidenceRequired && !evidencePath) {
                           return res.status(400).json({ error: "This challenge requires evidence" });
                         }
-                        console.log(challenge.scope, req.body.group);
                         // if personal submitted for a group challenge - 403
                         if (challenge.scope === "Group" && req.body.group === "Individual") {
                           return res.status(403).json({ error: "Insuffiecient group information for submission" })
@@ -1428,7 +1427,7 @@ app.post('/addChallenge', function (req, res) {
         console.log(e.message);
         return res.status(500).json({ error: "Failed to create challenge" });
       } else {
-        console.log('Challenge added sucessfully')
+        console.log('Challenge added successfully')
         return res.status(201).json({ message: "Challenge created" });
       }
     });
@@ -1450,7 +1449,7 @@ app.post('/editChallenge', function (req, res) {
         console.log(e.message);
         return res.status(500).json({ error: "Failed to update challenge" });
       } else {
-        console.log('Challenge updated sucessfully')
+        console.log('Challenge updated successfully')
         return res.status(201).json({ message: "Challenge updated" });
       }
     });
@@ -1570,8 +1569,6 @@ app.get('/getBadges', function (req, res) {
           console.log(e.message);
         }
         const totalco2 = co2Row?.total || 0;
-        console.log("user id:", user_id)
-        console.log("total co2:", totalco2);
         const badge1 = totalco2 >= 1000;
 
         // 1 challenge badge
