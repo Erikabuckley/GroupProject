@@ -1,7 +1,7 @@
 import sqlite3
 import random
 import bcrypt
-from datetime import date, timedelta, datetime, timezone
+from datetime import timedelta, datetime, timezone
 
 # Connect to database
 con = sqlite3.connect("CarbonChallenge.db")
