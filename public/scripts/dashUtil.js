@@ -251,7 +251,7 @@ async function updateLog() {
             if (itemStatus === 'Denied') {
                 cardDiv.style.backgroundColor = "#D9544D";
             } else if (itemStatus === 'Pending') {
-                cardDiv.style.backgroundColor = "#686b6c";
+                cardDiv.style.backgroundColor = "#ffffff";
             } else { // approved/accepted
                 cardDiv.style.backgroundColor = "#93ef90";
             }

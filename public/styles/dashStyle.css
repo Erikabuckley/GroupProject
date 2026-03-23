@@ -88,7 +88,7 @@
     margin: 1rem;
     padding: 1rem;
     border-radius: 2rem;
-    box-shadow: 0 0 50px rgb(191, 190, 190);
+    background-color: var(--main);
 }
 
 .title {
