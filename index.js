@@ -207,6 +207,9 @@ async function check_originality(newImagePath) {
     if (oldImageFullPath === newImagePath) {
       continue;
     }
+    if (!(await check_file(oldImageFullPath))) {
+      continue;
+    }
     const original = await compareImages(newImageHash, oldImageFullPath);
     if (!original) {
       return false; // returns false if duplicate found
