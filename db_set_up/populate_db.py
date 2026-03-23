@@ -429,7 +429,7 @@ def update_action_evidence(cursor):
 def update_action_date(cursor):
     cursor.execute("""
         UPDATE ActionLogs
-        SET date = date(ActionLogs.date, '-1 day')
+        SET date = datetime(ActionLogs.date, '-1 day')
         WHERE log_id IN (
             SELECT Submissions.linked_action_log
             FROM Submissions
