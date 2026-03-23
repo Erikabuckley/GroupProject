@@ -82,13 +82,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: var(--main);
+    border-radius: 2rem;
+    padding: 1rem;
 }
 
 .submission {
     margin: 1rem;
     padding: 1rem;
     border-radius: 2rem;
-    background-color: var(--main);
+    background-color: white;
 }
 
 .title {
