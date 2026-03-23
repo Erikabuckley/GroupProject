@@ -22,6 +22,7 @@
 .award-screen {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .award-text {
@@ -96,6 +97,15 @@
 #step {
     width: 80px;
     height: 80px;
+}
+
+.total-box{
+    display: flex;
+    flex-direction: column;
+}
+
+#total-carbon-caption{
+    max-width: 300px;
 }
 
 /* mobile friendly styling */
