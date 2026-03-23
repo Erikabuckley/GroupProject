@@ -4,6 +4,7 @@
 <html>
 
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <script type="module" src="../scripts/template.js" defer></script>
@@ -17,6 +18,7 @@
     <div class="header-container"></div>
     
     <div class="policy">
+		<h1>Submission Criteria<h1>
         <h2>Prohibited User Behavior:</h2>
         <ul>
             <li>Hacking: any form of unauthorised access into any part of our application including, but not limited to, exploiting bugs or glitches that disrupt competition; using bots to create false personas; hacking, cheating, or using third-party software to gain an unfair advantage</li>
@@ -28,9 +30,23 @@
         <h2>Ensure that:</h2>
         <ul>
             <li>The image represents the mission.</li>
-            <li>The image does not violate sensitive PII.</li>
+            <li>The image does not include sensitive Personally Identifiable Information (PII). Examples include: passport number, driver's license number, bank account number or biometric records.</li>
             <li>There is no evidence of AI/editing – image uploaded is not Photoshopped or looks AI-edited. Uploading edited or AI-generated images is against the rules and is clearly stated in the Terms of Service. Deliberately uploading falsified evidence counts as cheating and will result in suspension or banning of the account.</li>
         </ul>
+		<h3>Automated Flagging (by system)</h3>
+		<ul>
+			<li>File Integrity: If the file uploaded is unreadable, it is flagged as File Corrupted</li>
+			<li>Duplicate Uploads: A unique hash is generated for the image. If the hash matches a previous entry, then it is flagged as Repeat Evidence.</li>
+			<li>Submission Frequency: The timestamp for each submission is stored in the database. If the interval between current submission and previous upload is unreasonably short, it is flagged for suspicious activity. A user having a high frequency of submissions in a short period can signify either bot activity or spam-logging just to get more points.</li>
+		</ul>	
+		<h3>Manual Flagging (by moderators)</h3>
+		<ul>
+			<li>Contradictory: The image does not match the mission</li>
+			<li>Sensitive information: The image includes senstivie PII.</li>
+			<li>Fake/AI images: The image is clearly AI generated/edited.</li>
+			<li>Extreme value: unrealistic submission uploaded with an unrealistic quantity e.g. 10000 steps a second.</li>
+		</ul>
+		
     </div>
 
     <div class="footer-container"></div>
