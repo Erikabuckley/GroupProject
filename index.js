@@ -346,26 +346,43 @@ app.post('/addAction', upload.single('upload'), function (req, res) {
                             });
                         }
 
-                        // Insert into Submissions
-                        db.run(
-                          "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
-                          [challenge.challenge_id, user.user_id, group_id, log_id],
-                          async function (e) {
-                            if (e) {
-                              console.log(e.message);
-                              return res.status(500).json({ error: "Failed to create submission" });
-                            } else {
-                              const id = this.lastID;
-                              // ANTI GAMING FLAGS HERE
-                              if (req.file) {
-                                const uploadedFilePath = req.file.path;
-                                // flag for file integrity
-                                const isValid = await check_file(uploadedFilePath);
-                                if (!isValid) { // if corrupted
-                                  db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered) VALUES (?, 1, 'Rule 1: Corrupted File')", [id], e => {
+                            // Insert into Submissions
+                            db.run(
+                              "INSERT INTO Submissions (challenge_id, user_id, group_id, linked_action_log, points, status) VALUES (?, ?, ?, ?, 0, 'Pending')",
+                              [challenge.challenge_id, user.user_id, group.group_id, log_id],
+                              async function (e) {
+                                if (e) {
+                                  console.log(e.message);
+                                  return res.status(500).json({ error: "Failed to create submission" });
+                                } else {
+                                  const id = this.lastID;
+                                  // ANTI GAMING FLAGS HERE
+
+                                  // upload frequency
+                                  db.get("SELECT COUNT(*) AS number FROM Submissions JOIN ActionLogs ON ActionLogs.log_id = Submissions.linked_action_log WHERE Submissions.user_id = ? AND strftime('%s', ActionLogs.date) >= strftime('%s', 'now') - 80", [user.user_id], (e, countRow) => {
                                     if (e) {
                                       console.log(e.message);
-                                      return res.status(500).json({ error: "Failed to flag" });
+                                      return res.status(500).json({ error: "database failure" });
+                                    }
+                                    if (countRow?.number >= 3) {
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '3', 'Rule 3: High Upload Frequency', 'PENDING')", [id], e => {
+                                        if (e) {
+                                          console.log(e.message);
+                                        }
+                                      })
+                                    }
+                                  })
+                                  if (req.file) {
+                                    const uploadedFilePath = req.file.path;
+                                    // flag for file integrity
+                                    const isValid = await check_file(uploadedFilePath);
+                                    if (!isValid) { // if corrpted
+                                      db.run("INSERT INTO AntiGamingFlags (submission_id, flag_type, rule_triggered, status) VALUES (?, '1', 'Rule 1: Corrupted File', 'PENDING')", [id], e => {
+                                        if (e) {
+                                          console.log(e.message);
+                                          return res.status(500).json({ error: "Failed to flag" });
+                                        }
+                                      })
                                     }
                                   })
                                 }
