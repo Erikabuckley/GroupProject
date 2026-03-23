@@ -23,9 +23,7 @@ CREATE TABLE IF NOT EXISTS ConversionFactors (
     source TEXT NOT NULL,
     unit_in TEXT NOT NULL,
     unit_out TEXT NOT NULL,
-    value INTEGER NOT NULL,
-    notes TEXT NOT NULL,
-    uncertainty INTEGER
+    value INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS ActionTypes (
     action_type_id INTEGER PRIMARY KEY AUTOINCREMENT,
