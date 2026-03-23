@@ -2,19 +2,20 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <link rel="stylesheet" href="../styles/modChallengesStyle.css">
+    <script type="module" src="../scripts/template.js"></script>
+    <script type="module" src="../scripts/modCheck.js"></script>
     <script type="text/javascript" src="../scripts/modChallengesUtil.js" defer></script>
-    <script type="module" src="../scripts/template.js" defer></script>
-    <script type="module" src="../scripts/modCheck.js" defer></script>
-
 
     <title>Modify challenges</title>
 </head>
 
-<body>    
+<body>
+    <!--Produces grayed out background for forms-->
     <div id="backdrop"></div>
     <div class="header-container"></div>
     <div style="margin-left: 15rem; margin-right: 15rem;">
@@ -24,8 +25,8 @@
                 <p>On this page you can add, edit and delete challenges.</p>
                 <p>Adding challenges improves user experience and helps to drive engagement</p>
             </div>
-            
         </div>
+        <!--Form allows user to add a challenge-->
         <input type="button" id="new" value="Add new challenge" class="in-button">
         <div id="challenge-modal" class="modal">
             <div class="modal-content">
@@ -33,25 +34,26 @@
                 <h2>Add a new challenge: </h2>
                 <span class="error" id="new-challenge-error"></span>
                 <form class="form" id="challengeForm">
-                    <span id="error" class="error"></span>
                     <label for="name-input">What is the challenge title?</label><br>
                     <input type="text" id="name-input" required placeholder="Enter the challenge name"><br>
 
                     <label for="scope-input">What is the scope?</label><br>
                     <select required name="Scope" id="scope-input">
+                        <option value="" selected disabled hidden>Select a scope</option>
                         <option value="Personal">Personal</option>
                         <option value="Group">Group</option>
-                    </select><br>    
-                    
+                    </select><br>
+
                     <label for="rules-input">What are the challenge rules?</label><br>
                     <input type="text" id="rules-input" required placeholder="Enter some rules"><br>
- 
+
                     <label for="points-input">How many points is each challenge submission worth?</label><br>
-                    <input type="number" id="points-input" required placeholder="Enter the number of points this challenge is worth" min="1"><br>
+                    <input type="number" id="points-input" required
+                        placeholder="Enter the number of points this challenge is worth" min="1"><br>
 
                     <label for="start-input">Challenge start date:</label><br>
-                    <input type="date" id="start-input" name="start"><br>                    
-                    
+                    <input type="date" id="start-input" name="start"><br>
+
                     <label for="end-input">Challenge end date:</label><br>
                     <input type="date" id="end-input" name="end"><br>
 
@@ -60,7 +62,7 @@
                     <input type="radio" name="val" value="yes" id="yes" required>
                     <label for="no">No</label>
                     <input type="radio" name="val" value="no" id="no" required><br>
-                    
+
                     <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
                 </form>
             </div>
@@ -80,8 +82,8 @@
                 new_modal.style.display = "none";
                 backdrop.style.display = "none";
             };
-            
-            backdrop.addEventListener('click', function  () {
+
+            backdrop.addEventListener('click', function () {
                 new_modal.style.display = "none";
                 backdrop.style.display = "none";
             });
@@ -90,68 +92,72 @@
     <div class="indent spacer">
         <h1>Edit current challenges here:</h1>
         <div id="challenge-container"></div>
-            <div id="update-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close" id="close-update">&times;</span>
-                    <h2>Update challenge: </h2>
-                    <form class="form" id="editForm">
-                        <span id="error" class="error"></span>
-                        <label for="edit-name-input">What is the challenge title?</label><br>
-                        <input type="text" id="edit-name-input" required placeholder="Enter the challenge name"><br>
+        <!--Form allows user to edit a challenge-->
+        <div id="update-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close-update">&times;</span>
+                <h2>Update challenge: </h2>
+                <span class="error" id="edit-challenge-error"></span>
+                <form class="form" id="editForm">
+                    <label for="edit-name-input">What is the challenge title?</label><br>
+                    <input type="text" id="edit-name-input" required placeholder="Enter the challenge name"><br>
 
-                        <label for="edit-scope-input">What is the scope?</label><br>
-                        <select required name="Scope" id="edit-scope-input">
-                            <option value="Personal">Personal</option>
-                            <option value="Group">Group</option>
-                        </select><br>    
-                        
-                        <label for="edit-rules-input">What are the challenge rules?</label><br>
-                        <input type="text" id="edit-rules-input" required placeholder="Enter some rules"><br>
-    
-                        <label for="edit-points-input">How many points is each challenge submission worth?</label><br>
-                        <input type="number" id="edit-points-input" required placeholder="Enter the number of points this challenge is worth" min="1"><br>
+                    <label for="edit-scope-input">What is the scope?</label><br>
+                    <select required name="Scope" id="edit-scope-input">
+                        <option value="" selected disabled hidden>Select a scope</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Group">Group</option>
+                    </select><br>
 
-                        <label for="edit-start-input">Challenge start date:</label><br>
-                        <input type="date" id="edit-start-input" name="start"><br>                    
-                        
-                        <label for="edit-end-input">Challenge end date:</label><br>
-                        <input type="date" id="edit-end-input" name="end"><br>
+                    <label for="edit-rules-input">What are the challenge rules?</label><br>
+                    <input type="text" id="edit-rules-input" required placeholder="Enter some rules"><br>
 
-                        <label>Do these challenge submissions require evidence?</label><br>
-                        <label for="edit-yes">Yes</label>
-                        <input type="radio" name="edit-val" value="yes" id="edit-yes" required>
-                        <label for="edit-no">No</label>
-                        <input type="radio" name="edit-val" value="no" id="edit-no" required><br>
-                        
-                        <input type="submit" value="Confirm" name="confirm" id="edit-confirm" class="in-button">
-                    </form>
-                </div>
+                    <label for="edit-points-input">How many points is each challenge submission worth?</label><br>
+                    <input type="number" id="edit-points-input" required
+                        placeholder="Enter the number of points this challenge is worth" min="1"><br>
+
+                    <label for="edit-start-input">Challenge start date:</label><br>
+                    <input type="date" id="edit-start-input" name="start"><br>
+
+                    <label for="edit-end-input">Challenge end date:</label><br>
+                    <input type="date" id="edit-end-input" name="end"><br>
+
+                    <label>Do these challenge submissions require evidence?</label><br>
+                    <label for="edit-yes">Yes</label>
+                    <input type="radio" name="edit-val" value="yes" id="edit-yes" required>
+                    <label for="edit-no">No</label>
+                    <input type="radio" name="edit-val" value="no" id="edit-no" required><br>
+
+                    <input type="submit" value="Confirm" name="confirm" id="edit-confirm" class="in-button">
+                </form>
             </div>
-
-            <script>
-                var edit_modal = document.getElementById("update-modal");
-                var edit_span = document.getElementById("close-update");
-                var backdrop = document.getElementById("backdrop");
-
-                edit_span.onclick = function () {
-                    edit_modal.style.display = "none";
-                    backdrop.style.display = "none";
-                };
-                
-                backdrop.addEventListener('click', function  () {
-                    edit_modal.style.display = "none";
-                    backdrop.style.display = "none";
-                });
-            </script>
         </div>
+
+        <script>
+            var edit_modal = document.getElementById("update-modal");
+            var edit_span = document.getElementById("close-update");
+            var backdrop = document.getElementById("backdrop");
+
+            edit_span.onclick = function () {
+                edit_modal.style.display = "none";
+                backdrop.style.display = "none";
+            };
+
+            backdrop.addEventListener('click', function () {
+                edit_modal.style.display = "none";
+                backdrop.style.display = "none";
+            });
+        </script>
     </div>
     <dialog id="delete" class="dialog">
         <div class="dialog-content">
             <label for="password">Please type "delete challenge" to delete this challenge</label><br>
             <span class="error" id="delete-error"></span><br>
             <input type="text" required id="password" placeholder="delete challenge"><br>
-            <button type="button" id="confirm-delete" class="in-button">Confirm</button><br>
-            <button type="button" id="close" class="in-button">Close</button>
+            <div class="button-row">
+                <button type="button" id="confirm-delete" class="second-button">Confirm</button><br>
+                <button type="button" id="close" class="in-button">Close</button>
+            </div>
         </div>
     </dialog>
     <div class="footer-container"></div>

@@ -46,10 +46,13 @@ if (form) {
             const priv = document.getElementById("priv").checked;
             const tandc = document.getElementById("tandc").checked;
 
-            if (!/^[A-Za-z0-9._%+-]+@exeter\.ac\.uk$/.test(email)){
+            if (!/^[A-Za-z0-9._+-]+@exeter\.ac\.uk$/.test(email)) {
                 document.getElementById('error-message').textContent = "Email does not end in exeter.ac.uk";
                 document.getElementById('error-message').style.visibility = 'visible';
-            }else if (priv && tandc) {
+            } else if (!/^[A-Za-z0-9'-]+$/.test(name)) {
+                document.getElementById('error-message').textContent = "Name must not contain special characters";
+                document.getElementById('error-message').style.visibility = 'visible';
+            } else if (priv && tandc) {
                 const res = await fetch("/signUp",
                     {
                         method: "POST",

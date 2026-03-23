@@ -11,27 +11,25 @@ async function getSubmissions() {
         var challenge_title = data.challenge_title;
         var flag = data.flag;
 
-
         var submissions = document.getElementById("submissions-container");
         submissions.innerHTML = "";
 
         const grouped = {};
         // groups submissions by their challenge title
         for (let i = 0; i < id.length; i++) {
-            if (!grouped[challenge_title[i]]) {
-                grouped[challenge_title[i]] = [];
-            }
+            const key = challenge_title[i].replace(/\s+/g, ' ').trim();
+            if (!grouped[key]) grouped[key] = [];
 
-            grouped[challenge_title[i]].push({
+            grouped[key].push({
                 title: title[i],
                 id: id[i],
                 evidence: evidence[i],
-                challenge_title: challenge_title[i],
-                flag : flag[i],
+                challenge_title: key,
+                flag: flag[i],
                 index: i
             });
         }
-        Object.keys(grouped).forEach(groupId => {
+        Object.keys(grouped).sort((a, b) => a.localeCompare(b)).forEach(groupId => {
 
             // Group container
             const challengeDiv = document.createElement("div");
@@ -40,7 +38,7 @@ async function getSubmissions() {
             challengeDiv.className = "challenge";
             challengeTitleDiv.className = "challenge_title"
 
-            challengeTitleDiv.textContent = groupId;            
+            challengeTitleDiv.textContent = groupId;
             challengeDiv.dataset.id = groupId;
 
             challengeDiv.appendChild(challengeTitleDiv);
@@ -61,9 +59,9 @@ async function getSubmissions() {
 
                 titleDiv.textContent = item.title;
 
-                if (flag != "No automatic flags triggered"){
+                if (item.flag != "No automatic flags triggered") {
                     flagDiv.textContent = item.flag; //change to iteration no. flag
-                } else{
+                } else {
                     flagDiv.textContent = "";
                 }
 
@@ -111,7 +109,7 @@ async function approveDeny(outcome, reason, id, info) {// sends the moderators d
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ outcome, reason, id, info}
+            body: JSON.stringify({ outcome, reason, id, info }
             )
         }
 
@@ -124,13 +122,17 @@ form.addEventListener('submit', async (e) => { //wait till form has been submitt
     const reason = document.getElementById("reason-input").value;
     const decision = document.querySelector('input[name="val"]:checked')?.value;
     const info = document.getElementById("identifying-info").checked;
-    if(decision === 'approve' && info){
+    if (decision === 'approve' && info) {
         document.getElementById("approval-error").textContent = "You must deny submissions with identifying information";
         document.getElementById("approval-error").style.visibility = 'visible'
         return;
+    } else if (!/^[A-Za-z0-9'-. ]+$/.test(reason)) {
+        document.getElementById('approval-error').textContent = "Name must not contain special characters";
+        document.getElementById('approval-error').style.visibility = 'visible';
     }
     await approveDeny(decision, reason, selectedSubmission.id, info);  //calls function to subbmit information to database
     form.reset();
+    document.getElementById('approval-error').style.visibility = 'hidden';
     document.getElementById('approveDeny-modal').style.display = 'none';
 
     document.getElementById('backdrop').style.display = "none";

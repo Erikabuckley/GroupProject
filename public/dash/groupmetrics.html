@@ -2,17 +2,17 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <link rel="stylesheet" href="../styles/metricStyle.css">
-    <script type="module" src="../scripts/template.js" defer></script>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
+    <script type="module" src="../scripts/template.js"></script>
+    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
     <script type="text/javascript" src="../scripts/groupUtil.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-
-    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
-    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
-
+    <!--Import packages for charts-->
     <py-config> packages = ["numpy", "matplotlib"] </py-config>
 
     <title>Metrics</title>
@@ -21,20 +21,20 @@
 <body>
     <div class="header-container"></div>
     <h1> Group Metrics </h1>
+    <h4 class ="description"> You can view the data regarding the groups you are a part of. Showing how everybody can work together to save the planet. </h4>
     <h4 class="facts">Working together can help save the planet - The Paris Agreement is a landmark accord. It aims to limit global warming to well below 2°C above pre-industrial levels</h4>
-    <div>
-        <div class="key-stats">
-            <div class="total">
-                <h3>Total Carbon Saved:</h3>
-                <h3 id="group-carbon"></h3>
-            </div>
+    <div class="key-stats">
+        <div class="total">
+            <h3>Total Carbon Saved:</h3>
+            <h3 id="group-carbon"></h3>
+        </div>
 
-            <div class="total">
-                <h3>Total Points Earned:</h3>
-                <h3 id="group-points"></h3>
-            </div>
+        <div class="total">
+            <h3>Total Points Earned:</h3>
+            <h3 id="group-points"></h3>
         </div>
     </div>
+    <p class="description"> *Rounded to the nearest unit* </p>
 
     <div class="filters">
         <button type="button" class="in-button" id="filter-one">My Contributions</button>
@@ -137,18 +137,52 @@
             
             display(fig, target="graph3", append=False)
 
-        asyncio.ensure_future(make_co2_scatter())
-        asyncio.ensure_future(make_points_chart())
-        asyncio.ensure_future(make_action_type_pie())
+        async def check_group():
+            res = await fetch("/checkGroup")
+            data = (await res.json()).to_py()
+            return data["inGroup"]
+
+        async def load_page():
+            in_group = await check_group()
+
+            if not in_group:
+                # show a message telling user to join a group
+                js.document.getElementById("group-message").innerHTML = """
+                <div class="graph-block">
+                    <div class="graph">
+                        <p>You have not joined a group yet</p>
+                        <p>Join a group to work together with others to reduce your carbon emissions and your group stats will appear here</p>
+                    </div>
+                </div>
+                """
+                js.document.getElementById("graph1").style.display = "none"
+                js.document.getElementById("graph2").style.display = "none"
+                js.document.getElementById("graph3").style.display = "none"
+                js.document.getElementById("group-carbon").style.display = "none"
+                js.document.getElementById("group-points").style.display = "none"
+                js.document.getElementById("data-table").style.display = "none"
+                js.document.getElementById("myChart").style.display = "none"
+                return
+                
+            # if user is in a group, load associated graphs
+            await make_points_chart()
+            await make_co2_scatter()
+            await make_action_type_pie()
+
+        asyncio.ensure_future(load_page())
+
         </py-script>
+
+        <div id="group-message"></div>
 
         <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> loading... </h1>
+                <h1> Loading... </h1>
             </div>
             <div class="graph" id="graph2"></div>
             <div class="graph" id="graph3"></div>
         </div>
+        <p class="description"> *Assuming users have fully completed actions submitted* </p>
 
     <div class="footer-container"></div>
 </body>

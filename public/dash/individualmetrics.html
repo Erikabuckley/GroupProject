@@ -2,25 +2,25 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
     <link rel="stylesheet" href="../styles/metricStyle.css">
-    <script type="module" src="../scripts/template.js" defer></script>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
+    <script type="module" src="../scripts/template.js"></script>
+    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
     <script type="text/javascript" src="../scripts/indiUtil.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-
-    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
-    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
-
-    <py-config> packages = ["numpy", "matplotlib"] </py-config>
-
+    <!--Import packages for charts-->
     <title>Metrics</title>
+    <py-config> packages = ["numpy", "matplotlib"] </py-config>
 </head>
 
 <body>
     <div class="header-container"></div>
     <h1> Individual Metrics </h1>
+    <h4 class="description"> See your personal figures on the actions you've logged and carbon you've saved!! </h4>
     <div class="key-stats">
         <div class="total">
             <h3>Total Carbon Saved:</h3>
@@ -31,8 +31,8 @@
             <h3>Total Points Earned:</h3>
             <h3 id="indi-points"></h3>
         </div>
-
     </div>
+    <p class="description"> *Rounded to the nearest unit* </p>
 
     <div class="filters">
         <button type="button" class="in-button" id="filter-one">Sort By: Date Submitted</button>
@@ -143,11 +143,12 @@
 
     <div class="graph-block">
             <div class="graph" id="graph1">
-                <h1> loading... </h1>
+                <h1> Loading... </h1>
             </div>
             <div class="graph" id="graph2"></div>
             <div class="graph" id="graph3"></div>
     </div>
+    <p class="description"> *Assuming users have fully completed actions submitted* </p>
 
     <div class="footer-container"></div>
 </body>

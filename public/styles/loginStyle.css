@@ -2,16 +2,18 @@ body {
     margin: 0;
     background-color: rgb(140, 240, 165);
     font-family: 'Trebuchet MS';
-    height: 100%;   
+    display: block;
 }
 
 .ls-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 70.9vh;
-    padding: 3rem;
-    margin: 0;
+    min-height: 60vh;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
 }
 
 .ls-form {
@@ -21,23 +23,28 @@ body {
     border-radius: 8px;
     color: black;
     text-align: center;
-    padding:2rem;
+    padding: 2rem;
 }
 
 .header-heading.header-1 {
-    font-size: 3rem;
+    font-size: clamp(1.2rem, 4vw, 2.5rem);
+    white-space: normal;
     text-align: center;
     color: white;
+    flex: 1;
+    min-width: 0;
+    line-height: 1.1;
+    padding: 0 10px;
 }
 
 .login {
-    gap:5px;
+    gap: 5px;
     display: flex;
     flex-direction: column;
 }
 
-.TandC{
-    display:flex;
+.TandC {
+    display: flex;
     flex-direction: row;
 }
 
@@ -45,33 +52,33 @@ body {
     display: flex;
     align-items: flex-start;
     text-align: left;
-    gap:10px;
-    margin-bottom:1rem;
+    gap: 10px;
+    margin-bottom: 1rem;
 }
 
 .policy-tick input[type="checkbox"] {
     width: 20px !important;
-    height:20px !important;
-    flex-shrink:0;
+    height: 20px !important;
+    flex-shrink: 0;
     cursor: pointer;
-    margin:0;
+    margin: 0;
 }
 
 .policy-tick label {
     font-size: 0.9rem;
-    line-height:1.2;
-    cursor:pointer;
+    line-height: 1.2;
+    cursor: pointer;
 }
 
 /* mobile friendly */
 @media screen and (max-width: 600px) {
     .ls-container {
-        padding:1rem;
-        min-height: 80vh;
+        padding: 1rem;
+        min-height: 20vh;
     }
 
     .ls-form {
-        width:100%;
+        width: 100%;
         max-width: 350px;
         padding: 1.5rem;
         box-sizing: border-box;
@@ -83,7 +90,10 @@ body {
         font-size: 16px;
     }
 
+}
+
+@media screen and (max-width: 350px) {
     .header-heading.header-1 {
-        font-size: 1.8rem;
+        font-size: 1.1rem;
     }
 }

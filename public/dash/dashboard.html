@@ -6,34 +6,45 @@
     <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/dashStyle.css">
-    <script type="module" src="../scripts/template.js" defer></script>
+    <script type="module" src="../scripts/template.js"></script>
     <script type="text/javascript" src="../scripts/dashUtil.js" defer></script>
 
     <title>Dashboard</title>
 </head>
 
 <body>
+    <!--Produces grayed out background for forms-->
     <div id="backdrop"></div>
     <div class="header-container"></div>
+    <dialog id="badge-info" class="dialog">
+        <div class="dialog-content">
+            <h1>How to earn this badge</h1>
+            <p id="badge-text"></p>
+            <button type="button" id="close-badge" class="in-button">Close</button>
+        </div>
+    </dialog>
 
-    <div class="indent">
+    <div class="small-indent">
         <div id="welcome">
             <div class="text">
                 <h1 id="name"></h1>
                 <h3>Now you can start logging carbon saving actions!</h3>
             </div>
             <div id="badges">
-                <img src="../images/trophy.png" class="badge" id="badge1">
-                <img src="../images/trophy.png" class="badge" id="badge2">
-                <img src="../images/trophy.png" class="badge" id="badge3">
-                <img src="../images/trophy.png" class="badge" id="badge4">
-                <img src="../images/trophy.png" class="badge" id="badge5">
-                <img src="../images/trophy.png" class="badge" id="badge6">
+                <img src="../images/badges/badge1.png" class="badge" id="badge1" alt="Save 1kg of CO2">
+                <img src="../images/badges/badge2.png" class="badge" id="badge2"
+                    alt="Join and participate in a group challenge">
+                <img src="../images/badges/badge3.png" class="badge" id="badge3" alt="Pick up 30 pieces of litter">
+                <img src="../images/badges/badge4.png" class="badge" id="badge4" alt="Complete 10 missions">
+                <img src="../images/badges/badge5.png" class="badge" id="badge5" alt="Complete 5 challenges">
+                <img src="../images/badges/badge6.png" class="badge" id="badge6" alt="Earn 5 badges">
             </div>
         </div>
+    </div>
+    <div class="indent">
         <h1>Reduce your emissions today! </h1>
-        <input type="button" id="upload" value="Submit action" class="in-button"><br>
-
+        <input type="button" id="upload" value="Submit action" class="in-button"><br><br>
+        <!--Form allows user to add an action-->
         <div id="upload-modal" class="modal">
             <div class="modal-content">
                 <span class="close" id="close-upload">&times;</span>
@@ -57,18 +68,17 @@
                         <option value="" selected disabled hidden>Select an group</option>
                         <option value="Individual">Individual challenge</option>
                     </select><br>
-                    <label for="upload-input">Please upload evidence for the challenge sumission if required:</label>
-                    <input type="file" name="upload" id="upload-input"
-                        accept=".jpg, .jpeg, .png"><br>
+                    <label for="upload-input">Please upload evidence for the challenge submission if required:</label>
+                    <input type="file" name="upload" id="upload-input" accept=".jpg, .jpeg, .png"><br>
                     <div class="declaration">
                         <input required type="checkbox" id="declaration" name="declaration">
-                        <label for="declaration"> Any evidance uploaded does not contain sensitive informaton</label>
+                        <label for="declaration"> Any evidence uploaded does not contain sensitive information</label>
                     </div>
-                    <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
+                    <input type="submit" value="Confirm" name="confirm" id="confirm-action" class="in-button">
                 </form>
             </div>
         </div>
-
+        <!--Script to close the form when the x is clicked-->
         <script>
             var s_modal = document.getElementById("upload-modal");
             var s_btn = document.getElementById("upload");
@@ -83,8 +93,8 @@
                 s_modal.style.display = "none";
                 backdrop.style.display = "none";
             };
-            
-            backdrop.addEventListener('click', function  () {
+
+            backdrop.addEventListener('click', function () {
                 s_modal.style.display = "none";
                 backdrop.style.display = "none";
             });
@@ -92,22 +102,22 @@
 
         <h1>Play with friends</h1>
         <input type="button" id="join" value="Join a group" class="in-button"><br>
-
+        <!--Enables the user to join a group by selecting from a drop down list-->
         <div id="join-modal" class="modal">
             <div class="modal-content">
                 <span class="close" id="close-join">&times;</span>
                 <h2>Join a group:</h2>
                 <span class="error" id="error-message">Already in group</span>
                 <form class="form" id="joinForm">
-                    <label for="group-input">What group would you like to join?</label>
-                    <select required name="Group" id="group-input" value="Select the group you would like ot join:">
-                        <option value="" selected disabled hidden>Select an Option</option>
+                    <label for="group-input">What group would you like to join?</label><br>
+                    <select required name="Group" id="group-input">
+                        <option value="" selected disabled hidden>Select an option</option>
                     </select><br>
-                    <input type="submit" value="Confirm" name="confirm" id="confirm" class="in-button">
+                    <input type="submit" value="Confirm" name="confirm" id="confirm-join" class="in-button">
                 </form>
             </div>
         </div>
-
+        <!--Script to close the form when the x is clicked-->
         <script>
             var j_modal = document.getElementById("join-modal");
             var j_span = document.getElementById("close-join");
@@ -122,13 +132,14 @@
                 j_modal.style.display = "none";
                 backdrop.style.display = "none";
             };
-            
-            backdrop.addEventListener('click', function  () {
+
+            backdrop.addEventListener('click', function () {
                 j_modal.style.display = "none";
                 backdrop.style.display = "none";
             });
         </script>
-    <h4 class="facts">Carbon dioxide (CO2) is the most significant greenhouse gas. It accounts for about 76% of global greenhouse gas emissions</h4><br>
+        <h4 class="facts">Carbon dioxide (CO2) is the most significant greenhouse gas. It accounts for about 76% of
+            global greenhouse gas emissions</h4><br>
     </div>
 
     <div id="data-modal" class="modal">
@@ -137,6 +148,7 @@
             <h2>Your action saved carbon well done!</h2>
             <p>You saved:</p>
             <p id="amount"></p>
+            <p id="conversion"></p>
             <a id="source" href="#"></a>
         </div>
     </div>
@@ -144,19 +156,19 @@
     <script>
         var d_modal = document.getElementById("data-modal");
         var d_span = document.getElementById("close-data");
-            var backdrop = document.getElementById("backdrop");
+        var backdrop = document.getElementById("backdrop");
 
-            d_span.onclick = function () {
-                d_modal.style.display = "none";
-                backdrop.style.display = "none";
-            };
-            
-            backdrop.addEventListener('click', function  () {
-                d_modal.style.display = "none";
-                backdrop.style.display = "none";
-            });
+        d_span.onclick = function () {
+            d_modal.style.display = "none";
+            backdrop.style.display = "none";
+        };
+
+        backdrop.addEventListener('click', function () {
+            d_modal.style.display = "none";
+            backdrop.style.display = "none";
+        });
     </script>
-    
+
     <div class="box">
         <div class="total indent">
             <h1>Total Carbon Saved To-date</h1>
@@ -164,19 +176,19 @@
         </div>
 
         <div class="total indent">
-            <h1>Total Points Earned  To-date</h1>
+            <h1>Total Points Earned To-date</h1>
             <p id="indi-points"></p>
         </div>
     </div>
 
-    <div id="log history" class="indent spacer">
+    <div class="indent spacer">
         <h1>Challenge Submission History:</h1>
         <div id="log"></div>
     </div>
     <dialog id="no-evidence" class="dialog">
         <div class="dialog-content">
             <p>No evidence if required for this submission so your image has not been stored</p>
-            <button type="button" id="close-no-evidence">Close</button>
+            <button type="button" id="close-no-evidence" class="in-button">Close</button>
         </div>
     </dialog>
     <div class="footer-container"></div>

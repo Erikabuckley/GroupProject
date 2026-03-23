@@ -11,10 +11,10 @@ newChallenge.addEventListener('submit', async (e) => {
     const end = document.getElementById("end-input").value;
     const selectedValue = document.querySelector('input[name="val"]:checked').value;
 
-    if (end < start){
+    if (end < start) {
         document.getElementById('new-challenge-error').style.visibility = 'visible';
         document.getElementById('new-challenge-error').textContent = 'End date must be after start date';
-    } else{
+    } else {
 
         const res = await fetch("/addChallenge", {
             method: "POST",
@@ -50,23 +50,29 @@ editChallenge.addEventListener('submit', async (e) => {
     const end = document.getElementById("edit-end-input").value;
     const selectedValue = document.querySelector('input[name="edit-val"]:checked').value;
 
-    const res = await fetch("/editChallenge", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id, name, scope, rules, points, start, end, selectedValue } //turn to json
-        )
-    });
-    const data = await res.json();
+    if (end < start) {
+        document.getElementById('edit-challenge-error').style.visibility = 'visible';
+        document.getElementById('edit-challenge-error').textContent = 'End date must be after start date';
 
-    // if there is an error then the error message will be displayed
-    if (res.status === 400) {
-        document.getElementById('error').textContent = data.error;
-        document.getElementById('error').style.visibility = 'visible';
+    } else {
+        const res = await fetch("/editChallenge", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id, name, scope, rules, points, start, end, selectedValue } //turn to json
+            )
+        });
+        const data = await res.json();
+
+        // if there is an error then the error message will be displayed
+        if (res.status === 400) {
+            document.getElementById('edit-challenge-error').textContent = data.error;
+            document.getElementById('edit-challenge-error').style.visibility = 'visible';
+        }
+        document.getElementById("update-modal").style.display = "none";
+        document.getElementById("backdrop").style.display = "none";
     }
-    document.getElementById("update-modal").style.display = "none";
-    document.getElementById("backdrop").style.display = "none";
 });
 
 // populates the challenge list with the current challenges
@@ -132,7 +138,7 @@ async function getChallenges() {
                 const confirmbutton = document.getElementById("confirm-delete");
                 confirmbutton.addEventListener('click', async () => {
                     const text = document.getElementById("password").value;
-                    if (text === 'delete challenge'){
+                    if (text === 'delete challenge') {
                         document.getElementById("delete").close()
                         await fetch("/deleteChallenge", {
                             method: "POST",

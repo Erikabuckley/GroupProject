@@ -84,6 +84,5 @@ CREATE TABLE IF NOT EXISTS AntiGamingFlags (
     submission_id INTEGER NOT NULL,
     flag_type INTEGER NOT NULL,
     rule_triggered TEXT NOT NULL,
-    status TEXT NOT NULL,
     FOREIGN KEY (submission_id) REFERENCES Submissions(submission_id)
 );
