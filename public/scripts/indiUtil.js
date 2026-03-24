@@ -57,7 +57,8 @@ async function populateTable(type) {
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
         var cell4 = row.insertCell(3);
-        cell1.textContent = data.date[x];
+        const date = new Date(data.date[x]);
+        cell1.textContent = date.toLocaleDateString('en-GB');
         cell2.textContent = data.title[x];
         cell3.textContent = data.co2[x];
         cell4.textContent = data.cat[x];
@@ -80,7 +81,7 @@ function plotPi(type, data) {
         title = 'Grouped by type'
     }
     const barColors = [
-        "#b91d47",
+        "#f8aa24",
         "#00aba9",
         "#2b5797",
         "#e8c3b9",
@@ -137,7 +138,7 @@ function groupDatesByMonth(dates) {
     // create last 6 months
     for (let i = 5; i >= 0; i--) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const key = d.toLocaleString('default', { month: 'short' });
+        const key = d.toLocaleString('en-GB', { month: 'short' });
         months[key] = 0;
     }
 
@@ -149,7 +150,7 @@ function groupDatesByMonth(dates) {
 
         // Only include dates in the last 6 months
         if (date >= sixMonthsAgo && date <= now) {
-            const key = date.toLocaleString('default', { month: 'short' });
+            const key = date.toLocaleString('en-GB', { month: 'short' });
 
             if (months[key] !== undefined) {
                 months[key]++;
