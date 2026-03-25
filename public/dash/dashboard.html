@@ -65,7 +65,7 @@
                     </select><br>
                     <label for="group-challenge-input">Which group is your challenge submission for?</label>
                     <select name="Group" id="group-challenge-input">
-                        <option value="" selected disabled hidden>Select an group</option>
+                        <option value="" selected disabled hidden>Select a group</option>
                         <option value="Individual">Individual challenge</option>
                     </select><br>
                     <label for="upload-input">Please upload evidence for the challenge submission if required:</label>
@@ -161,6 +161,7 @@
         d_span.onclick = function () {
             d_modal.style.display = "none";
             backdrop.style.display = "none";
+            window.location.href = "dashboard.html"
         };
 
         backdrop.addEventListener('click', function () {

@@ -207,6 +207,9 @@ async function check_originality(newImagePath) {
     if (oldImageFullPath === newImagePath) {
       continue;
     }
+    if (!(await check_file(oldImageFullPath))) {
+      continue;
+    }
     const original = await compareImages(newImageHash, oldImageFullPath);
     if (!original) {
       return false; // returns false if duplicate found
@@ -922,7 +925,7 @@ app.get('/updateTableIndi', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
+        const date = rows.map(r => new Date(r.date));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -942,7 +945,7 @@ app.get('/updateTableIndi', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
+        const date = rows.map(r => new Date(r.date));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -962,20 +965,42 @@ app.get('/updateTableGroup', function (req, res) {
         console.log(e.message);
         return res.status(500).json({ error: "database failure" });
       }
-      db.all("SELECT ParticipantGroups.group_id AS group_id, date(ActionLogs.date) AS date, ActionTypes.name AS name, ActionLogs.calculated_co2e AS carbon, ActionTypes.category AS types, ParticipantGroups.user_id AS user FROM ActionLogs JOIN Users ON Users.user_id = ActionLogs.user_id JOIN ParticipantGroups ON ParticipantGroups.user_id = ActionLogs.user_id JOIN ActionTypes ON ActionTypes.action_type_id = ActionLogs.action_type_id WHERE Users.email=?", [req.session.email], (e, rows) => {
+      db.all(`SELECT 
+                ActionLogs.user_id AS user_id,
+                date(ActionLogs.date) AS date,
+                ActionTypes.name AS name,
+                ActionLogs.calculated_co2e AS carbon,
+                ActionTypes.category AS types
+              FROM ActionLogs
+              JOIN ActionTypes 
+                ON ActionTypes.action_type_id = ActionLogs.action_type_id
+              JOIN ParticipantGroups 
+                ON ParticipantGroups.user_id = ActionLogs.user_id
+              WHERE ParticipantGroups.group_id = (
+                SELECT ParticipantGroups.group_id
+                FROM ParticipantGroups
+                JOIN Users 
+                  ON Users.user_id = ParticipantGroups.user_id
+                WHERE Users.email = ?
+                )
+                ORDER BY date(ActionLogs.date) `, [req.session.email], (e, rows) => {
         if (e) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const id = rows.map(r => r.group_id);
-        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
-        const title = rows.map(r => r.name);
-        const co2 = rows.map(r => r.carbon);
-        const cat = rows.map(r => r.types);
-        // const userId = rows.map(r => r.user);
-        const userId = rows.length > 0 ? rows[0].user : null;
-
-        return res.json({ id, date, title, co2, cat, userId });
+        db.get("SELECT user_id FROM Users WHERE email = ?", [req.session.email], async (e, user) => {
+          if (e) {
+            console.log("DB error:", e.message);
+            return res.status(500).json({ error: "database error" });
+          }
+          const id = rows.map(r => r.user_id);
+          const date = rows.map(r => new Date(r.date));
+          const title = rows.map(r => r.name);
+          const co2 = rows.map(r => r.carbon);
+          const cat = rows.map(r => r.types);
+          const userId = user.user_id;
+          return res.json({ id, date, title, co2, cat, userId });
+        });
       });
     });
   } else if (type === 'date') {
@@ -989,7 +1014,7 @@ app.get('/updateTableGroup', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
+        const date = rows.map(r => new Date(r.date));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);
@@ -1009,7 +1034,7 @@ app.get('/updateTableGroup', function (req, res) {
           console.log(e.message);
           return res.status(500).json({ error: "database failure" });
         }
-        const date = rows.map(r => new Date(r.date).toLocaleDateString("en-GB"));
+        const date = rows.map(r => new Date(r.date));
         const title = rows.map(r => r.name);
         const co2 = rows.map(r => r.carbon);
         const cat = rows.map(r => r.types);

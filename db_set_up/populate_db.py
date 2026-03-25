@@ -182,8 +182,8 @@ def populate_challenges(cursor):
 def populate_action_conversion_factors(cursor):
     cursor.execute("DELETE FROM ConversionFactors")
     cursor.execute("DELETE FROM ActionTypes")
-    cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820, 'empty'),(106, 'https://beryl.cc/carbon-saving-calculator', 'km', 'g', 138, 'empty')")
-    cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'walk 1km', 'km', 101), (2, 'WASTE', 'pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'vegan for a day', 'kcal', 104), (5, 'FOOD', 'vegeterian for a day', 'kcal', 105),(6, 'TRAVEL', 'Cycle 1km', 'km', 106)")
+    cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820),(106, 'https://beryl.cc/carbon-saving-calculator', 'km', 'g', 138)")
+    cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'Walk 1km', 'km', 101), (2, 'WASTE', 'Pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'Be vegan for a day', 'kcal', 104), (5, 'FOOD', 'Be vegetarian for a day', 'kcal', 105),(6, 'TRAVEL', 'Cycle 1km', 'km', 106)")
 
 
 def populate_action_logs(cursor):
@@ -236,13 +236,6 @@ def populate_action_logs(cursor):
         """,
         action_logs
     )
-
-
-def populate_action_conversion_factors(cursor):
-    cursor.execute("DELETE FROM ConversionFactors")
-    cursor.execute("DELETE FROM ActionTypes")
-    cursor.execute("INSERT INTO ConversionFactors (factor_id, source, unit_in, unit_out, value, notes) VALUES (101, 'https://www.carbonindependent.org/17.html', 'km', 'g', 280, 'empty'), (102, 'https://www.sciencedirect.com/science/article/pii/S0921344915301245', 'bottles', 'g', 19, 'empty'), (103, 'https://www.carbonindependent.org/20.html', 'miles', 'g', 180, 'empty'), (104, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1740, 'empty'), (105, 'https://link.springer.com/article/10.1007/s10584-014-1169-1#Sec8', 'day', 'g', 1820, 'empty'),(106, 'https://beryl.cc/carbon-saving-calculator', 'km', 'g', 138, 'empty')")
-    cursor.execute("INSERT INTO ActionTypes (action_type_id, category, name, unit, default_factor_id) VALUES (1, 'TRAVEL', 'Walk 1km', 'km', 101), (2, 'WASTE', 'Pick up 1 plastic bottle', 'bottles', 102), (3, 'TRAVEL', '1 mile bus ride', 'miles', 103), (4, 'FOOD', 'Vegan for a day', 'kcal', 104), (5, 'FOOD', 'Vegeterian for a day', 'kcal', 105),(6, 'TRAVEL', 'Cycle 1km', 'km', 106)")
 
 # populate groups with 30 users
 def populate_participant_groups(cursor):

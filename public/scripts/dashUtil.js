@@ -212,30 +212,34 @@ async function updateLog() {
     Object.keys(grouped).forEach(challengeName => {
         const submissionDiv = document.createElement("div");
         const challengeTitleDiv = document.createElement("div");
-        const feedbackDiv = document.createElement("div");
 
         submissionDiv.className = "submission";
         challengeTitleDiv.className = "challenge_title";
-        feedbackDiv.className = "feedback";
 
         challengeTitleDiv.textContent = challengeName; // display the challenge title
         submissionDiv.dataset.challenge = challengeName;
-        feedbackDiv.textContent = grouped[challengeName][0].feedback; // first feedback as example
 
         submissionDiv.appendChild(challengeTitleDiv);
-        submissionDiv.appendChild(feedbackDiv);
 
         // add all individual submissions as cards
         grouped[challengeName].forEach(item => {
             const cardDiv = document.createElement("div");
             const titleDiv = document.createElement("div");
             const evidenceDiv = document.createElement("div");
+            const feedbackDiv = document.createElement("div");
 
             cardDiv.className = "card";
             titleDiv.className = "title";
             evidenceDiv.className = "evidence";
+            feedbackDiv.className = "feedback";
 
             titleDiv.textContent = item.title;
+
+            if (item.feedback){
+                feedbackDiv.textContent = "Feedback: " + item.feedback; // first feedback as example
+            } else {
+                evidenceDiv.textContent = "Pending approval";
+            }
 
             if (item.evidence) {
                 const img = document.createElement("img");
@@ -251,13 +255,14 @@ async function updateLog() {
             if (itemStatus === 'Denied') {
                 cardDiv.style.backgroundColor = "#D9544D";
             } else if (itemStatus === 'Pending') {
-                cardDiv.style.backgroundColor = "#686b6c";
+                cardDiv.style.backgroundColor = "#d3d0d0";
             } else { // approved/accepted
                 cardDiv.style.backgroundColor = "#93ef90";
             }
 
             cardDiv.appendChild(titleDiv);
             cardDiv.appendChild(evidenceDiv);
+            cardDiv.appendChild(feedbackDiv);
             submissionDiv.appendChild(cardDiv);
         });
         submissions.appendChild(submissionDiv);
