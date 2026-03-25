@@ -17,6 +17,8 @@ export function generateSitemap() {
             const stat = fs.statSync(full);
 
             if (stat.isDirectory()) {
+                // Skip "validation" and "dash" folders
+                if (file === "validation" || file === "dash") continue;
                 getHtmlFiles(full, list);
             }
             // If it is an html file then add it to site map
