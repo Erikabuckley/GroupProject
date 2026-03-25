@@ -32,6 +32,19 @@ https://github.com/users/Erikabuckley/projects/2
 - Moderator accounts with the responsibility to approve or deny submissions, according to anti-gaming flags
 - Access to Terms & Conditions, Accessibility Statement(s), and Privacy Policy
 
+## Requirements
+- Node.js must be installed (v20+ recommended), to check if Node.js is installed please run 
+```bash 
+node --version
+``` 
+If Node.js is not installed, please download from https://nodejs.org/en
+- npm (inbuilt with Node.js).
+- A modern web browser (for example Google Chrome).
+- 
+
+## Environment Variables
+Create a `.env` file in the root directory and add:
+- SESSION_SECRET=[placeholder]
 
 ## Installation
 ### Clone or download the repository
@@ -49,6 +62,8 @@ Navigate to the project folder:
 cd GroupProject-main
 npm install
 ```
+### Dependency Warning Disclaimer
+Some npm packages may report security vulnerabilities during installation. These are known and do not impact the functionality of the application. They have been retained to ensure compatibility with Node.js v20.
 
 ### Running the application locally
 To start the development server run:
@@ -57,23 +72,6 @@ To start the development server run:
 npm run dev
 ```
 Click the link in the terminal  to display the website in your browser.
-
-### Dependency Warning Disclaimer
-Some npm packages may report security vulnerabilities during installation. These are known and do not impact the functionality of the application. They have been retained to ensure compatibility with Node.js v20.
-
-## Environment Variables
-Create a `.env` file in the root directory and add:
-- SESSION_SECRET=[placeholder]
-
-## Requirements
-- Node.js must be installed (v20+ recommended), to check if Node.js is installed please run 
-```bash 
-node --version
-``` 
-If Node.js is not installed, please download from https://nodejs.org/en
-- npm (inbuilt with Node.js).
-- A modern web browser (for example Google Chrome).
-
 ## Contributions
 This repository has been created for academic assessment purposes.  
 Any forks or redistributions must retain the original MIT License.
