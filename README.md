@@ -12,7 +12,7 @@ A screen should appear which will signify that the backend is being retrieved, p
 Users will be directed to the main dashboard where the following actions can be completed:
 - Create an account (via 'Sign Up') to access the full platform
 - Log in using existing credentials
-- Upgrades to a moderator role via the 'Settings' tab
+- Accounts can be deleted via the 'Settings' tab
 
 ## Scrum board
 https://github.com/users/Erikabuckley/projects/2
@@ -53,8 +53,15 @@ npm run dev
 ```
 Click the link in the terminal  to display the website in your browser.
 
+### Dependency Warning Disclaimer
+Some npm packages may report security vulnerabilities during installation. These are known and do not impact the functionality of the application. They have been retained to ensure compatibility with Node.js v20.
+
+## Environment Variables
+Create a `.env` file in the root directory and add:
+- SESSION_SECRET=[placeholder]
+
 ## Requirements
-- Node.js must be installed (v18+ recommended), to check if Node.js is installed please run 
+- Node.js must be installed (v20+ recommended), to check if Node.js is installed please run 
 ```bash 
 node --version
 ``` 
