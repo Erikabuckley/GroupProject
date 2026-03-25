@@ -67,22 +67,6 @@ def populate_users(cursor):
         moderators
     )
 
-def seed_users():
-    users = [
-        ('Test user', 'user', 'user@exeter.ac.uk', 'user123'),
-        ('Test moderator', 'moderator', 'moderator@exeter.ac.uk', 'moderator123'),
-    ]
-
-    for display_name, role, email, plain_password in users:
-        # Hash password and decode to string
-        hashed_password = bcrypt.hashpw(plain_password.encode('utf-8'), bcrypt.gensalt(rounds=10)).decode('utf-8')
-        cursor.execute(
-            "INSERT INTO Users (display_name, role, email, password) VALUES (?,?,?,?)",
-            (display_name, role, email, hashed_password)
-        )
-    print("Seeded users successfully!")
-
-
 # insert groups into db
 
 def populate_groups(cursor):
@@ -432,7 +416,6 @@ def update_action_date(cursor):
     """,)
 
 populate_users(cursor)
-seed_users()
 populate_groups(cursor)
 populate_challenges(cursor)
 populate_action_conversion_factors(cursor)
