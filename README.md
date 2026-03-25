@@ -19,12 +19,17 @@ https://github.com/users/Erikabuckley/projects/2
 
 ## Features
 - User Registration and Login
+- Moderator Registration and Login
 - Role-Based Access Control (Participant and Moderator)
 - Ability to join groups
 - Log carbon-saving actions aligned with a range of missions, including evidence uploads for moderation
 - Ability to submit actions to various challenges, which can be apart of a group submission (for competing)
+- Ability to earn badges by completing defined mission and challenges
+- View fun facts relating to sustainability and CO2 emissions
 - View total CO2 emissions saved (with transparent CO2 calculation factors), and the points earned
-- Upgrade to a moderator account for approval and rejection workflows
+- View metrics and tables relating to both group and individual activities
+- Moderator accounts with premissions to create, edit, and delete challenges
+- Moderator accounts with the responsibility to approve or deny submissions, according to anti-gaming flags
 - Access to Terms & Conditions, Accessibility Statement(s), and Privacy Policy
 
 
