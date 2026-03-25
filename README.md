@@ -40,7 +40,6 @@ node --version
 If Node.js is not installed, please download from https://nodejs.org/en
 - npm (inbuilt with Node.js).
 - A modern web browser (for example Google Chrome).
-- 
 
 ## Environment Variables
 Create a `.env` file in the root directory and add:
@@ -62,6 +61,7 @@ Navigate to the project folder:
 cd GroupProject-main
 npm install
 ```
+
 ### Dependency Warning Disclaimer
 Some npm packages may report security vulnerabilities during installation. These are known and do not impact the functionality of the application. They have been retained to ensure compatibility with Node.js v20.
 
@@ -71,7 +71,17 @@ To start the development server run:
 ```bash 
 npm run dev
 ```
+
 Click the link in the terminal  to display the website in your browser.
+
+To start the production server run:
+
+```bash 
+npm start
+```
+
+Click the link in the terminal  to display the website in your browser.
+
 ## Contributions
 This repository has been created for academic assessment purposes.  
 Any forks or redistributions must retain the original MIT License.
